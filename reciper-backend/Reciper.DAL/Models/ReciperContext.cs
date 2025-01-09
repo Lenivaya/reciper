@@ -12,9 +12,7 @@ public class ReciperContext : DbContext
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Recipe> Recipes { get; set; } = null!;
     public DbSet<Comment> Comments { get; set; } = null!;
-    public DbSet<Rating> Ratings { get; set; } =
-        null! /**/
-    ;
+    public DbSet<Rating> Ratings { get; set; } = null!;
     public DbSet<UserRole> UserRoles { get; set; } = null!;
     public DbSet<RecipeIngredient> RecipeIngredients { get; set; } = null!;
     public DbSet<Ingredient> Ingredients { get; set; } = null!;
