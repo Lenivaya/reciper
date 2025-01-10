@@ -1,11 +1,10 @@
-using System.Data.Common;
 using HotChocolate;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Reciper.BLL.Exceptions;
 using Reciper.DAL.Contracts;
 
-namespace ParcelTrackingService.BLL.Services;
+namespace Reciper.BLL.Services;
 
 public delegate IEntityRepository<TEntity, TPrimaryKey> GetRepositoryFunc<TEntity, in TPrimaryKey>(
     IReciperUnitOfWork unitOfWork
