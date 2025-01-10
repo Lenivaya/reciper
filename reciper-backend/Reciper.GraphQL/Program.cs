@@ -7,7 +7,9 @@ using Microsoft.EntityFrameworkCore;
 using Reciper.BLL.DTO;
 using Reciper.DAL.Models;
 using Reciper.DAL.UnitOfWork;
+using Reciper.GraphQL.Resolvers.Ingredient;
 using Reciper.GraphQL.Resolvers.Recipe;
+using Reciper.GraphQL.Resolvers.Tag;
 using Reciper.GraphQL.Schema;
 using StackExchange.Redis;
 
@@ -19,22 +21,27 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
 );
 
-
 builder
-    .Services.AddHttpLogging(options => { options.LoggingFields = HttpLoggingFields.Request; })
+    .Services.AddHttpLogging(options =>
+    {
+        options.LoggingFields = HttpLoggingFields.Request;
+    })
     .AddCors();
 
-builder.Services.AddPooledDbContextFactory<ReciperContext>(options =>
-{
-    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-    options.UseSqlServer(connectionString);
-}).AddTransient<ReciperUnitOfWork>();
+builder
+    .Services.AddPooledDbContextFactory<ReciperContext>(options =>
+    {
+        var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+        options.UseSqlServer(connectionString);
+    })
+    .AddTransient<ReciperUnitOfWork>();
 
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
 
 builder.Services.AddSha256DocumentHashProvider(HashFormat.Hex);
 
-builder.Services.AddGraphQLServer()
+builder
+    .Services.AddGraphQLServer()
     .RegisterDbContextFactory<ReciperContext>()
     .AddRedisSubscriptions(_ => ConnectionMultiplexer.Connect(redisConnectionString))
     .AddMutationConventions()
@@ -43,12 +50,18 @@ builder.Services.AddGraphQLServer()
     .AddSorting()
     .AddQueryType<Query>()
     .AddTypeExtension<QueryRecipesResolver>()
+    .AddTypeExtension<QueryTagsResolver>()
+    .AddTypeExtension<QueryIngredientsResolver>()
     .AddMutationType<Mutation>()
     .AddTypeExtension<MutationRecipesResolver>()
+    .AddTypeExtension<MutationTagsResolver>()
+    .AddTypeExtension<MutationIngredientsResolver>()
     .AddSubscriptionType<Subscription>()
     .AddTypeExtension<SubscriptionRecipesResolver>()
     .UseAutomaticPersistedOperationPipeline()
-    .AddRedisOperationDocumentStorage(services => ConnectionMultiplexer.Connect(redisConnectionString).GetDatabase())
+    .AddRedisOperationDocumentStorage(services =>
+        ConnectionMultiplexer.Connect(redisConnectionString).GetDatabase()
+    )
     .ModifyRequestOptions(options =>
     {
         options.ExecutionTimeout = TimeSpan.FromSeconds(60);
@@ -56,14 +69,13 @@ builder.Services.AddGraphQLServer()
     })
     .InitializeOnStartup();
 
-
 var app = builder.Build();
 
 app.UseRouting().UseWebSockets();
 app.UseForwardedHeaders(
     new ForwardedHeadersOptions
     {
-        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
     }
 );
 
@@ -72,7 +84,6 @@ if (app.Environment.IsDevelopment())
     app.UseHttpLogging();
     app.UseDeveloperExceptionPage();
 }
-
 
 app.UseCors(corsPolicyBuilder =>
     corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()

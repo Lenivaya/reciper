@@ -27,7 +27,13 @@ public static class MapsterConfig
         config.NewConfig<RecipeImagePatchDTO, RecipeImage>().IgnoreNullValues(true);
 
         // Configure any special mapping rules here if needed
-        config.NewConfig<RecipeCreateDTO, Recipe>().Map(dest => dest.Id, _ => Guid.NewGuid());
+        config
+            .NewConfig<RecipeCreateDTO, Recipe>()
+            .Map(dest => dest.RecipeTags, src => src.Tags.Select(t => new RecipeTag { TagId = t }))
+            .Map(
+                dest => dest.RecipeIngredients,
+                src => src.Ingredients.Select(i => new RecipeIngredient { IngredientId = i })
+            );
 
         config
             .NewConfig<UserCreateDTO, User>()

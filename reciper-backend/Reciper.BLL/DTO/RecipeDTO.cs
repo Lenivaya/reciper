@@ -9,8 +9,9 @@ public record RecipeCreateDTO(
     string Instructions,
     int CookingTimeMinutes,
     DifficultyLevel DifficultyLevel,
-    DateTime CreatedAt,
-    DateTime UpdatedAt
+    List<Guid> Tags,
+    List<Guid> Ingredients,
+    List<Guid> Images
 );
 
 public record RecipePatchDTO(
@@ -19,5 +20,7 @@ public record RecipePatchDTO(
     string? Instructions,
     int? CookingTimeMinutes,
     DifficultyLevel? DifficultyLevel,
-    DateTime? UpdatedAt
+    List<Guid>? Tags,
+    List<Guid>? Ingredients,
+    List<Guid>? Images
 );

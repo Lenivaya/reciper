@@ -17,9 +17,6 @@ public class SubscriptionRecipesResolver
         [EventMessage] Guid messageRecipeId
     )
     {
-        return context
-                .Recipes.AsNoTracking()
-                .Where(r => r.Id == messageRecipeId)
-            ;
+        return context.Recipes.AsNoTracking().Where(r => r.Id == messageRecipeId);
     }
 }

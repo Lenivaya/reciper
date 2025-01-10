@@ -41,7 +41,6 @@ public class QueryRecipesResolver
         return context.Recipes.AsNoTracking().Where(recipe => recipe.Id == RecipeId);
     }
 
-
     private IQueryable<DAL.Models.Recipe> QueryHandler(
         ReciperContext context,
         RecipeSearchCriteria? searchCriteria
