@@ -1,13 +1,19 @@
+using Microsoft.EntityFrameworkCore.Metadata;
+
 namespace Reciper.DAL.Models;
 
 using Microsoft.EntityFrameworkCore;
 
 public class ReciperContext : DbContext
 {
-    public ReciperContext() { }
+    public ReciperContext()
+    {
+    }
 
     public ReciperContext(DbContextOptions<ReciperContext> options)
-        : base(options) { }
+        : base(options)
+    {
+    }
 
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Recipe> Recipes { get; set; } = null!;
@@ -31,5 +37,14 @@ public class ReciperContext : DbContext
         modelBuilder.Entity<RecipeTag>().HasKey(rt => new { rt.RecipeId, rt.TagId });
 
         modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
+
+        modelBuilder.Entity<User>()
+            .Property(user => user.CreatedAt)
+            .HasDefaultValueSql("getdate()");
+        modelBuilder.Entity<User>()
+            .Property(b => b.UpdatedAt)
+            .HasDefaultValueSql("getdate()")
+            .ValueGeneratedOnAddOrUpdate()
+            .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
     }
 }

@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
       <PackageReference Include="HotChocolate.Abstractions" Version="15.0.0-p.21" />
       <PackageReference Include="Mapster" Version="7.4.2-pre01" />
       <PackageReference Include="Mapster.DependencyInjection" Version="1.0.3-pre01" />

@@ -37,7 +37,8 @@ public static class MapsterConfig
 
         config
             .NewConfig<UserCreateDTO, User>()
-            .Map(dest => dest.Id, _ => Guid.NewGuid())
-            .Map(dest => dest.IsActive, _ => true);
+            .Map(dest => dest.IsActive, _ => true)
+            .IgnoreNullValues(true)
+            ;
     }
 }

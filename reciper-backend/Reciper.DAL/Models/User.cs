@@ -8,28 +8,22 @@ namespace Reciper.DAL.Models;
 [Index(nameof(Username), IsUnique = true)]
 public class User
 {
-    [Key /**/
+    [Key
     ]
     public Guid Id { get; set; }
 
-    [Required]
-    [MaxLength(50)]
-    public string Username { get; set; } = null!;
+    [Required] [MaxLength(50)] public string Username { get; set; } = null!;
 
     [Required]
     [MaxLength(255)]
     [EmailAddress]
     public string Email { get; set; } = null!;
 
-    [Required]
-    [MaxLength(255)]
-    public string PasswordHash { get; set; } = null!;
+    [Required] [MaxLength(255)] public string PasswordHash { get; set; } = null!;
 
-    [MaxLength(255)]
-    public string? ProfilePictureUrl { get; set; }
+    [MaxLength(255)] public string? ProfilePictureUrl { get; set; }
 
-    [MaxLength(500)]
-    public string? Bio { get; set; }
+    [MaxLength(500)] public string? Bio { get; set; }
 
     public bool IsActive { get; set; } = true;
 
