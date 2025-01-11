@@ -1,6 +1,5 @@
 using HotChocolate;
 using MapsterMapper;
-using Microsoft.EntityFrameworkCore;
 using Reciper.BLL.Exceptions;
 using Reciper.DAL.Contracts;
 

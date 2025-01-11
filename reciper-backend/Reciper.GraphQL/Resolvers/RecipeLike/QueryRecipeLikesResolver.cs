@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Reciper.DAL.Models;
-using Reciper.GraphQL.Interceptors;
 using Reciper.GraphQL.Schema;
 
 namespace Reciper.GraphQL.Resolvers.RecipeLike;
@@ -12,13 +11,9 @@ public class QueryRecipeLikesResolver
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<DAL.Models.RecipeLike> GetUserLikesOffset(
-        ReciperContext context,
-        Guid userId
-    )
+    public IQueryable<DAL.Models.RecipeLike> GetUserLikesOffset(ReciperContext context, Guid userId)
     {
-        return context.RecipeLikes.AsNoTracking()
-            .Where(like => like.UserId == userId);
+        return context.RecipeLikes.AsNoTracking().Where(like => like.UserId == userId);
     }
 
     [UseOffsetPaging(MaxPageSize = 50, IncludeTotalCount = true)]
@@ -30,21 +25,16 @@ public class QueryRecipeLikesResolver
         Guid recipeId
     )
     {
-        return context.RecipeLikes.AsNoTracking()
-            .Where(like => like.RecipeId == recipeId);
+        return context.RecipeLikes.AsNoTracking().Where(like => like.RecipeId == recipeId);
     }
 
     [UsePaging(MaxPageSize = 50, IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<DAL.Models.RecipeLike> GetUserLikesCursor(
-        ReciperContext context,
-        Guid userId
-    )
+    public IQueryable<DAL.Models.RecipeLike> GetUserLikesCursor(ReciperContext context, Guid userId)
     {
-        return context.RecipeLikes.AsNoTracking()
-            .Where(like => like.UserId == userId);
+        return context.RecipeLikes.AsNoTracking().Where(like => like.UserId == userId);
     }
 
     [UsePaging(MaxPageSize = 50, IncludeTotalCount = true)]
@@ -56,19 +46,14 @@ public class QueryRecipeLikesResolver
         Guid recipeId
     )
     {
-        return context.RecipeLikes.AsNoTracking()
-            .Where(like => like.RecipeId == recipeId);
+        return context.RecipeLikes.AsNoTracking().Where(like => like.RecipeId == recipeId);
     }
 
     [UseFirstOrDefault]
     [UseProjection]
-    public IQueryable<DAL.Models.RecipeLike> GetLikeById(
-        ReciperContext context,
-        Guid likeId
-    )
+    public IQueryable<DAL.Models.RecipeLike> GetLikeById(ReciperContext context, Guid likeId)
     {
-        return context.RecipeLikes.AsNoTracking()
-            .Where(like => like.Id == likeId);
+        return context.RecipeLikes.AsNoTracking().Where(like => like.Id == likeId);
     }
 
     [UseFirstOrDefault]
@@ -79,7 +64,8 @@ public class QueryRecipeLikesResolver
         Guid recipeId
     )
     {
-        return context.RecipeLikes.AsNoTracking()
+        return context
+            .RecipeLikes.AsNoTracking()
             .Where(like => like.UserId == userId && like.RecipeId == recipeId);
     }
 }

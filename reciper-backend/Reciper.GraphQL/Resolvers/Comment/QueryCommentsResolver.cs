@@ -11,10 +11,7 @@ public class QueryCommentsResolver
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<DAL.Models.Comment> GetCommentsOffset(
-        ReciperContext context,
-        Guid recipeId
-    )
+    public IQueryable<DAL.Models.Comment> GetCommentsOffset(ReciperContext context, Guid recipeId)
     {
         return QueryHandler(context, recipeId);
     }
@@ -23,10 +20,7 @@ public class QueryCommentsResolver
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<DAL.Models.Comment> GetCommentsCursor(
-        ReciperContext context,
-        Guid recipeId
-    )
+    public IQueryable<DAL.Models.Comment> GetCommentsCursor(ReciperContext context, Guid recipeId)
     {
         return QueryHandler(context, recipeId);
     }
@@ -38,11 +32,7 @@ public class QueryCommentsResolver
         return context.Comments.AsNoTracking().Where(comment => comment.Id == commentId);
     }
 
-
-    private IQueryable<DAL.Models.Comment> QueryHandler(
-        ReciperContext context,
-        Guid recipeId
-    )
+    private IQueryable<DAL.Models.Comment> QueryHandler(ReciperContext context, Guid recipeId)
     {
         return context.Comments.AsNoTracking().Where(comment => comment.RecipeId == recipeId);
     }

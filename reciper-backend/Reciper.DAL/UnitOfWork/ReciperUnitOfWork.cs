@@ -23,6 +23,24 @@ public class ReciperUnitOfWork : UnitOfWork<ReciperContext>, IReciperUnitOfWork
         InitializeRepositories(Context, Logger);
     }
 
+    public IEntityRepository<User, Guid> UsersRepository { get; private set; }
+    public IEntityRepository<Recipe, Guid> RecipesRepository { get; private set; }
+    public IEntityRepository<Comment, Guid> CommentsRepository { get; private set; }
+    public IEntityRepository<Rating, Guid> RatingsRepository { get; private set; }
+    public IEntityRepository<UserRole, Guid> UserRolesRepository { get; private set; }
+    public IEntityRepository<RecipeIngredient, Guid> RecipeIngredientsRepository
+    {
+        get;
+        private set;
+    }
+    public IEntityRepository<Ingredient, Guid> IngredientsRepository { get; private set; }
+    public IEntityRepository<Tag, Guid> TagsRepository { get; private set; }
+    public IEntityRepository<RecipeTag, Guid> RecipeTagsRepository { get; private set; }
+    public IEntityRepository<RecipeImage, Guid> RecipeImagesRepository { get; private set; }
+    public IEntityRepository<Role, Guid> RolesRepository { get; private set; }
+    public IEntityRepository<UserSubscription, Guid> SubscriptionsRepository { get; private set; }
+    public IEntityRepository<RecipeLike, Guid> RecipeLikesRepository { get; private set; }
+
     private void InitializeRepositories(ReciperContext context, ILogger logger)
     {
         UsersRepository = new GuidGenericRepository<User>(context, logger);
@@ -39,18 +57,4 @@ public class ReciperUnitOfWork : UnitOfWork<ReciperContext>, IReciperUnitOfWork
         SubscriptionsRepository = new GuidGenericRepository<UserSubscription>(context, logger);
         RecipeLikesRepository = new GuidGenericRepository<RecipeLike>(context, logger);
     }
-
-    public IEntityRepository<User, Guid> UsersRepository { get; private set; }
-    public IEntityRepository<Recipe, Guid> RecipesRepository { get; private set; }
-    public IEntityRepository<Comment, Guid> CommentsRepository { get; private set; }
-    public IEntityRepository<Rating, Guid> RatingsRepository { get; private set; }
-    public IEntityRepository<UserRole, Guid> UserRolesRepository { get; private set; }
-    public IEntityRepository<RecipeIngredient, Guid> RecipeIngredientsRepository { get; private set; }
-    public IEntityRepository<Ingredient, Guid> IngredientsRepository { get; private set; }
-    public IEntityRepository<Tag, Guid> TagsRepository { get; private set; }
-    public IEntityRepository<RecipeTag, Guid> RecipeTagsRepository { get; private set; }
-    public IEntityRepository<RecipeImage, Guid> RecipeImagesRepository { get; private set; }
-    public IEntityRepository<Role, Guid> RolesRepository { get; private set; }
-    public IEntityRepository<UserSubscription, Guid> SubscriptionsRepository { get; private set; }
-    public IEntityRepository<RecipeLike, Guid> RecipeLikesRepository { get; private set; }
 }

@@ -43,11 +43,15 @@ public class MutationRatingsResolver
                 throw new ReciperException("Failed to insert entity");
 
             await unitOfWork.SaveChanges();
-            return unitOfWork.RatingsRepository.StartQuery().AsNoTracking()
+            return unitOfWork
+                .RatingsRepository.StartQuery()
+                .AsNoTracking()
                 .Where(r => r.Id == entity.Id);
         }
-        catch (DbUpdateException e) when (e.InnerException is SqlException &&
-                                          e.InnerException.Message.Contains("duplicate key"))
+        catch (DbUpdateException e)
+            when (e.InnerException is SqlException
+                && e.InnerException.Message.Contains("duplicate key")
+            )
         {
             throw new ReciperException("Rating already exists");
         }
@@ -75,7 +79,6 @@ public class MutationRatingsResolver
         );
     }
 
-
     [Error(typeof(ReciperException))]
     [UseProjection]
     public async Task<DAL.Models.Rating?> UpdateRatingForRecipe(
@@ -87,11 +90,14 @@ public class MutationRatingsResolver
         RatingPatchDTO patchDto
     )
     {
-        var rating = await unitOfWork.RatingsRepository.StartQuery()
-                .Where(rating => rating.UserId == authenticatedUser!.UserId && rating.RecipeId == recipeId)
-                .FirstOrDefaultAsync()
-            ;
-        if (rating is null) throw new ReciperException("Rating not found");
+        var rating = await unitOfWork
+            .RatingsRepository.StartQuery()
+            .Where(rating =>
+                rating.UserId == authenticatedUser!.UserId && rating.RecipeId == recipeId
+            )
+            .FirstOrDefaultAsync();
+        if (rating is null)
+            throw new ReciperException("Rating not found");
 
         var updatedRating = mapper.Map(patchDto, rating);
         unitOfWork.RatingsRepository.Update(updatedRating);
@@ -114,22 +120,26 @@ public class MutationRatingsResolver
         return await GraphQlMutationResolverService.DeleteEntity(unitOfWork, ratingId);
     }
 
-
     [Error(typeof(ReciperException))]
     [UseProjection]
     public async Task<DAL.Models.Rating?> DeleteRatingForRecipe(
         ReciperUnitOfWork unitOfWork,
         [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser,
-        Guid recipeId)
+        Guid recipeId
+    )
     {
-        var rating = await unitOfWork.RatingsRepository.StartQuery()
-                .Where(rating => rating.UserId == authenticatedUser!.UserId && rating.RecipeId == recipeId)
-                .FirstOrDefaultAsync()
-            ;
-        if (rating is null) throw new ReciperException("Rating not found");
+        var rating = await unitOfWork
+            .RatingsRepository.StartQuery()
+            .Where(rating =>
+                rating.UserId == authenticatedUser!.UserId && rating.RecipeId == recipeId
+            )
+            .FirstOrDefaultAsync();
+        if (rating is null)
+            throw new ReciperException("Rating not found");
 
         var success = await unitOfWork.RatingsRepository.Delete(rating.Id);
-        if (!success) throw new ReciperException("Failed to delete rating");
+        if (!success)
+            throw new ReciperException("Failed to delete rating");
 
         await unitOfWork.SaveChanges();
 
@@ -143,13 +153,11 @@ public class MutationRatingsResolver
     )
     {
         return authenticatedUser != null
-               && await unitOfWork
-                   .RatingsRepository.StartQuery()
-                   .AsNoTracking()
-                   .AnyAsync(
-                       rating =>
-                           rating.Id == ratingId
-                           && rating.UserId == authenticatedUser.UserId
-                   );
+            && await unitOfWork
+                .RatingsRepository.StartQuery()
+                .AsNoTracking()
+                .AnyAsync(rating =>
+                    rating.Id == ratingId && rating.UserId == authenticatedUser.UserId
+                );
     }
 }

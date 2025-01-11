@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Reciper.DAL;
 using Reciper.DAL.Models;
 
 namespace Reciper.BLL.Search.Criteria.Recipe.Handlers;

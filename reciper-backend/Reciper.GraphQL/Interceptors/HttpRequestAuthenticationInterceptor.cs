@@ -29,10 +29,7 @@ public class HttpRequestAuthenticationInterceptor : DefaultHttpRequestIntercepto
         var userId = context.User.FindFirst(ClaimTypes.PrimarySid)?.Value;
 
         if (userId != null && Guid.TryParse(userId, out var parsedUserId))
-            requestBuilder.SetGlobalState(
-                "CurrentUser",
-                new AppActor<Guid>(parsedUserId)
-            );
+            requestBuilder.SetGlobalState("CurrentUser", new AppActor<Guid>(parsedUserId));
     }
 
     private static void SetUsersNull(OperationRequestBuilder requestBuilder)

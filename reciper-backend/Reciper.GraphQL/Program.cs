@@ -33,7 +33,6 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
 );
 
-
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -50,14 +49,17 @@ builder
                 Encoding.UTF8.GetBytes(
                     builder.Configuration.GetValue<string>("JwtSettings:Key") ?? string.Empty
                 )
-            )
+            ),
         };
     });
 
 builder.Services.AddAuthorization();
 
 builder
-    .Services.AddHttpLogging(options => { options.LoggingFields = HttpLoggingFields.Request; })
+    .Services.AddHttpLogging(options =>
+    {
+        options.LoggingFields = HttpLoggingFields.Request;
+    })
     .AddCors();
 
 builder
@@ -70,13 +72,13 @@ builder
 
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
 
-builder.Services.AddTransient<IPasswordService, PasswordService>()
+builder
+    .Services.AddTransient<IPasswordService, PasswordService>()
     .AddTransient<ITokenService>(_ => new TokenService(
         builder.Configuration.GetValue<string>("JwtSettings:Key")!,
         builder.Configuration.GetValue<string>("JwtSettings:Issuer")!,
         builder.Configuration.GetValue<string>("JwtSettings:Audience")!
-    ))
-    ;
+    ));
 
 builder.Services.AddSha256DocumentHashProvider(HashFormat.Hex);
 
@@ -125,7 +127,6 @@ builder
 var app = builder.Build();
 
 app.UseRouting().UseWebSockets();
-
 
 app.UseAuthentication();
 app.UseAuthorization();

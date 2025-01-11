@@ -1,5 +1,4 @@
 using HotChocolate.Authorization;
-using HotChocolate.Subscriptions;
 using MapsterMapper;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +20,8 @@ public class MutationUserSubscriptionsResolver
         Guid,
         UserSubscriptionCreateDTO,
         UserSubscriptionPatchDTO
-    > GraphQlMutationResolverService { get; } = new(unitOfWork => unitOfWork.SubscriptionsRepository);
+    > GraphQlMutationResolverService { get; } =
+        new(unitOfWork => unitOfWork.SubscriptionsRepository);
 
     [Error(typeof(ReciperException))]
     [UseFirstOrDefault]
@@ -49,11 +49,15 @@ public class MutationUserSubscriptionsResolver
                 throw new ReciperException("Failed to create subscription");
 
             await unitOfWork.SaveChanges();
-            return unitOfWork.SubscriptionsRepository.StartQuery().AsNoTracking()
+            return unitOfWork
+                .SubscriptionsRepository.StartQuery()
+                .AsNoTracking()
                 .Where(s => s.Id == subscription.Id);
         }
-        catch (DbUpdateException e) when (e.InnerException is SqlException &&
-                                          e.InnerException.Message.Contains("duplicate key"))
+        catch (DbUpdateException e)
+            when (e.InnerException is SqlException
+                && e.InnerException.Message.Contains("duplicate key")
+            )
         {
             throw new ReciperException("Subscription already exists");
         }
@@ -67,7 +71,8 @@ public class MutationUserSubscriptionsResolver
         Guid userId
     )
     {
-        var subscription = await unitOfWork.SubscriptionsRepository.StartQuery()
+        var subscription = await unitOfWork
+            .SubscriptionsRepository.StartQuery()
             .Where(s => s.SubscriberId == authenticatedUser!.UserId && s.SubscribeeId == userId)
             .FirstOrDefaultAsync();
 
@@ -103,13 +108,11 @@ public class MutationUserSubscriptionsResolver
     )
     {
         return authenticatedUser != null
-               && await unitOfWork
-                   .SubscriptionsRepository.StartQuery()
-                   .AsNoTracking()
-                   .AnyAsync(
-                       sub =>
-                           sub.Id == subscriptionId
-                           && sub.SubscriberId == authenticatedUser.UserId
-                   );
+            && await unitOfWork
+                .SubscriptionsRepository.StartQuery()
+                .AsNoTracking()
+                .AnyAsync(sub =>
+                    sub.Id == subscriptionId && sub.SubscriberId == authenticatedUser.UserId
+                );
     }
 }

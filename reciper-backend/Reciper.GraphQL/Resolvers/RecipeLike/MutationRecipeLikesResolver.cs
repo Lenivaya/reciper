@@ -44,11 +44,15 @@ public class MutationRecipeLikesResolver
                 throw new ReciperException("Failed to create like");
 
             await unitOfWork.SaveChanges();
-            return unitOfWork.RecipeLikesRepository.StartQuery().AsNoTracking()
+            return unitOfWork
+                .RecipeLikesRepository.StartQuery()
+                .AsNoTracking()
                 .Where(l => l.Id == like.Id);
         }
-        catch (DbUpdateException e) when (e.InnerException is SqlException &&
-                                          e.InnerException.Message.Contains("duplicate key"))
+        catch (DbUpdateException e)
+            when (e.InnerException is SqlException
+                && e.InnerException.Message.Contains("duplicate key")
+            )
         {
             throw new ReciperException("Recipe is already liked");
         }
@@ -62,7 +66,8 @@ public class MutationRecipeLikesResolver
         Guid recipeId
     )
     {
-        var like = await unitOfWork.RecipeLikesRepository.StartQuery()
+        var like = await unitOfWork
+            .RecipeLikesRepository.StartQuery()
             .Where(l => l.UserId == authenticatedUser!.UserId && l.RecipeId == recipeId)
             .FirstOrDefaultAsync();
 
@@ -98,13 +103,9 @@ public class MutationRecipeLikesResolver
     )
     {
         return authenticatedUser != null
-               && await unitOfWork
-                   .RecipeLikesRepository.StartQuery()
-                   .AsNoTracking()
-                   .AnyAsync(
-                       like =>
-                           like.Id == likeId
-                           && like.UserId == authenticatedUser.UserId
-                   );
+            && await unitOfWork
+                .RecipeLikesRepository.StartQuery()
+                .AsNoTracking()
+                .AnyAsync(like => like.Id == likeId && like.UserId == authenticatedUser.UserId);
     }
 }

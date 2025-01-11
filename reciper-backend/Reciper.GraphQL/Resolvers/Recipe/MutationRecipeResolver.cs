@@ -40,15 +40,19 @@ public class MutationRecipesResolver
             throw new ReciperException("Failed to insert entity");
 
         await unitOfWork.SaveChanges();
-        return unitOfWork.RecipesRepository.StartQuery().AsNoTracking()
+        return unitOfWork
+            .RecipesRepository.StartQuery()
+            .AsNoTracking()
             .Where(r => r.Id == entity.Id);
     }
 
     [Error(typeof(ReciperException))]
     [UseProjection]
-    public async Task<DAL.Models.Recipe?> DeleteRecipeById(ReciperUnitOfWork unitOfWork,
+    public async Task<DAL.Models.Recipe?> DeleteRecipeById(
+        ReciperUnitOfWork unitOfWork,
         [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser,
-        Guid recipeId)
+        Guid recipeId
+    )
     {
         if (!await IsAuthor(recipeId, authenticatedUser, unitOfWork))
             throw new ReciperException("Not authorized to delete this recipe");
@@ -78,13 +82,14 @@ public class MutationRecipesResolver
             OnSuccess
         );
 
-        async void OnSuccess(DAL.Models.Recipe result) =>
+        async void OnSuccess(DAL.Models.Recipe result)
+        {
             await sender.SendAsync(
                 $"{nameof(SubscriptionRecipesResolver.RecipeUpdated)}-{recipeId}",
                 result.Id
             );
+        }
     }
-
 
     private static async Task<bool> IsAuthor(
         Guid recipeId,
@@ -93,13 +98,11 @@ public class MutationRecipesResolver
     )
     {
         return authenticatedUser != null
-               && await unitOfWork
-                   .RecipesRepository.StartQuery()
-                   .AsNoTracking()
-                   .AnyAsync(
-                       recipe =>
-                           recipe.Id == recipeId
-                           && recipe.UserId == authenticatedUser.UserId
-                   );
+            && await unitOfWork
+                .RecipesRepository.StartQuery()
+                .AsNoTracking()
+                .AnyAsync(recipe =>
+                    recipe.Id == recipeId && recipe.UserId == authenticatedUser.UserId
+                );
     }
 }

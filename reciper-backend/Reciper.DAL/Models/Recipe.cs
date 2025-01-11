@@ -8,13 +8,18 @@ namespace Reciper.DAL.Models;
 [Index(nameof(Title))]
 public class Recipe
 {
-    [Key] public Guid Id { get; set; }
+    [Key]
+    public Guid Id { get; set; }
 
-    [Required] [MaxLength(200)] public string Title { get; set; } = null!;
+    [Required]
+    [MaxLength(200)]
+    public string Title { get; set; } = null!;
 
-    [Required] public string Description { get; set; } = null!;
+    [Required]
+    public string Description { get; set; } = null!;
 
-    [Required] public string Instructions { get; set; } = null!;
+    [Required]
+    public string Instructions { get; set; } = null!;
 
     public int CookingTimeMinutes { get; set; }
 

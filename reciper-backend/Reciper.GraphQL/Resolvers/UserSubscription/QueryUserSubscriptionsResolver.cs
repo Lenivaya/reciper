@@ -1,7 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Reciper.BLL.Exceptions;
 using Reciper.DAL.Models;
-using Reciper.GraphQL.Interceptors;
 using Reciper.GraphQL.Schema;
 
 namespace Reciper.GraphQL.Resolvers.UserSubscription;
@@ -18,8 +16,7 @@ public class QueryUserSubscriptionsResolver
         Guid userId
     )
     {
-        return context.UserSubscriptions.AsNoTracking()
-            .Where(sub => sub.SubscriberId == userId);
+        return context.UserSubscriptions.AsNoTracking().Where(sub => sub.SubscriberId == userId);
     }
 
     [UseOffsetPaging(MaxPageSize = 50, IncludeTotalCount = true)]
@@ -31,8 +28,7 @@ public class QueryUserSubscriptionsResolver
         Guid userId
     )
     {
-        return context.UserSubscriptions.AsNoTracking()
-            .Where(sub => sub.SubscribeeId == userId);
+        return context.UserSubscriptions.AsNoTracking().Where(sub => sub.SubscribeeId == userId);
     }
 
     [UsePaging(MaxPageSize = 50, IncludeTotalCount = true)]
@@ -44,8 +40,7 @@ public class QueryUserSubscriptionsResolver
         Guid userId
     )
     {
-        return context.UserSubscriptions.AsNoTracking()
-            .Where(sub => sub.SubscriberId == userId);
+        return context.UserSubscriptions.AsNoTracking().Where(sub => sub.SubscriberId == userId);
     }
 
     [UsePaging(MaxPageSize = 50, IncludeTotalCount = true)]
@@ -57,8 +52,7 @@ public class QueryUserSubscriptionsResolver
         Guid userId
     )
     {
-        return context.UserSubscriptions.AsNoTracking()
-            .Where(sub => sub.SubscribeeId == userId);
+        return context.UserSubscriptions.AsNoTracking().Where(sub => sub.SubscribeeId == userId);
     }
 
     [UseFirstOrDefault]
@@ -68,10 +62,8 @@ public class QueryUserSubscriptionsResolver
         Guid subscriptionId
     )
     {
-        return context.UserSubscriptions.AsNoTracking()
-            .Where(sub => sub.Id == subscriptionId);
+        return context.UserSubscriptions.AsNoTracking().Where(sub => sub.Id == subscriptionId);
     }
-
 
     [UseFirstOrDefault]
     [UseProjection]
@@ -81,7 +73,8 @@ public class QueryUserSubscriptionsResolver
         Guid subscribeeId
     )
     {
-        return context.UserSubscriptions.AsNoTracking()
+        return context
+            .UserSubscriptions.AsNoTracking()
             .Where(sub => sub.SubscriberId == subscriberId && sub.SubscribeeId == subscribeeId);
     }
 }

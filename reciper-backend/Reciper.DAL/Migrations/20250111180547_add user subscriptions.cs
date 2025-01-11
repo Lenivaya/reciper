@@ -17,7 +17,7 @@ namespace Reciper.DAL.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SubscriberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SubscribeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    SubscribeeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -26,31 +26,35 @@ namespace Reciper.DAL.Migrations
                         name: "FK_UserSubscriptions_Users_SubscribeeId",
                         column: x => x.SubscribeeId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id"
+                    );
                     table.ForeignKey(
                         name: "FK_UserSubscriptions_Users_SubscriberId",
                         column: x => x.SubscriberId,
                         principalTable: "Users",
-                        principalColumn: "Id");
-                });
+                        principalColumn: "Id"
+                    );
+                }
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserSubscriptions_SubscribeeId",
                 table: "UserSubscriptions",
-                column: "SubscribeeId");
+                column: "SubscribeeId"
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserSubscriptions_SubscriberId_SubscribeeId",
                 table: "UserSubscriptions",
                 columns: new[] { "SubscriberId", "SubscribeeId" },
-                unique: true);
+                unique: true
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "UserSubscriptions");
+            migrationBuilder.DropTable(name: "UserSubscriptions");
         }
     }
 }

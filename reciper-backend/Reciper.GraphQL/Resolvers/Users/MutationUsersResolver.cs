@@ -30,13 +30,10 @@ public class MutationUsersResolver
     )
     {
         return authenticatedUser != null
-               && await unitOfWork
-                   .UsersRepository.StartQuery()
-                   .AsNoTracking()
-                   .AnyAsync(
-                       user =>
-                           user.Id == authenticatedUser.UserId
-                   );
+            && await unitOfWork
+                .UsersRepository.StartQuery()
+                .AsNoTracking()
+                .AnyAsync(user => user.Id == authenticatedUser.UserId);
     }
 
     [AllowAnonymous]
@@ -80,10 +77,7 @@ public class MutationUsersResolver
         if (!isAuthorized)
             return new UserLoginPayload(null, null);
 
-        var token = tokenService.GenerateToken(
-            account.Id.ToString(),
-            account.Email
-        );
+        var token = tokenService.GenerateToken(account.Id.ToString(), account.Email);
 
         return new UserLoginPayload(token, account);
     }
@@ -93,10 +87,12 @@ public class MutationUsersResolver
         [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser
     )
     {
-        return
-            await IsSameUser(authenticatedUser, unitOfWork)
-                ? await GraphQlMutationResolverService.DeleteEntity(unitOfWork, authenticatedUser!.UserId)
-                : null;
+        return await IsSameUser(authenticatedUser, unitOfWork)
+            ? await GraphQlMutationResolverService.DeleteEntity(
+                unitOfWork,
+                authenticatedUser!.UserId
+            )
+            : null;
     }
 
     public async Task<User?> UpdateUserById(
@@ -106,14 +102,13 @@ public class MutationUsersResolver
         UserPatchDTO userPatchDto
     )
     {
-        return
-            await IsSameUser(authenticatedUser, unitOfWork)
-                ? await GraphQlMutationResolverService.UpdateEntity(
-                    unitOfWork,
-                    mapper,
-                    authenticatedUser!.UserId,
-                    userPatchDto
-                )
-                : null;
+        return await IsSameUser(authenticatedUser, unitOfWork)
+            ? await GraphQlMutationResolverService.UpdateEntity(
+                unitOfWork,
+                mapper,
+                authenticatedUser!.UserId,
+                userPatchDto
+            )
+            : null;
     }
 }

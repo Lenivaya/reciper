@@ -7,7 +7,8 @@ namespace Reciper.DAL.Models;
 [Index(nameof(SubscriberId), nameof(SubscribeeId), IsUnique = true)]
 public class UserSubscription
 {
-    [Key] public Guid Id { get; set; }
+    [Key]
+    public Guid Id { get; set; }
 
     public Guid SubscriberId { get; set; }
     public Guid SubscribeeId { get; set; }

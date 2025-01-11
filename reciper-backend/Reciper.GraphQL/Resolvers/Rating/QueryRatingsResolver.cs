@@ -11,10 +11,7 @@ public class QueryRatingsResolver
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<DAL.Models.Rating> GetRatingsOffset(
-        ReciperContext context,
-        Guid recipeId
-    )
+    public IQueryable<DAL.Models.Rating> GetRatingsOffset(ReciperContext context, Guid recipeId)
     {
         return QueryHandler(context, recipeId);
     }
@@ -23,10 +20,7 @@ public class QueryRatingsResolver
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<DAL.Models.Rating> GetRatingsCursor(
-        ReciperContext context,
-        Guid recipeId
-    )
+    public IQueryable<DAL.Models.Rating> GetRatingsCursor(ReciperContext context, Guid recipeId)
     {
         return QueryHandler(context, recipeId);
     }
@@ -40,16 +34,18 @@ public class QueryRatingsResolver
 
     [UseFirstOrDefault]
     [UseProjection]
-    public IQueryable<DAL.Models.Rating> GetRatingByCompositeKey(ReciperContext context, Guid recipeId, Guid userId)
+    public IQueryable<DAL.Models.Rating> GetRatingByCompositeKey(
+        ReciperContext context,
+        Guid recipeId,
+        Guid userId
+    )
     {
-        return context.Ratings.AsNoTracking().Where(rating => rating.RecipeId == recipeId && rating.UserId == userId);
+        return context
+            .Ratings.AsNoTracking()
+            .Where(rating => rating.RecipeId == recipeId && rating.UserId == userId);
     }
 
-
-    private IQueryable<DAL.Models.Rating> QueryHandler(
-        ReciperContext context,
-        Guid recipeId
-    )
+    private IQueryable<DAL.Models.Rating> QueryHandler(ReciperContext context, Guid recipeId)
     {
         return context.Ratings.AsNoTracking().Where(rating => rating.RecipeId == recipeId);
     }

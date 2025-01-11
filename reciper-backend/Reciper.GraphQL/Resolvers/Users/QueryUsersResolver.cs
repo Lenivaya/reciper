@@ -13,7 +13,8 @@ public class QueryUsersResolver
 {
     [UseProjection]
     [UseFirstOrDefault]
-    public IQueryable<User>? GetMe(ReciperContext context,
+    public IQueryable<User>? GetMe(
+        ReciperContext context,
         [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser
     )
     {
@@ -67,7 +68,7 @@ public class QueryUsersResolver
                 new UserSearchCriteriaOverallMatchingHandler(),
                 new UserSearchCriteriaRecipeStatsHandler(),
                 new UserSearchCriteriaRegistrationHandler(),
-                new UserSearchCriteriaRecipeTagsHandler()
+                new UserSearchCriteriaRecipeTagsHandler(),
             ]
         );
 

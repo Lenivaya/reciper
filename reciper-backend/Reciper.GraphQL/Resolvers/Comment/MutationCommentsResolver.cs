@@ -40,23 +40,25 @@ public class MutationCommentsResolver
             throw new ReciperException("Failed to insert entity");
 
         await unitOfWork.SaveChanges();
-        return unitOfWork.CommentsRepository.StartQuery().AsNoTracking()
+        return unitOfWork
+            .CommentsRepository.StartQuery()
+            .AsNoTracking()
             .Where(r => r.Id == entity.Id);
     }
 
-
     [Error(typeof(ReciperException))]
     [UseProjection]
-    public async Task<DAL.Models.Comment?> DeleteCommentById(ReciperUnitOfWork unitOfWork,
+    public async Task<DAL.Models.Comment?> DeleteCommentById(
+        ReciperUnitOfWork unitOfWork,
         [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser,
-        Guid commentId)
+        Guid commentId
+    )
     {
         if (!await IsAuthor(commentId, authenticatedUser, unitOfWork))
             throw new ReciperException("Not authorized to delete this comment");
 
         return await GraphQlMutationResolverService.DeleteEntity(unitOfWork, commentId);
     }
-
 
     [Error(typeof(ReciperException))]
     [UseProjection]
@@ -87,13 +89,11 @@ public class MutationCommentsResolver
     )
     {
         return authenticatedUser != null
-               && await unitOfWork
-                   .CommentsRepository.StartQuery()
-                   .AsNoTracking()
-                   .AnyAsync(
-                       comment =>
-                           comment.Id == commentId
-                           && comment.UserId == authenticatedUser.UserId
-                   );
+            && await unitOfWork
+                .CommentsRepository.StartQuery()
+                .AsNoTracking()
+                .AnyAsync(comment =>
+                    comment.Id == commentId && comment.UserId == authenticatedUser.UserId
+                );
     }
 }

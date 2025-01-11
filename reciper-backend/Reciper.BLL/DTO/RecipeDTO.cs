@@ -24,7 +24,4 @@ public record RecipePatchDTO(
     List<Guid>? Images
 );
 
-public record RecipeCreateIngredientDTO(
-    string Amount,
-    Guid IngredientId
-);
+public record RecipeCreateIngredientDTO(string Amount, Guid IngredientId);

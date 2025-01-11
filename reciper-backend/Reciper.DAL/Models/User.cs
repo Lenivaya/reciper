@@ -8,22 +8,27 @@ namespace Reciper.DAL.Models;
 [Index(nameof(Username), IsUnique = true)]
 public class User
 {
-    [Key
-    ]
+    [Key]
     public Guid Id { get; set; }
 
-    [Required] [MaxLength(50)] public string Username { get; set; } = null!;
+    [Required]
+    [MaxLength(50)]
+    public string Username { get; set; } = null!;
 
     [Required]
     [MaxLength(255)]
     [EmailAddress]
     public string Email { get; set; } = null!;
 
-    [Required] [MaxLength(255)] public string PasswordHash { get; set; } = null!;
+    [Required]
+    [MaxLength(255)]
+    public string PasswordHash { get; set; } = null!;
 
-    [MaxLength(255)] public string? ProfilePictureUrl { get; set; }
+    [MaxLength(255)]
+    public string? ProfilePictureUrl { get; set; }
 
-    [MaxLength(500)] public string? Bio { get; set; }
+    [MaxLength(500)]
+    public string? Bio { get; set; }
 
     public bool IsActive { get; set; } = true;
 
@@ -38,7 +43,9 @@ public class User
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
-    public virtual ICollection<UserSubscription> Subscriptions { get; set; } = new List<UserSubscription>();
-    public virtual ICollection<UserSubscription> Subscribers { get; set; } = new List<UserSubscription>();
+    public virtual ICollection<UserSubscription> Subscriptions { get; set; } =
+        new List<UserSubscription>();
+    public virtual ICollection<UserSubscription> Subscribers { get; set; } =
+        new List<UserSubscription>();
     public virtual ICollection<RecipeLike> LikedRecipes { get; set; } = new List<RecipeLike>();
 }

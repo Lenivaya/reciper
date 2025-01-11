@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using Reciper.DAL.Models;
 
 namespace Reciper.BLL.Search.Criteria.User.Handlers;
@@ -19,10 +18,10 @@ public class UserSearchCriteriaOverallMatchingHandler
 
         var searchTerm = searchCriteria.Matching.ToLower();
         query = query.Where(u =>
-            u.Username.ToLower().Contains(searchTerm) ||
-            (u.Bio.ToLower().Contains(searchTerm)) ||
-            u.Email.ToLower().Contains(searchTerm) ||
-            u.Recipes.Any(r => r.Title.ToLower().Contains(searchTerm))
+            u.Username.ToLower().Contains(searchTerm)
+            || u.Bio.ToLower().Contains(searchTerm)
+            || u.Email.ToLower().Contains(searchTerm)
+            || u.Recipes.Any(r => r.Title.ToLower().Contains(searchTerm))
         );
 
         return Next?.HandleQuery(context, searchCriteria, query) ?? query;

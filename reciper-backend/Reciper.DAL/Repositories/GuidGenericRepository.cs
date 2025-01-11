@@ -1,8 +1,8 @@
-namespace Reciper.DAL.Repositories;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Models;
+using Reciper.DAL.Models;
+
+namespace Reciper.DAL.Repositories;
 
 public class GuidGenericRepository<TEntity> : GenericRepository<TEntity, Guid>
     where TEntity : class

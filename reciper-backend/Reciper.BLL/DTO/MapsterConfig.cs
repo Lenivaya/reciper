@@ -32,14 +32,17 @@ public static class MapsterConfig
             .Map(dest => dest.RecipeTags, src => src.Tags.Select(t => new RecipeTag { TagId = t }))
             .Map(
                 dest => dest.RecipeIngredients,
-                src => src.Ingredients.Select(i => new RecipeIngredient
-                    { IngredientId = i.IngredientId, Amount = i.Amount })
+                src =>
+                    src.Ingredients.Select(i => new RecipeIngredient
+                    {
+                        IngredientId = i.IngredientId,
+                        Amount = i.Amount,
+                    })
             );
 
         config
             .NewConfig<UserCreateDTO, User>()
             .Map(dest => dest.IsActive, _ => true)
-            .IgnoreNullValues(true)
-            ;
+            .IgnoreNullValues(true);
     }
 }

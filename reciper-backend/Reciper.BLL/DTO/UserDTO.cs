@@ -15,7 +15,4 @@ public record UserPatchDTO(
     bool? IsActive
 );
 
-public record LoginDTO(
-    string Email,
-    string Password
-);
+public record LoginDTO(string Email, string Password);

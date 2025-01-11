@@ -17,14 +17,10 @@ public class RecipeSearchCriteriaCookingTimeHandler
             return Next?.HandleQuery(context, searchCriteria, query) ?? query;
 
         if (searchCriteria.MinCookingTime.HasValue)
-        {
             query = query.Where(r => r.CookingTimeMinutes >= searchCriteria.MinCookingTime.Value);
-        }
 
         if (searchCriteria.MaxCookingTime.HasValue)
-        {
             query = query.Where(r => r.CookingTimeMinutes <= searchCriteria.MaxCookingTime.Value);
-        }
 
         return Next?.HandleQuery(context, searchCriteria, query) ?? query;
     }

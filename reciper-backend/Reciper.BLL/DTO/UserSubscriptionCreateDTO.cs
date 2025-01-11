@@ -1,5 +1,3 @@
 namespace Reciper.BLL.DTO;
 
-public record UserSubscriptionCreateDTO(
-    Guid SubscribeeId
-);
+public record UserSubscriptionCreateDTO(Guid SubscribeeId);

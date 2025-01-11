@@ -1,19 +1,14 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Reciper.DAL.Models;
 
-using Microsoft.EntityFrameworkCore;
-
 public class ReciperContext : DbContext
 {
-    public ReciperContext()
-    {
-    }
+    public ReciperContext() { }
 
     public ReciperContext(DbContextOptions<ReciperContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Recipe> Recipes { get; set; } = null!;
@@ -40,67 +35,76 @@ public class ReciperContext : DbContext
 
         modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
 
-        modelBuilder.Entity<RecipeLike>()
+        modelBuilder
+            .Entity<RecipeLike>()
             .HasOne(rl => rl.User)
             .WithMany(u => u.LikedRecipes)
             .HasForeignKey(rl => rl.UserId)
-            .OnDelete(DeleteBehavior.NoAction)
-            ;
-        modelBuilder.Entity<RecipeLike>()
+            .OnDelete(DeleteBehavior.NoAction);
+        modelBuilder
+            .Entity<RecipeLike>()
             .HasOne(rl => rl.Recipe)
             .WithMany(r => r.Likes)
             .HasForeignKey(rl => rl.RecipeId)
-            .OnDelete(DeleteBehavior.NoAction)
-            ;
+            .OnDelete(DeleteBehavior.NoAction);
 
         // Configure UserSubscription relationships
-        modelBuilder.Entity<UserSubscription>()
+        modelBuilder
+            .Entity<UserSubscription>()
             .HasOne(us => us.Subscriber)
             .WithMany(u => u.Subscriptions)
             .HasForeignKey(us => us.SubscriberId)
             .OnDelete(DeleteBehavior.NoAction);
-        modelBuilder.Entity<UserSubscription>()
+        modelBuilder
+            .Entity<UserSubscription>()
             .HasOne(us => us.Subscribee)
             .WithMany(u => u.Subscribers)
             .HasForeignKey(us => us.SubscribeeId)
             .OnDelete(DeleteBehavior.NoAction);
 
-
         // Configure timestamps for User
-        modelBuilder.Entity<User>()
+        modelBuilder
+            .Entity<User>()
             .Property(user => user.CreatedAt)
             .HasDefaultValueSql("getdate()");
-        modelBuilder.Entity<User>()
+        modelBuilder
+            .Entity<User>()
             .Property(b => b.UpdatedAt)
             .HasDefaultValueSql("getdate()")
             .ValueGeneratedOnAddOrUpdate()
             .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
 
         // Configure timestamps for Recipe
-        modelBuilder.Entity<Recipe>()
+        modelBuilder
+            .Entity<Recipe>()
             .Property(recipe => recipe.CreatedAt)
             .HasDefaultValueSql("getdate()");
-        modelBuilder.Entity<Recipe>()
+        modelBuilder
+            .Entity<Recipe>()
             .Property(recipe => recipe.UpdatedAt)
             .HasDefaultValueSql("getdate()")
             .ValueGeneratedOnAddOrUpdate()
             .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
 
         // Configure timestamps for Comment
-        modelBuilder.Entity<Comment>()
+        modelBuilder
+            .Entity<Comment>()
             .Property(comment => comment.CreatedAt)
             .HasDefaultValueSql("getdate()");
-        modelBuilder.Entity<Comment>()
+        modelBuilder
+            .Entity<Comment>()
             .Property(comment => comment.UpdatedAt)
             .HasDefaultValueSql("getdate()")
             .ValueGeneratedOnAddOrUpdate()
             .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
 
         // Configure timestamps for Rating
-        modelBuilder.Entity<Rating>()
+        modelBuilder
+            .Entity<Rating>()
             .Property(rating => rating.CreatedAt)
             .HasDefaultValueSql("getdate()");
-        modelBuilder.Entity<Rating>()
+        modelBuilder
+            .Entity<Rating>()
             .Property(rating => rating.UpdatedAt)
             .HasDefaultValueSql("getdate()")
             .ValueGeneratedOnAddOrUpdate()

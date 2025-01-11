@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Reciper.DAL;
 using Reciper.DAL.Models;
 
 namespace Reciper.BLL.Search.Criteria.Recipe.Handlers;
@@ -19,22 +18,18 @@ public class RecipeSearchCriteriaRatingHandler
             return Next?.HandleQuery(context, searchCriteria, query) ?? query;
 
         if (searchCriteria.MinRating.HasValue)
-        {
             query = query
                 .Include(r => r.Ratings)
                 .Where(r =>
                     r.Ratings.Average(rating => rating.Value) >= searchCriteria.MinRating.Value
                 );
-        }
 
         if (searchCriteria.MaxRating.HasValue)
-        {
             query = query
                 .Include(r => r.Ratings)
                 .Where(r =>
                     r.Ratings.Average(rating => rating.Value) <= searchCriteria.MaxRating.Value
                 );
-        }
 
         return Next?.HandleQuery(context, searchCriteria, query) ?? query;
     }

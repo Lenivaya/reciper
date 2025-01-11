@@ -1,11 +1,10 @@
+using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Reciper.DAL.Contracts;
 using Reciper.DAL.Models;
 
 namespace Reciper.DAL.Repositories;
-
-using System.Linq.Expressions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 public class GenericRepository<TEntity, TPrimaryKey>
     : IEntityRepository<TEntity, TPrimaryKey>,
@@ -36,26 +35,6 @@ public class GenericRepository<TEntity, TPrimaryKey>
     {
         await Context.DisposeAsync();
         GC.SuppressFinalize(this);
-    }
-
-    public virtual async Task<IEnumerable<TEntity>> Get(
-        List<Expression<Func<TEntity, bool>>>? filters = null,
-        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
-        IEnumerable<string>? includeProperties = null
-    )
-    {
-        var query = StartQueryWithDefaultIncludes().AsNoTracking();
-
-        if (filters != null)
-            query = filters.Aggregate(query, (current, filter) => current.Where(filter));
-
-        if (includeProperties != null)
-            query = includeProperties.Aggregate(
-                query,
-                (current, includeProperty) => current.Include(includeProperty)
-            );
-
-        return orderBy != null ? await orderBy(query).ToListAsync() : await query.ToListAsync();
     }
 
     public virtual async Task<IEnumerable<TEntity>> GetAll()
@@ -236,5 +215,25 @@ public class GenericRepository<TEntity, TPrimaryKey>
             DbSet.Attach(entity);
             Context.Entry(entity).State = EntityState.Modified;
         }
+    }
+
+    public virtual async Task<IEnumerable<TEntity>> Get(
+        List<Expression<Func<TEntity, bool>>>? filters = null,
+        Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
+        IEnumerable<string>? includeProperties = null
+    )
+    {
+        var query = StartQueryWithDefaultIncludes().AsNoTracking();
+
+        if (filters != null)
+            query = filters.Aggregate(query, (current, filter) => current.Where(filter));
+
+        if (includeProperties != null)
+            query = includeProperties.Aggregate(
+                query,
+                (current, includeProperty) => current.Include(includeProperty)
+            );
+
+        return orderBy != null ? await orderBy(query).ToListAsync() : await query.ToListAsync();
     }
 }

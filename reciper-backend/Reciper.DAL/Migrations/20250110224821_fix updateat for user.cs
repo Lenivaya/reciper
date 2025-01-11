@@ -18,7 +18,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 defaultValueSql: "getdate()",
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2");
+                oldType: "datetime2"
+            );
         }
 
         /// <inheritdoc />
@@ -31,7 +32,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldDefaultValueSql: "getdate()");
+                oldDefaultValueSql: "getdate()"
+            );
         }
     }
 }

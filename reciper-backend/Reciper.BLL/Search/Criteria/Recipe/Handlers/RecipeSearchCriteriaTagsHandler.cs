@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Reciper.DAL;
 using Reciper.DAL.Models;
 
 namespace Reciper.BLL.Search.Criteria.Recipe.Handlers;
@@ -20,9 +19,13 @@ public class RecipeSearchCriteriaTagsHandler
 
         query = query
             .Include(r => r.RecipeTags)
-            .Where(r => r.RecipeTags.Any(t =>
-                searchCriteria.Tags.Any(searchTag =>
-                    searchTag.Contains(t.Tag.Name) || t.Tag.Name.Contains(searchTag))));
+            .Where(r =>
+                r.RecipeTags.Any(t =>
+                    searchCriteria.Tags.Any(searchTag =>
+                        searchTag.Contains(t.Tag.Name) || t.Tag.Name.Contains(searchTag)
+                    )
+                )
+            );
 
         return Next?.HandleQuery(context, searchCriteria, query) ?? query;
     }

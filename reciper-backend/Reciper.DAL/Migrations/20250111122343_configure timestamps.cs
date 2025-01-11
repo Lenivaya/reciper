@@ -18,7 +18,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 defaultValueSql: "getdate()",
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2");
+                oldType: "datetime2"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
@@ -27,7 +28,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 defaultValueSql: "getdate()",
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2");
+                oldType: "datetime2"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdatedAt",
@@ -36,7 +38,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 defaultValueSql: "getdate()",
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2");
+                oldType: "datetime2"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
@@ -45,7 +48,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 defaultValueSql: "getdate()",
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2");
+                oldType: "datetime2"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdatedAt",
@@ -54,7 +58,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 defaultValueSql: "getdate()",
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2");
+                oldType: "datetime2"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
@@ -63,7 +68,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 defaultValueSql: "getdate()",
                 oldClrType: typeof(DateTime),
-                oldType: "datetime2");
+                oldType: "datetime2"
+            );
         }
 
         /// <inheritdoc />
@@ -76,7 +82,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldDefaultValueSql: "getdate()");
+                oldDefaultValueSql: "getdate()"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
@@ -85,7 +92,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldDefaultValueSql: "getdate()");
+                oldDefaultValueSql: "getdate()"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdatedAt",
@@ -94,7 +102,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldDefaultValueSql: "getdate()");
+                oldDefaultValueSql: "getdate()"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
@@ -103,7 +112,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldDefaultValueSql: "getdate()");
+                oldDefaultValueSql: "getdate()"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "UpdatedAt",
@@ -112,7 +122,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldDefaultValueSql: "getdate()");
+                oldDefaultValueSql: "getdate()"
+            );
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "CreatedAt",
@@ -121,7 +132,8 @@ namespace Reciper.DAL.Migrations
                 nullable: false,
                 oldClrType: typeof(DateTime),
                 oldType: "datetime2",
-                oldDefaultValueSql: "getdate()");
+                oldDefaultValueSql: "getdate()"
+            );
         }
     }
 }

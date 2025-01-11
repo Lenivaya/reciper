@@ -21,13 +21,15 @@ public class UserSearchCriteriaRecipeTagsHandler
             .Include(u => u.Recipes)
             .ThenInclude(r => r.RecipeTags)
             .ThenInclude(rt => rt.Tag)
-            .Where(u => u.Recipes.Any(r =>
-                r.RecipeTags.Any(rt =>
-                    searchCriteria.RecipeTagNames.Any(tagName =>
-                        tagName.Contains(rt.Tag.Name) || rt.Tag.Name.Contains(tagName)
+            .Where(u =>
+                u.Recipes.Any(r =>
+                    r.RecipeTags.Any(rt =>
+                        searchCriteria.RecipeTagNames.Any(tagName =>
+                            tagName.Contains(rt.Tag.Name) || rt.Tag.Name.Contains(tagName)
+                        )
                     )
                 )
-            ));
+            );
 
         return Next?.HandleQuery(context, searchCriteria, query) ?? query;
     }
