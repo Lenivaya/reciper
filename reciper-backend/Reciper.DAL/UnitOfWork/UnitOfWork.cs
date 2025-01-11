@@ -11,7 +11,9 @@ public class UnitOfWork<TContext>(TContext context, ILogger logger) : IUnitOfWor
     private bool _isDisposed;
 
     public UnitOfWork(IDbContextFactory<TContext> contextFactory, ILogger logger)
-        : this(contextFactory.CreateDbContext(), logger) { }
+        : this(contextFactory.CreateDbContext(), logger)
+    {
+    }
 
     protected internal TContext Context { get; } = context;
     protected internal IDbContextTransaction? Transaction { get; set; }
@@ -44,6 +46,7 @@ public class UnitOfWork<TContext>(TContext context, ILogger logger) : IUnitOfWor
             }
             catch
             {
+                logger.LogError("Failed to commit transaction");
                 await Transaction.RollbackAsync();
                 throw;
             }

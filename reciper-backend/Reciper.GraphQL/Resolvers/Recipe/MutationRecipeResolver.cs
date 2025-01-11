@@ -50,7 +50,7 @@ public class MutationRecipesResolver
         [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser,
         Guid recipeId)
     {
-        if (!await IsSameUser(recipeId, authenticatedUser, unitOfWork))
+        if (!await IsAuthor(recipeId, authenticatedUser, unitOfWork))
             throw new ReciperException("Not authorized to delete this recipe");
 
         return await GraphQlMutationResolverService.DeleteEntity(unitOfWork, recipeId);
@@ -67,7 +67,7 @@ public class MutationRecipesResolver
         RecipePatchDTO updateDto
     )
     {
-        if (!await IsSameUser(recipeId, authenticatedUser, unitOfWork))
+        if (!await IsAuthor(recipeId, authenticatedUser, unitOfWork))
             throw new ReciperException("Not authorized to update this recipe");
 
         return await GraphQlMutationResolverService.UpdateEntity(
@@ -86,8 +86,8 @@ public class MutationRecipesResolver
     }
 
 
-    private static async Task<bool> IsSameUser(
-        Guid jobSeekerResumeId,
+    private static async Task<bool> IsAuthor(
+        Guid recipeId,
         AppActor<Guid>? authenticatedUser,
         ReciperUnitOfWork unitOfWork
     )
@@ -98,7 +98,7 @@ public class MutationRecipesResolver
                    .AsNoTracking()
                    .AnyAsync(
                        recipe =>
-                           recipe.Id == jobSeekerResumeId
+                           recipe.Id == recipeId
                            && recipe.UserId == authenticatedUser.UserId
                    );
     }
