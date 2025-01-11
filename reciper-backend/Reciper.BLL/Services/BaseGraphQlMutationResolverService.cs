@@ -29,13 +29,13 @@ public class BaseGraphQlMutationResolverService<TEntity, TPrimaryKey, TCreateDto
             var entity = mapper.Map<TEntity>(createDto!);
             var success = await repo.Insert(entity);
             if (!success)
-                return null;
+                throw new ReciperException("Failed to insert entity");
 
             await unitOfWork.SaveChanges();
             onSuccess?.Invoke(entity);
             return entity;
         }
-        catch (DbUpdateException e)
+        catch (Exception e)
         {
             throw new ReciperException(e.Message);
         }
@@ -52,13 +52,13 @@ public class BaseGraphQlMutationResolverService<TEntity, TPrimaryKey, TCreateDto
             var repo = getRepository(unitOfWork);
             var (isDeleted, deletedEntity) = await repo.DeleteWithEntityReturn(id);
             if (!isDeleted || deletedEntity is null)
-                return null;
+                throw new ReciperException("Failed to delete entity");
 
             await unitOfWork.SaveChanges();
             onSuccess?.Invoke(deletedEntity);
             return deletedEntity;
         }
-        catch (DbUpdateException e)
+        catch (Exception e)
         {
             throw new ReciperException(e.Message);
         }
@@ -78,7 +78,7 @@ public class BaseGraphQlMutationResolverService<TEntity, TPrimaryKey, TCreateDto
             var entityToUpdate = await repo.GetById(id);
 
             if (entityToUpdate == null)
-                return null;
+                throw new ReciperException("Entity not found");
 
             var updatedEntity = mapper.Map(updateDto, entityToUpdate);
 
@@ -88,7 +88,7 @@ public class BaseGraphQlMutationResolverService<TEntity, TPrimaryKey, TCreateDto
 
             return updatedEntity;
         }
-        catch (DbUpdateException e)
+        catch (Exception e)
         {
             throw new ReciperException(e.Message);
         }

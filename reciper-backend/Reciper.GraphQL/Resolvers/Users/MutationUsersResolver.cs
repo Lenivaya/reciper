@@ -14,6 +14,7 @@ namespace Reciper.GraphQL.Resolvers.Users;
 public record UserLoginPayload(string? Token, User? User);
 
 [ExtendObjectType(typeof(Mutation))]
+[Authorize]
 public class MutationUsersResolver
 {
     private BaseGraphQlMutationResolverService<

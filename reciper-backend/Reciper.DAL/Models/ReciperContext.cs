@@ -46,5 +46,35 @@ public class ReciperContext : DbContext
             .HasDefaultValueSql("getdate()")
             .ValueGeneratedOnAddOrUpdate()
             .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+
+        // Configure timestamps for Recipe
+        modelBuilder.Entity<Recipe>()
+            .Property(recipe => recipe.CreatedAt)
+            .HasDefaultValueSql("getdate()");
+        modelBuilder.Entity<Recipe>()
+            .Property(recipe => recipe.UpdatedAt)
+            .HasDefaultValueSql("getdate()")
+            .ValueGeneratedOnAddOrUpdate()
+            .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+
+        // Configure timestamps for Comment
+        modelBuilder.Entity<Comment>()
+            .Property(comment => comment.CreatedAt)
+            .HasDefaultValueSql("getdate()");
+        modelBuilder.Entity<Comment>()
+            .Property(comment => comment.UpdatedAt)
+            .HasDefaultValueSql("getdate()")
+            .ValueGeneratedOnAddOrUpdate()
+            .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
+
+        // Configure timestamps for Rating
+        modelBuilder.Entity<Rating>()
+            .Property(rating => rating.CreatedAt)
+            .HasDefaultValueSql("getdate()");
+        modelBuilder.Entity<Rating>()
+            .Property(rating => rating.UpdatedAt)
+            .HasDefaultValueSql("getdate()")
+            .ValueGeneratedOnAddOrUpdate()
+            .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
     }
 }
