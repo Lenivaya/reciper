@@ -14,6 +14,7 @@ using Reciper.BLL.Services;
 using Reciper.DAL.Models;
 using Reciper.DAL.UnitOfWork;
 using Reciper.GraphQL.Interceptors;
+using Reciper.GraphQL.Resolvers.Comment;
 using Reciper.GraphQL.Resolvers.Ingredient;
 using Reciper.GraphQL.Resolvers.Recipe;
 using Reciper.GraphQL.Resolvers.Tag;
@@ -89,13 +90,15 @@ builder
     .AddQueryType<Query>()
     .AddTypeExtension<QueryRecipesResolver>()
     .AddTypeExtension<QueryTagsResolver>()
-    .AddTypeExtension<QueryIngredientsResolver/**/>()
+    .AddTypeExtension<QueryIngredientsResolver>()
     .AddTypeExtension<QueryUsersResolver>()
+    .AddTypeExtension<QueryCommentsResolver>()
     .AddMutationType<Mutation>()
     .AddTypeExtension<MutationRecipesResolver>()
     .AddTypeExtension<MutationTagsResolver>()
     .AddTypeExtension<MutationIngredientsResolver>()
     .AddTypeExtension<MutationUsersResolver>()
+    .AddTypeExtension<MutationCommentsResolver>()
     .AddSubscriptionType<Subscription>()
     .AddTypeExtension<SubscriptionRecipesResolver>()
     .AddTypeExtension<UserType>()
