@@ -26,6 +26,7 @@ public class ReciperContext : DbContext
     public DbSet<RecipeTag> RecipeTags { get; set; } = null!;
     public DbSet<RecipeImage> RecipeImages { get; set; } = null!;
     public DbSet<Role> Roles { get; set; } = null!;
+    public DbSet<UserSubscription> UserSubscriptions { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,6 +39,20 @@ public class ReciperContext : DbContext
 
         modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
 
+        // Configure UserSubscription relationships
+        modelBuilder.Entity<UserSubscription>()
+            .HasOne(us => us.Subscriber)
+            .WithMany(u => u.Subscriptions)
+            .HasForeignKey(us => us.SubscriberId)
+            .OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<UserSubscription>()
+            .HasOne(us => us.Subscribee)
+            .WithMany(u => u.Subscribers)
+            .HasForeignKey(us => us.SubscribeeId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
+        // Configure timestamps for User
         modelBuilder.Entity<User>()
             .Property(user => user.CreatedAt)
             .HasDefaultValueSql("getdate()");

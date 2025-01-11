@@ -38,4 +38,6 @@ public class User
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public virtual ICollection<UserSubscription> Subscriptions { get; set; } = new List<UserSubscription>();
+    public virtual ICollection<UserSubscription> Subscribers { get; set; } = new List<UserSubscription>();
 }

@@ -15,4 +15,5 @@ public interface IReciperUnitOfWork : IUnitOfWork
     public IEntityRepository<RecipeTag, Guid> RecipeTagsRepository { get; }
     public IEntityRepository<RecipeImage, Guid> RecipeImagesRepository { get; }
     public IEntityRepository<Role, Guid> RolesRepository { get; }
+    public IEntityRepository<UserSubscription, Guid> SubscriptionsRepository { get; }
 }

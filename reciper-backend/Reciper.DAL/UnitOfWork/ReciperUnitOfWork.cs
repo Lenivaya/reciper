@@ -36,6 +36,7 @@ public class ReciperUnitOfWork : UnitOfWork<ReciperContext>, IReciperUnitOfWork
         RecipeTagsRepository = new GuidGenericRepository<RecipeTag>(context, logger);
         RecipeImagesRepository = new GuidGenericRepository<RecipeImage>(context, logger);
         RolesRepository = new GuidGenericRepository<Role>(context, logger);
+        SubscriptionsRepository = new GuidGenericRepository<UserSubscription>(context, logger);
     }
 
     public IEntityRepository<User, Guid> UsersRepository { get; private set; }
@@ -43,14 +44,11 @@ public class ReciperUnitOfWork : UnitOfWork<ReciperContext>, IReciperUnitOfWork
     public IEntityRepository<Comment, Guid> CommentsRepository { get; private set; }
     public IEntityRepository<Rating, Guid> RatingsRepository { get; private set; }
     public IEntityRepository<UserRole, Guid> UserRolesRepository { get; private set; }
-    public IEntityRepository<RecipeIngredient, Guid> RecipeIngredientsRepository
-    {
-        get;
-        private set;
-    }
+    public IEntityRepository<RecipeIngredient, Guid> RecipeIngredientsRepository { get; private set; }
     public IEntityRepository<Ingredient, Guid> IngredientsRepository { get; private set; }
     public IEntityRepository<Tag, Guid> TagsRepository { get; private set; }
     public IEntityRepository<RecipeTag, Guid> RecipeTagsRepository { get; private set; }
     public IEntityRepository<RecipeImage, Guid> RecipeImagesRepository { get; private set; }
     public IEntityRepository<Role, Guid> RolesRepository { get; private set; }
+    public IEntityRepository<UserSubscription, Guid> SubscriptionsRepository { get; private set; }
 }
