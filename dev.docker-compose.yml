@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2022-CU12-ubuntu-22.04
+    restart: no
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=DevDbAnpsw0rd
+      - MSSQL_PID=Developer
+      - MSSQL_LCID=1033
+      - TZ=Etc/UTC
+    ports:
+      - 1433:1433
+    expose:
+      - 1433
+    volumes:
+      - reciper-dev-mssql-data:/var/opt/mssql
+
+  redis:
+    container_name: reciper-dev-redis
+    image: redis:7.2-alpine
+    ports:
+      - "6379:6379"
+    expose:
+      - "6379"
+
+networks:
+  default:
+    name: reciper-dev-net
+
+volumes:
+  reciper-dev-mssql-data:
