@@ -36,9 +36,9 @@ public class QueryRecipesResolver
 
     [UseFirstOrDefault]
     [UseProjection]
-    public IQueryable<DAL.Models.Recipe> GetRecipeById(ReciperContext context, Guid RecipeId)
+    public IQueryable<DAL.Models.Recipe> GetRecipeById(ReciperContext context, Guid recipeId)
     {
-        return context.Recipes.AsNoTracking().Where(recipe => recipe.Id == RecipeId);
+        return context.Recipes.AsNoTracking().Where(recipe => recipe.Id == recipeId);
     }
 
     private IQueryable<DAL.Models.Recipe> QueryHandler(
@@ -53,6 +53,10 @@ public class QueryRecipesResolver
         >().BuildChain(
             [
                 new RecipeSearchCriteriaOverallMatchingHandler(),
+                new RecipeSearchCriteriaCookingTimeHandler(),
+                new RecipeSearchCriteriaCreationDateHandler(),
+                new RecipeSearchCriteriaTagsHandler(),
+                new RecipeSearchCriteriaIngredientsHandler(),
                 new RecipeSearchCriteriaRatingHandler(),
             ]
         );
