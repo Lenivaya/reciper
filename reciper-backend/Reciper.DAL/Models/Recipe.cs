@@ -8,18 +8,13 @@ namespace Reciper.DAL.Models;
 [Index(nameof(Title))]
 public class Recipe
 {
-    [Key]
-    public Guid Id { get; set; }
+    [Key] public Guid Id { get; set; }
 
-    [Required]
-    [MaxLength(200)]
-    public string Title { get; set; } = null!;
+    [Required] [MaxLength(200)] public string Title { get; set; } = null!;
 
-    [Required]
-    public string Description { get; set; } = null!;
+    [Required] public string Description { get; set; } = null!;
 
-    [Required]
-    public string Instructions { get; set; } = null!;
+    [Required] public string Instructions { get; set; } = null!;
 
     public int CookingTimeMinutes { get; set; }
 
@@ -42,4 +37,5 @@ public class Recipe
     public virtual ICollection<RecipeImage> Images { get; set; } = new List<RecipeImage>();
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
+    public virtual ICollection<RecipeLike> Likes { get; set; } = new List<RecipeLike>();
 }

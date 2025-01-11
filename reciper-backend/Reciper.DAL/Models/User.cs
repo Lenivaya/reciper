@@ -40,4 +40,5 @@ public class User
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
     public virtual ICollection<UserSubscription> Subscriptions { get; set; } = new List<UserSubscription>();
     public virtual ICollection<UserSubscription> Subscribers { get; set; } = new List<UserSubscription>();
+    public virtual ICollection<RecipeLike> LikedRecipes { get; set; } = new List<RecipeLike>();
 }

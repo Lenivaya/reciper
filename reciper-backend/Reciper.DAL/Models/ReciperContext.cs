@@ -27,6 +27,7 @@ public class ReciperContext : DbContext
     public DbSet<RecipeImage> RecipeImages { get; set; } = null!;
     public DbSet<Role> Roles { get; set; } = null!;
     public DbSet<UserSubscription> UserSubscriptions { get; set; } = null!;
+    public DbSet<RecipeLike> RecipeLikes { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -38,6 +39,19 @@ public class ReciperContext : DbContext
         modelBuilder.Entity<RecipeTag>().HasKey(rt => new { rt.RecipeId, rt.TagId });
 
         modelBuilder.Entity<UserRole>().HasKey(ur => new { ur.UserId, ur.RoleId });
+
+        modelBuilder.Entity<RecipeLike>()
+            .HasOne(rl => rl.User)
+            .WithMany(u => u.LikedRecipes)
+            .HasForeignKey(rl => rl.UserId)
+            .OnDelete(DeleteBehavior.NoAction)
+            ;
+        modelBuilder.Entity<RecipeLike>()
+            .HasOne(rl => rl.Recipe)
+            .WithMany(r => r.Likes)
+            .HasForeignKey(rl => rl.RecipeId)
+            .OnDelete(DeleteBehavior.NoAction)
+            ;
 
         // Configure UserSubscription relationships
         modelBuilder.Entity<UserSubscription>()

@@ -18,6 +18,7 @@ using Reciper.GraphQL.Resolvers.Comment;
 using Reciper.GraphQL.Resolvers.Ingredient;
 using Reciper.GraphQL.Resolvers.Rating;
 using Reciper.GraphQL.Resolvers.Recipe;
+using Reciper.GraphQL.Resolvers.RecipeLike;
 using Reciper.GraphQL.Resolvers.Tag;
 using Reciper.GraphQL.Resolvers.Users;
 using Reciper.GraphQL.Resolvers.UserSubscription;
@@ -97,6 +98,7 @@ builder
     .AddTypeExtension<QueryCommentsResolver>()
     .AddTypeExtension<QueryRatingsResolver>()
     .AddTypeExtension<QueryUserSubscriptionsResolver>()
+    .AddTypeExtension<QueryRecipeLikesResolver>()
     .AddMutationType<Mutation>()
     .AddTypeExtension<MutationRecipesResolver>()
     .AddTypeExtension<MutationTagsResolver>()
@@ -105,6 +107,7 @@ builder
     .AddTypeExtension<MutationCommentsResolver>()
     .AddTypeExtension<MutationRatingsResolver>()
     .AddTypeExtension<MutationUserSubscriptionsResolver>()
+    .AddTypeExtension<MutationRecipeLikesResolver>()
     .AddSubscriptionType<Subscription>()
     .AddTypeExtension<SubscriptionRecipesResolver>()
     .AddTypeExtension<UserType>()
