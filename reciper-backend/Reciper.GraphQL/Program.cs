@@ -5,7 +5,6 @@ using HotChocolate.Language;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Reciper.BLL.Contracts;
@@ -149,7 +148,7 @@ app.UseCors(corsPolicyBuilder =>
 );
 
 // app.UseHttpsRedirection();
-app.UseVoyager("/graphql", "/voyager");
+// app.UseVoyager("/", "/voyager");
 
 app.MapGraphQL();
 

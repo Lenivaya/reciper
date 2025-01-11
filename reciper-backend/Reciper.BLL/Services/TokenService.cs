@@ -6,10 +6,22 @@ using Reciper.BLL.Contracts;
 
 namespace Reciper.BLL.Services;
 
+/// <summary>
+/// Service for JWT token generation and validation.
+/// </summary>
 public class TokenService(string key, string issuer, string audience) : ITokenService
 {
+    /// <summary>
+    /// The secret key used for token signing
+    /// </summary>
     private string Key { get; } = key;
 
+    /// <summary>
+    /// Generates a JWT token for a user.
+    /// </summary>
+    /// <param name="id">The user's ID</param>
+    /// <param name="email">The user's email</param>
+    /// <returns>A JWT token string</returns>
     public string GenerateToken(string id, string email)
     {
         List<Claim> claims =
@@ -33,6 +45,11 @@ public class TokenService(string key, string issuer, string audience) : ITokenSe
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    /// <summary>
+    /// Validates a JWT token and extracts the claims principal.
+    /// </summary>
+    /// <param name="token">The JWT token to validate</param>
+    /// <returns>The claims principal contained in the token</returns>
     public ClaimsPrincipal GetPrincipalFromToken(string token)
     {
         var tokenHandler = new JwtSecurityTokenHandler();

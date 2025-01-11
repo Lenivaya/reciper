@@ -6,11 +6,21 @@ using Reciper.DAL.Models;
 
 namespace Reciper.DAL.Repositories;
 
+/// <summary>
+/// Generic repository class providing basic CRUD operations for entities.
+/// </summary>
+/// <typeparam name="TEntity">The entity type.</typeparam>
+/// <typeparam name="TPrimaryKey">The primary key type.</typeparam>
 public class GenericRepository<TEntity, TPrimaryKey>
     : IEntityRepository<TEntity, TPrimaryKey>,
         IAsyncDisposable
     where TEntity : class
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GenericRepository{TEntity, TPrimaryKey}"/> class.
+    /// </summary>
+    /// <param name="context">The database context.</param>
+    /// <param name="logger">The logger.</param>
     public GenericRepository(ReciperContext context, ILogger logger)
     {
         Context = context;
@@ -18,6 +28,11 @@ public class GenericRepository<TEntity, TPrimaryKey>
         DbSet = Context.Set<TEntity>();
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GenericRepository{TEntity, TPrimaryKey}"/> class.
+    /// </summary>
+    /// <param name="contextFactory">The database context factory.</param>
+    /// <param name="logger">The logger.</param>
     public GenericRepository(IDbContextFactory<ReciperContext> contextFactory, ILogger logger)
     {
         Context = contextFactory.CreateDbContext();
@@ -29,20 +44,26 @@ public class GenericRepository<TEntity, TPrimaryKey>
     internal DbSet<TEntity> DbSet { get; }
     internal ILogger Logger { get; }
 
+    /// <summary>
+    /// Gets or sets the default include properties for the entity.
+    /// </summary>
     public virtual IEnumerable<string> DefaultIncludes { get; set; } = [];
 
+    /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
         await Context.DisposeAsync();
         GC.SuppressFinalize(this);
     }
 
+    /// <inheritdoc />
     public virtual async Task<IEnumerable<TEntity>> GetAll()
     {
         var query = StartQueryWithDefaultIncludes();
         return await query.AsNoTracking().ToListAsync();
     }
 
+    /// <inheritdoc />
     public virtual async Task<TEntity?> GetById(TPrimaryKey id)
     {
         try
@@ -56,6 +77,7 @@ public class GenericRepository<TEntity, TPrimaryKey>
         }
     }
 
+    /// <inheritdoc />
     public virtual async Task<bool> Insert(TEntity entity)
     {
         try
@@ -70,6 +92,7 @@ public class GenericRepository<TEntity, TPrimaryKey>
         }
     }
 
+    /// <inheritdoc />
     public virtual async Task<bool> Delete(TPrimaryKey id)
     {
         try
@@ -88,6 +111,7 @@ public class GenericRepository<TEntity, TPrimaryKey>
         }
     }
 
+    /// <inheritdoc />
     public virtual async Task<(bool, TEntity? entityToDelete)> DeleteWithEntityReturn(
         TPrimaryKey id
     )
@@ -108,11 +132,13 @@ public class GenericRepository<TEntity, TPrimaryKey>
         }
     }
 
+    /// <inheritdoc />
     public IQueryable<TEntity> StartQuery()
     {
         return DbSet;
     }
 
+    /// <inheritdoc />
     public virtual void Delete(TEntity entityToDelete)
     {
         if (Context.Entry(entityToDelete).State == EntityState.Detached)
@@ -120,12 +146,14 @@ public class GenericRepository<TEntity, TPrimaryKey>
         DbSet.Remove(entityToDelete);
     }
 
+    /// <inheritdoc />
     public virtual void Update(TEntity entityToUpdate)
     {
         DbSet.Attach(entityToUpdate);
         Context.Entry(entityToUpdate).State = EntityState.Modified;
     }
 
+    /// <inheritdoc />
     public virtual IQueryable<TEntity> StartQueryWithDefaultIncludes()
     {
         var query = DbSet.AsQueryable();
@@ -136,6 +164,7 @@ public class GenericRepository<TEntity, TPrimaryKey>
         );
     }
 
+    /// <inheritdoc />
     public virtual async Task<(IEnumerable<TEntity> Items, int TotalCount)> GetPaginated(
         int pageNumber,
         int pageSize,
@@ -165,21 +194,25 @@ public class GenericRepository<TEntity, TPrimaryKey>
         return (items, totalCount);
     }
 
+    /// <inheritdoc />
     public virtual async Task<TEntity?> FirstOrDefault(Expression<Func<TEntity, bool>> predicate)
     {
         return await StartQueryWithDefaultIncludes().AsNoTracking().FirstOrDefaultAsync(predicate);
     }
 
+    /// <inheritdoc />
     public virtual async Task<bool> Any(Expression<Func<TEntity, bool>> predicate)
     {
         return await DbSet.AnyAsync(predicate);
     }
 
+    /// <inheritdoc />
     public virtual async Task<int> Count(Expression<Func<TEntity, bool>>? predicate = null)
     {
         return predicate == null ? await DbSet.CountAsync() : await DbSet.CountAsync(predicate);
     }
 
+    /// <inheritdoc />
     public virtual async Task<bool> InsertRange(IEnumerable<TEntity> entities)
     {
         try
@@ -194,6 +227,7 @@ public class GenericRepository<TEntity, TPrimaryKey>
         }
     }
 
+    /// <inheritdoc />
     public virtual async Task<bool> DeleteRange(IEnumerable<TEntity> entities)
     {
         try
@@ -208,6 +242,7 @@ public class GenericRepository<TEntity, TPrimaryKey>
         }
     }
 
+    /// <inheritdoc />
     public virtual void UpdateRange(IEnumerable<TEntity> entities)
     {
         foreach (var entity in entities)
@@ -217,6 +252,7 @@ public class GenericRepository<TEntity, TPrimaryKey>
         }
     }
 
+    /// <inheritdoc />
     public virtual async Task<IEnumerable<TEntity>> Get(
         List<Expression<Func<TEntity, bool>>>? filters = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>>? orderBy = null,
