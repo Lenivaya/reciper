@@ -167,6 +167,7 @@ type LikeRecipePayload {
 
 type LoginUserPayload {
   userLoginPayload: UserLoginPayload
+  errors: [LoginUserError!]
 }
 
 type Mutation @authorize @authorize @authorize @authorize @authorize @authorize {
@@ -402,7 +403,8 @@ type RecipesOffsetCollectionSegment {
 }
 
 type RegisterUserPayload {
-  user: User
+  userRegisterPayload: UserRegisterPayload
+  errors: [RegisterUserError!]
 }
 
 type Role {
@@ -610,6 +612,11 @@ type UserLoginPayload {
   user: User
 }
 
+type UserRegisterPayload {
+  token: String
+  user: User
+}
+
 type UserRole {
   id: UUID!
   userId: UUID!
@@ -682,6 +689,10 @@ union DeleteSubscriptionByIdError = ReciperError
 union DeleteTagByIdError = ReciperError
 
 union LikeRecipeError = ReciperError
+
+union LoginUserError = ReciperError
+
+union RegisterUserError = ReciperError
 
 union SubscribeError = ReciperError
 
@@ -917,7 +928,7 @@ input ListFilterInputTypeOfUserSubscriptionFilterInput {
 }
 
 input LoginDTOInput {
-  email: String!
+  login: String!
   password: String!
 }
 

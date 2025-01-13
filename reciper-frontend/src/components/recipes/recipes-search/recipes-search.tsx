@@ -7,8 +7,8 @@ import { useQueryStates } from 'nuqs'
 import React, { useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useDebouncedCallback } from 'use-debounce'
-import { RecipeCardTag } from '../recipe-card/recip-card-tag'
 import { RecipeCardDifficulty } from '../recipe-card/recipe-card-difficulty'
+import { RecipeCardTag } from '../recipe-card/recipe-card-tag'
 import { recipeSearchParamsSchema } from './recipes-search-params'
 
 interface RecipesSearchProps {
@@ -114,9 +114,9 @@ export const RecipesSearch = ({
             {queryTags?.map((tag, index) => (
               <RecipeCardTag
                 tag={tag}
-                index={index}
                 onClick={handleTagClick}
                 key={tag}
+                index={index}
               />
             ))}
           </>

@@ -2,7 +2,7 @@
 
 import { useQueryStates } from 'nuqs'
 import { recipeSearchParamsSchema } from '../recipes-search/recipes-search-params'
-import { RecipeCardTag } from './recip-card-tag'
+import { RecipeCardTag } from './recipe-card-tag'
 
 export const RecipeCardTags = ({
   tags,
@@ -41,9 +41,9 @@ export const RecipeCardTags = ({
       {tags.slice(0, maxTags).map((tag, index) => (
         <RecipeCardTag
           tag={tag}
-          index={index}
           onClick={handleTagClick}
           key={tag}
+          index={index}
         />
       ))}
 

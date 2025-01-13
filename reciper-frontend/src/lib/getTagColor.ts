@@ -1,7 +1,24 @@
-export function getTagColor(tag: string): string {
+export interface TagColors {
+  base: string
+  hover: string
+  text: string
+}
+
+export function getTagColor(tag: string): TagColors {
+  // Generate a consistent hue based on the tag name
   const hue =
     tag.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) % 360
-  return `hsl(${hue}, 85%, 92%)`
+
+  // Use golden ratio for better color distribution
+  const saturation = 85
+  const lightness = 92
+  const hoverLightness = 88
+
+  return {
+    base: `hsl(${hue}, ${saturation}%, ${lightness}%)`,
+    hover: `hsl(${hue}, ${saturation}%, ${hoverLightness}%)`,
+    text: `hsl(${hue}, ${saturation}%, 20%)`
+  }
 }
 
 const TAG_COLORS = [
@@ -21,6 +38,5 @@ const TAG_COLORS = [
   'bg-fuchsia-500/10 text-fuchsia-500 hover:bg-fuchsia-500/20'
 ]
 
-export function getTagColorV2(tagIndex: number): string {
-  return TAG_COLORS[tagIndex % TAG_COLORS.length]
-}
+export const getTagColorV2 = (tagIndex: number): string =>
+  TAG_COLORS[tagIndex % TAG_COLORS.length]
