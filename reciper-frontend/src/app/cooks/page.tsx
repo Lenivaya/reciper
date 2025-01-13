@@ -18,7 +18,7 @@ export default async function CooksPage({ searchParams }: CooksPageProps) {
         <div className='flex w-full max-w-[1400px] flex-col items-center justify-center gap-4'>
           <h1 className='flex items-center gap-2 bg-gradient-to-r from-primary/60 to-primary bg-clip-text text-4xl font-bold text-transparent'>
             <span className=''>
-              <ChefHat className='mr-2 h-10 w-10 dark:text-primary' />
+              <ChefHat className='mr-1 h-10 w-10 dark:text-primary' />
             </span>
             Cooks
           </h1>

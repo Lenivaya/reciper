@@ -1,7 +1,7 @@
 import { getClient } from '@/lib/graphql/urql/client'
 import { graphql } from 'gql.tada'
 import { Key } from 'react'
-import { CookCard, CookCardFragment } from '../cook'
+import { CookCard, CookCardFragment } from '../cook-card'
 import { cookSearchParamsCache } from './cooks-search-params'
 import { PaginationControls } from '@/components/ui/pagination-controls'
 
@@ -58,7 +58,7 @@ export async function CooksSearchList() {
 
   return (
     <div className='h-full space-y-12'>
-      <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+      <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
         {result.error && <div>Error: {result.error.message}</div>}
         {result.data?.usersOffset?.items?.map((item) => (
           <CookCard key={item?.id as Key} data={item} />
