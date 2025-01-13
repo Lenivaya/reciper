@@ -3,15 +3,7 @@ import { graphql } from 'gql.tada'
 import { Key } from 'react'
 import { CookCard, CookCardFragment } from '../cook'
 import { cookSearchParamsCache } from './cooks-search-params'
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 
 const CooksListQuery = graphql(
   `
@@ -44,81 +36,6 @@ const CooksListQuery = graphql(
 )
 
 const DEFAULT_PAGE_SIZE = 12
-const MAX_VISIBLE_PAGES = 5
-
-interface PaginationProps {
-  currentPage: number
-  totalPages: number
-  search?: string
-}
-
-function PaginationControls({ currentPage, totalPages, search }: PaginationProps) {
-  const createPageUrl = (pageNum: number) => {
-    const params = new URLSearchParams()
-    if (search) params.set('search', search)
-    params.set('page', String(pageNum))
-    return `?${params.toString()}`
-  }
-
-  const getVisiblePages = () => {
-    const pages: (number | 'ellipsis')[] = []
-    let startPage = Math.max(1, currentPage - Math.floor(MAX_VISIBLE_PAGES / 2))
-    const endPage = Math.min(totalPages, startPage + MAX_VISIBLE_PAGES - 1)
-
-    if (endPage - startPage + 1 < MAX_VISIBLE_PAGES) {
-      startPage = Math.max(1, endPage - MAX_VISIBLE_PAGES + 1)
-    }
-
-    if (startPage > 1) {
-      pages.push(1)
-      if (startPage > 2) pages.push('ellipsis')
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i)
-    }
-
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) pages.push('ellipsis')
-      pages.push(totalPages)
-    }
-
-    return pages
-  }
-
-  return (
-    <Pagination>
-      <PaginationContent>
-        {currentPage > 1 && (
-          <PaginationItem>
-            <PaginationPrevious href={createPageUrl(currentPage - 1)} />
-          </PaginationItem>
-        )}
-
-        {getVisiblePages().map((page, index) => (
-          <PaginationItem key={index}>
-            {page === 'ellipsis' ? (
-              <PaginationEllipsis />
-            ) : (
-              <PaginationLink
-                href={createPageUrl(page)}
-                isActive={page === currentPage}
-              >
-                {page}
-              </PaginationLink>
-            )}
-          </PaginationItem>
-        ))}
-
-        {currentPage < totalPages && (
-          <PaginationItem>
-            <PaginationNext href={createPageUrl(currentPage + 1)} />
-          </PaginationItem>
-        )}
-      </PaginationContent>
-    </Pagination>
-  )
-}
 
 export async function CooksSearchList() {
   const { search, page } = cookSearchParamsCache.all()
@@ -137,6 +54,7 @@ export async function CooksSearchList() {
 
   const totalCount = result.data?.usersOffset?.totalCount ?? 0
   const totalPages = Math.ceil(totalCount / DEFAULT_PAGE_SIZE)
+  const pageInfo = result.data?.usersOffset?.pageInfo
 
   return (
     <div className='h-full space-y-12'>
@@ -152,7 +70,12 @@ export async function CooksSearchList() {
           <PaginationControls
             currentPage={currentPage}
             totalPages={totalPages}
-            search={search}
+            hasNextPage={pageInfo?.hasNextPage ?? false}
+            hasPreviousPage={pageInfo?.hasPreviousPage ?? false}
+            params={search ? { search } : {}}
+            showFirstLast
+            maxVisiblePages={7}
+            className="justify-center"
           />
         </div>
       )}
