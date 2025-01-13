@@ -146,6 +146,11 @@ app.UseCors(corsPolicyBuilder =>
     corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
 );
 
+
+if (!app.Environment.IsDevelopment()) {
+    app.UseResponseCompression();
+}
+
 app.UseHttpsRedirection();
 app.UseVoyager("/graphql", "/voyager");
 
