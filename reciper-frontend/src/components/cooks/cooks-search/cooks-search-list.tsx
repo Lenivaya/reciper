@@ -43,7 +43,7 @@ const CooksListQuery = graphql(
   [CookCardFragment]
 )
 
-const DEFAULT_PAGE_SIZE = 10
+const DEFAULT_PAGE_SIZE = 12
 const MAX_VISIBLE_PAGES = 5
 
 interface PaginationProps {
@@ -63,7 +63,7 @@ function PaginationControls({ currentPage, totalPages, search }: PaginationProps
   const getVisiblePages = () => {
     const pages: (number | 'ellipsis')[] = []
     let startPage = Math.max(1, currentPage - Math.floor(MAX_VISIBLE_PAGES / 2))
-    let endPage = Math.min(totalPages, startPage + MAX_VISIBLE_PAGES - 1)
+    const endPage = Math.min(totalPages, startPage + MAX_VISIBLE_PAGES - 1)
 
     if (endPage - startPage + 1 < MAX_VISIBLE_PAGES) {
       startPage = Math.max(1, endPage - MAX_VISIBLE_PAGES + 1)
@@ -140,7 +140,7 @@ export async function CooksSearchList() {
 
   return (
     <div className='h-full space-y-12'>
-      <div className='mx-auto flex max-w-7xl flex-wrap justify-center gap-4'>
+      <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
         {result.error && <div>Error: {result.error.message}</div>}
         {result.data?.usersOffset?.items?.map((item) => (
           <CookCard key={item?.id as Key} data={item} />
