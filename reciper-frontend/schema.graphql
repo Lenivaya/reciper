@@ -1,0 +1,1328 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+interface Error {
+  message: String!
+}
+
+type AddCommentPayload {
+  comment: Comment
+  errors: [AddCommentError!]
+}
+
+type AddIngredientPayload {
+  ingredient: Ingredient
+  errors: [AddIngredientError!]
+}
+
+type AddRatingPayload {
+  rating: Rating
+  errors: [AddRatingError!]
+}
+
+type AddRecipePayload {
+  recipe: Recipe
+  errors: [AddRecipeError!]
+}
+
+type AddTagPayload {
+  tag: Tag
+  errors: [AddTagError!]
+}
+
+"Information about the offset pagination."
+type CollectionSegmentInfo {
+  "Indicates whether more items exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more items exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+}
+
+type Comment {
+  id: UUID!
+  content: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: UUID!
+  recipeId: UUID!
+  user: User!
+  recipe: Recipe!
+}
+
+"A connection to a list of items."
+type CommentsCursorConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [CommentsCursorEdge!]
+  "A flattened list of the nodes."
+  nodes: [Comment!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type CommentsCursorEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Comment!
+}
+
+"A segment of a collection."
+type CommentsOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [Comment!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+type DeleteCommentByIdPayload {
+  comment: Comment
+  errors: [DeleteCommentByIdError!]
+}
+
+type DeleteIngredientByIdPayload {
+  ingredient: Ingredient
+  errors: [DeleteIngredientByIdError!]
+}
+
+type DeleteLikeByIdPayload {
+  recipeLike: RecipeLike
+  errors: [DeleteLikeByIdError!]
+}
+
+type DeleteRatingByIdPayload {
+  rating: Rating
+  errors: [DeleteRatingByIdError!]
+}
+
+type DeleteRatingForRecipePayload {
+  rating: Rating
+  errors: [DeleteRatingForRecipeError!]
+}
+
+type DeleteRecipeByIdPayload {
+  recipe: Recipe
+  errors: [DeleteRecipeByIdError!]
+}
+
+type DeleteSubscriptionByIdPayload {
+  userSubscription: UserSubscription
+  errors: [DeleteSubscriptionByIdError!]
+}
+
+type DeleteTagByIdPayload {
+  tag: Tag
+  errors: [DeleteTagByIdError!]
+}
+
+type DeleteUserPayload {
+  user: User
+}
+
+type Ingredient {
+  id: UUID!
+  name: String!
+  recipeIngredients: [RecipeIngredient!]!
+}
+
+"A connection to a list of items."
+type IngredientsCursorConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [IngredientsCursorEdge!]
+  "A flattened list of the nodes."
+  nodes: [Ingredient!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type IngredientsCursorEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Ingredient!
+}
+
+"A segment of a collection."
+type IngredientsOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [Ingredient!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+type LikeRecipePayload {
+  recipeLike: RecipeLike
+  errors: [LikeRecipeError!]
+}
+
+type LoginUserPayload {
+  userLoginPayload: UserLoginPayload
+}
+
+type Mutation @authorize @authorize @authorize @authorize @authorize @authorize {
+  addRecipe(input: AddRecipeInput!): AddRecipePayload! @cost(weight: "10")
+  deleteRecipeById(input: DeleteRecipeByIdInput!): DeleteRecipeByIdPayload! @cost(weight: "10")
+  updateRecipe(input: UpdateRecipeInput!): UpdateRecipePayload! @cost(weight: "10")
+  addTag(input: AddTagInput!): AddTagPayload! @cost(weight: "10")
+  deleteTagById(input: DeleteTagByIdInput!): DeleteTagByIdPayload! @cost(weight: "10")
+  updateTag(input: UpdateTagInput!): UpdateTagPayload! @cost(weight: "10")
+  addIngredient(input: AddIngredientInput!): AddIngredientPayload! @cost(weight: "10")
+  deleteIngredientById(input: DeleteIngredientByIdInput!): DeleteIngredientByIdPayload! @cost(weight: "10")
+  updateIngredient(input: UpdateIngredientInput!): UpdateIngredientPayload! @cost(weight: "10")
+  registerUser(input: RegisterUserInput!): RegisterUserPayload! @allowAnonymous @cost(weight: "10")
+  loginUser(input: LoginUserInput!): LoginUserPayload! @allowAnonymous @cost(weight: "10")
+  deleteUser: DeleteUserPayload! @cost(weight: "10")
+  updateUserById(input: UpdateUserByIdInput!): UpdateUserByIdPayload! @cost(weight: "10")
+  addComment(input: AddCommentInput!): AddCommentPayload! @cost(weight: "10")
+  deleteCommentById(input: DeleteCommentByIdInput!): DeleteCommentByIdPayload! @cost(weight: "10")
+  updateComment(input: UpdateCommentInput!): UpdateCommentPayload! @cost(weight: "10")
+  addRating(input: AddRatingInput!): AddRatingPayload! @cost(weight: "10")
+  updateRatingById(input: UpdateRatingByIdInput!): UpdateRatingByIdPayload! @cost(weight: "10")
+  updateRatingForRecipe(input: UpdateRatingForRecipeInput!): UpdateRatingForRecipePayload! @cost(weight: "10")
+  deleteRatingById(input: DeleteRatingByIdInput!): DeleteRatingByIdPayload! @cost(weight: "10")
+  deleteRatingForRecipe(input: DeleteRatingForRecipeInput!): DeleteRatingForRecipePayload! @cost(weight: "10")
+  subscribe(input: SubscribeInput!): SubscribePayload! @cost(weight: "10")
+  unsubscribe(input: UnsubscribeInput!): UnsubscribePayload! @cost(weight: "10")
+  deleteSubscriptionById(input: DeleteSubscriptionByIdInput!): DeleteSubscriptionByIdPayload! @cost(weight: "10")
+  likeRecipe(input: LikeRecipeInput!): LikeRecipePayload! @cost(weight: "10")
+  unlikeRecipe(input: UnlikeRecipeInput!): UnlikeRecipePayload! @cost(weight: "10")
+  deleteLikeById(input: DeleteLikeByIdInput!): DeleteLikeByIdPayload! @cost(weight: "10")
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+  "Indicates whether more edges exist following the set defined by the clients arguments."
+  hasNextPage: Boolean!
+  "Indicates whether more edges exist prior the set defined by the clients arguments."
+  hasPreviousPage: Boolean!
+  "When paginating backwards, the cursor to continue."
+  startCursor: String
+  "When paginating forwards, the cursor to continue."
+  endCursor: String
+}
+
+type Query {
+  recipesOffset(skip: Int take: Int searchCriteria: RecipeSearchCriteriaInput where: RecipeFilterInput @cost(weight: "10") order: [RecipeSortInput!] @cost(weight: "10")): RecipesOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  recipesCursor(searchCriteria: RecipeSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RecipeFilterInput @cost(weight: "10") order: [RecipeSortInput!] @cost(weight: "10")): RecipesCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  recipeById(recipeId: UUID!): Recipe @cost(weight: "10")
+  tagsOffset(skip: Int take: Int where: TagFilterInput @cost(weight: "10") order: [TagSortInput!] @cost(weight: "10")): TagsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  tagsCursor("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: TagFilterInput @cost(weight: "10") order: [TagSortInput!] @cost(weight: "10")): TagsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  tagById(tagId: UUID!): Tag @cost(weight: "10")
+  ingredientsOffset(skip: Int take: Int where: IngredientFilterInput @cost(weight: "10") order: [IngredientSortInput!] @cost(weight: "10")): IngredientsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  ingredientsCursor("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: IngredientFilterInput @cost(weight: "10") order: [IngredientSortInput!] @cost(weight: "10")): IngredientsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  ingredientById(ingredientId: UUID!): Ingredient @cost(weight: "10")
+  me: User @cost(weight: "10")
+  usersOffset(skip: Int take: Int searchCriteria: UserSearchCriteriaInput where: UserFilterInput @cost(weight: "10") order: [UserSortInput!] @cost(weight: "10")): UsersOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  usersCursor(searchCriteria: UserSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserFilterInput @cost(weight: "10") order: [UserSortInput!] @cost(weight: "10")): UsersCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  userById(userId: UUID!): User @cost(weight: "10")
+  commentsOffset(skip: Int take: Int recipeId: UUID! where: CommentFilterInput @cost(weight: "10") order: [CommentSortInput!] @cost(weight: "10")): CommentsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  commentsCursor(recipeId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: CommentFilterInput @cost(weight: "10") order: [CommentSortInput!] @cost(weight: "10")): CommentsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  commentById(commentId: UUID!): Comment @cost(weight: "10")
+  ratingsOffset(skip: Int take: Int recipeId: UUID! where: RatingFilterInput @cost(weight: "10") order: [RatingSortInput!] @cost(weight: "10")): RatingsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  ratingsCursor(recipeId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RatingFilterInput @cost(weight: "10") order: [RatingSortInput!] @cost(weight: "10")): RatingsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  ratingById(ratingId: UUID!): Rating @cost(weight: "10")
+  ratingByCompositeKey(recipeId: UUID! userId: UUID!): Rating @cost(weight: "10")
+  subscriptionsOffset(skip: Int take: Int userId: UUID! where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscriptionsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  subscribersOffset(skip: Int take: Int userId: UUID! where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscribersOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  subscriptionsCursor(userId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscriptionsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  subscribersCursor(userId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscribersCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  subscriptionById(subscriptionId: UUID!): UserSubscription @cost(weight: "10")
+  subscriptionByCompositeKey(subscriberId: UUID! subscribeeId: UUID!): UserSubscription @cost(weight: "10")
+  userLikesOffset(skip: Int take: Int userId: UUID! where: RecipeLikeFilterInput @cost(weight: "10") order: [RecipeLikeSortInput!] @cost(weight: "10")): UserLikesOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  recipeLikesOffset(skip: Int take: Int recipeId: UUID! where: RecipeLikeFilterInput @cost(weight: "10") order: [RecipeLikeSortInput!] @cost(weight: "10")): RecipeLikesOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  userLikesCursor(userId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RecipeLikeFilterInput @cost(weight: "10") order: [RecipeLikeSortInput!] @cost(weight: "10")): UserLikesCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  recipeLikesCursor(recipeId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RecipeLikeFilterInput @cost(weight: "10") order: [RecipeLikeSortInput!] @cost(weight: "10")): RecipeLikesCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  likeById(likeId: UUID!): RecipeLike @cost(weight: "10")
+  likeByCompositeKey(userId: UUID! recipeId: UUID!): RecipeLike @cost(weight: "10")
+}
+
+type Rating {
+  id: UUID!
+  value: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: UUID!
+  recipeId: UUID!
+  user: User!
+  recipe: Recipe!
+}
+
+"A connection to a list of items."
+type RatingsCursorConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [RatingsCursorEdge!]
+  "A flattened list of the nodes."
+  nodes: [Rating!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type RatingsCursorEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Rating!
+}
+
+"A segment of a collection."
+type RatingsOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [Rating!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+type Recipe {
+  id: UUID!
+  title: String!
+  description: String!
+  instructions: String!
+  cookingTimeMinutes: Int!
+  difficultyLevel: DifficultyLevel!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: UUID!
+  user: User!
+  recipeIngredients: [RecipeIngredient!]!
+  recipeTags: [RecipeTag!]!
+  images: [RecipeImage!]!
+  comments: [Comment!]!
+  ratings: [Rating!]!
+  likes: [RecipeLike!]!
+  averageRating: Float! @cost(weight: "10")
+  likesCount: Int! @cost(weight: "10")
+}
+
+type RecipeImage {
+  id: UUID!
+  url: String!
+  order: Int!
+  recipeId: UUID!
+  recipe: Recipe!
+}
+
+type RecipeIngredient {
+  id: UUID!
+  amount: String!
+  recipeId: UUID!
+  ingredientId: UUID!
+  recipe: Recipe!
+  ingredient: Ingredient!
+}
+
+type RecipeLike {
+  id: UUID!
+  userId: UUID!
+  recipeId: UUID!
+  user: User!
+  recipe: Recipe!
+}
+
+"A connection to a list of items."
+type RecipeLikesCursorConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [RecipeLikesCursorEdge!]
+  "A flattened list of the nodes."
+  nodes: [RecipeLike!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type RecipeLikesCursorEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: RecipeLike!
+}
+
+"A segment of a collection."
+type RecipeLikesOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [RecipeLike!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+type RecipeTag {
+  recipeId: UUID!
+  tagId: UUID!
+  recipe: Recipe!
+  tag: Tag!
+}
+
+type ReciperError implements Error {
+  message: String!
+}
+
+"A connection to a list of items."
+type RecipesCursorConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [RecipesCursorEdge!]
+  "A flattened list of the nodes."
+  nodes: [Recipe!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type RecipesCursorEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Recipe!
+}
+
+"A segment of a collection."
+type RecipesOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [Recipe!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+type RegisterUserPayload {
+  user: User
+}
+
+type Role {
+  id: UUID!
+  name: String!
+  userRoles: [UserRole!]!
+}
+
+type SubscribePayload {
+  userSubscription: UserSubscription
+  errors: [SubscribeError!]
+}
+
+"A connection to a list of items."
+type SubscribersCursorConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [SubscribersCursorEdge!]
+  "A flattened list of the nodes."
+  nodes: [UserSubscription!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type SubscribersCursorEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: UserSubscription!
+}
+
+"A segment of a collection."
+type SubscribersOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [UserSubscription!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+type Subscription {
+  recipeUpdated(recipeId: UUID!): Recipe @cost(weight: "10")
+}
+
+"A connection to a list of items."
+type SubscriptionsCursorConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [SubscriptionsCursorEdge!]
+  "A flattened list of the nodes."
+  nodes: [UserSubscription!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type SubscriptionsCursorEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: UserSubscription!
+}
+
+"A segment of a collection."
+type SubscriptionsOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [UserSubscription!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+type Tag {
+  id: UUID!
+  name: String!
+  recipeTags: [RecipeTag!]!
+}
+
+"A connection to a list of items."
+type TagsCursorConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [TagsCursorEdge!]
+  "A flattened list of the nodes."
+  nodes: [Tag!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type TagsCursorEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Tag!
+}
+
+"A segment of a collection."
+type TagsOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [Tag!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+type UnlikeRecipePayload {
+  recipeLike: RecipeLike
+  errors: [UnlikeRecipeError!]
+}
+
+type UnsubscribePayload {
+  userSubscription: UserSubscription
+  errors: [UnsubscribeError!]
+}
+
+type UpdateCommentPayload {
+  comment: Comment
+  errors: [UpdateCommentError!]
+}
+
+type UpdateIngredientPayload {
+  ingredient: Ingredient
+  errors: [UpdateIngredientError!]
+}
+
+type UpdateRatingByIdPayload {
+  rating: Rating
+  errors: [UpdateRatingByIdError!]
+}
+
+type UpdateRatingForRecipePayload {
+  rating: Rating
+  errors: [UpdateRatingForRecipeError!]
+}
+
+type UpdateRecipePayload {
+  recipe: Recipe
+  errors: [UpdateRecipeError!]
+}
+
+type UpdateTagPayload {
+  tag: Tag
+  errors: [UpdateTagError!]
+}
+
+type UpdateUserByIdPayload {
+  user: User
+}
+
+type User {
+  id: UUID!
+  username: String!
+  profilePictureUrl: String
+  bio: String
+  isActive: Boolean!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  recipes: [Recipe!]!
+  comments: [Comment!]!
+  ratings: [Rating!]!
+  userRoles: [UserRole!]!
+  subscriptions: [UserSubscription!]!
+  subscribers: [UserSubscription!]!
+  likedRecipes: [RecipeLike!]!
+  recipesCount: Int! @cost(weight: "10")
+  subscribersCount: Int! @cost(weight: "10")
+}
+
+"A connection to a list of items."
+type UserLikesCursorConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [UserLikesCursorEdge!]
+  "A flattened list of the nodes."
+  nodes: [RecipeLike!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type UserLikesCursorEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: RecipeLike!
+}
+
+"A segment of a collection."
+type UserLikesOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [RecipeLike!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+type UserLoginPayload {
+  token: String
+  user: User
+}
+
+type UserRole {
+  id: UUID!
+  userId: UUID!
+  roleId: UUID!
+  user: User!
+  role: Role!
+}
+
+type UserSubscription {
+  id: UUID!
+  subscriberId: UUID!
+  subscribeeId: UUID!
+  subscriber: User!
+  subscribee: User!
+}
+
+"A connection to a list of items."
+type UsersCursorConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [UsersCursorEdge!]
+  "A flattened list of the nodes."
+  nodes: [User!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type UsersCursorEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: User!
+}
+
+"A segment of a collection."
+type UsersOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [User!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+union AddCommentError = ReciperError
+
+union AddIngredientError = ReciperError
+
+union AddRatingError = ReciperError
+
+union AddRecipeError = ReciperError
+
+union AddTagError = ReciperError
+
+union DeleteCommentByIdError = ReciperError
+
+union DeleteIngredientByIdError = ReciperError
+
+union DeleteLikeByIdError = ReciperError
+
+union DeleteRatingByIdError = ReciperError
+
+union DeleteRatingForRecipeError = ReciperError
+
+union DeleteRecipeByIdError = ReciperError
+
+union DeleteSubscriptionByIdError = ReciperError
+
+union DeleteTagByIdError = ReciperError
+
+union LikeRecipeError = ReciperError
+
+union SubscribeError = ReciperError
+
+union UnlikeRecipeError = ReciperError
+
+union UnsubscribeError = ReciperError
+
+union UpdateCommentError = ReciperError
+
+union UpdateIngredientError = ReciperError
+
+union UpdateRatingByIdError = ReciperError
+
+union UpdateRatingForRecipeError = ReciperError
+
+union UpdateRecipeError = ReciperError
+
+union UpdateTagError = ReciperError
+
+input AddCommentInput {
+  createDto: CommentCreateDTOInput!
+}
+
+input AddIngredientInput {
+  createDto: IngredientCreateDTOInput!
+}
+
+input AddRatingInput {
+  createDto: RatingCreateDTOInput!
+}
+
+input AddRecipeInput {
+  createDto: RecipeCreateDTOInput!
+}
+
+input AddTagInput {
+  createDto: TagCreateDTOInput!
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean @cost(weight: "10")
+  neq: Boolean @cost(weight: "10")
+}
+
+input CommentCreateDTOInput {
+  recipeId: UUID!
+  content: String!
+}
+
+input CommentFilterInput {
+  and: [CommentFilterInput!]
+  or: [CommentFilterInput!]
+  id: UuidOperationFilterInput
+  content: StringOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
+  updatedAt: DateTimeOperationFilterInput
+  userId: UuidOperationFilterInput
+  recipeId: UuidOperationFilterInput
+  user: UserFilterInput
+  recipe: RecipeFilterInput
+}
+
+input CommentPatchDTOInput {
+  content: String
+}
+
+input CommentSortInput {
+  id: SortEnumType @cost(weight: "10")
+  content: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+  userId: SortEnumType @cost(weight: "10")
+  recipeId: SortEnumType @cost(weight: "10")
+  user: UserSortInput @cost(weight: "10")
+  recipe: RecipeSortInput @cost(weight: "10")
+}
+
+input DateTimeOperationFilterInput {
+  eq: DateTime @cost(weight: "10")
+  neq: DateTime @cost(weight: "10")
+  in: [DateTime] @cost(weight: "10")
+  nin: [DateTime] @cost(weight: "10")
+  gt: DateTime @cost(weight: "10")
+  ngt: DateTime @cost(weight: "10")
+  gte: DateTime @cost(weight: "10")
+  ngte: DateTime @cost(weight: "10")
+  lt: DateTime @cost(weight: "10")
+  nlt: DateTime @cost(weight: "10")
+  lte: DateTime @cost(weight: "10")
+  nlte: DateTime @cost(weight: "10")
+}
+
+input DeleteCommentByIdInput {
+  commentId: UUID!
+}
+
+input DeleteIngredientByIdInput {
+  ingredientId: UUID!
+}
+
+input DeleteLikeByIdInput {
+  likeId: UUID!
+}
+
+input DeleteRatingByIdInput {
+  ratingId: UUID!
+}
+
+input DeleteRatingForRecipeInput {
+  recipeId: UUID!
+}
+
+input DeleteRecipeByIdInput {
+  recipeId: UUID!
+}
+
+input DeleteSubscriptionByIdInput {
+  subscriptionId: UUID!
+}
+
+input DeleteTagByIdInput {
+  tagId: UUID!
+}
+
+input DifficultyLevelOperationFilterInput {
+  eq: DifficultyLevel @cost(weight: "10")
+  neq: DifficultyLevel @cost(weight: "10")
+  in: [DifficultyLevel!] @cost(weight: "10")
+  nin: [DifficultyLevel!] @cost(weight: "10")
+}
+
+input IngredientCreateDTOInput {
+  name: String!
+}
+
+input IngredientFilterInput {
+  and: [IngredientFilterInput!]
+  or: [IngredientFilterInput!]
+  id: UuidOperationFilterInput
+  name: StringOperationFilterInput
+  recipeIngredients: ListFilterInputTypeOfRecipeIngredientFilterInput
+}
+
+input IngredientPatchDTOInput {
+  name: String
+}
+
+input IngredientSortInput {
+  id: SortEnumType @cost(weight: "10")
+  name: SortEnumType @cost(weight: "10")
+}
+
+input IntOperationFilterInput {
+  eq: Int @cost(weight: "10")
+  neq: Int @cost(weight: "10")
+  in: [Int] @cost(weight: "10")
+  nin: [Int] @cost(weight: "10")
+  gt: Int @cost(weight: "10")
+  ngt: Int @cost(weight: "10")
+  gte: Int @cost(weight: "10")
+  ngte: Int @cost(weight: "10")
+  lt: Int @cost(weight: "10")
+  nlt: Int @cost(weight: "10")
+  lte: Int @cost(weight: "10")
+  nlte: Int @cost(weight: "10")
+}
+
+input LikeRecipeInput {
+  recipeId: UUID!
+}
+
+input ListFilterInputTypeOfCommentFilterInput {
+  all: CommentFilterInput @cost(weight: "10")
+  none: CommentFilterInput @cost(weight: "10")
+  some: CommentFilterInput @cost(weight: "10")
+  any: Boolean @cost(weight: "10")
+}
+
+input ListFilterInputTypeOfRatingFilterInput {
+  all: RatingFilterInput @cost(weight: "10")
+  none: RatingFilterInput @cost(weight: "10")
+  some: RatingFilterInput @cost(weight: "10")
+  any: Boolean @cost(weight: "10")
+}
+
+input ListFilterInputTypeOfRecipeFilterInput {
+  all: RecipeFilterInput @cost(weight: "10")
+  none: RecipeFilterInput @cost(weight: "10")
+  some: RecipeFilterInput @cost(weight: "10")
+  any: Boolean @cost(weight: "10")
+}
+
+input ListFilterInputTypeOfRecipeImageFilterInput {
+  all: RecipeImageFilterInput @cost(weight: "10")
+  none: RecipeImageFilterInput @cost(weight: "10")
+  some: RecipeImageFilterInput @cost(weight: "10")
+  any: Boolean @cost(weight: "10")
+}
+
+input ListFilterInputTypeOfRecipeIngredientFilterInput {
+  all: RecipeIngredientFilterInput @cost(weight: "10")
+  none: RecipeIngredientFilterInput @cost(weight: "10")
+  some: RecipeIngredientFilterInput @cost(weight: "10")
+  any: Boolean @cost(weight: "10")
+}
+
+input ListFilterInputTypeOfRecipeLikeFilterInput {
+  all: RecipeLikeFilterInput @cost(weight: "10")
+  none: RecipeLikeFilterInput @cost(weight: "10")
+  some: RecipeLikeFilterInput @cost(weight: "10")
+  any: Boolean @cost(weight: "10")
+}
+
+input ListFilterInputTypeOfRecipeTagFilterInput {
+  all: RecipeTagFilterInput @cost(weight: "10")
+  none: RecipeTagFilterInput @cost(weight: "10")
+  some: RecipeTagFilterInput @cost(weight: "10")
+  any: Boolean @cost(weight: "10")
+}
+
+input ListFilterInputTypeOfUserRoleFilterInput {
+  all: UserRoleFilterInput @cost(weight: "10")
+  none: UserRoleFilterInput @cost(weight: "10")
+  some: UserRoleFilterInput @cost(weight: "10")
+  any: Boolean @cost(weight: "10")
+}
+
+input ListFilterInputTypeOfUserSubscriptionFilterInput {
+  all: UserSubscriptionFilterInput @cost(weight: "10")
+  none: UserSubscriptionFilterInput @cost(weight: "10")
+  some: UserSubscriptionFilterInput @cost(weight: "10")
+  any: Boolean @cost(weight: "10")
+}
+
+input LoginDTOInput {
+  email: String!
+  password: String!
+}
+
+input LoginUserInput {
+  loginDto: LoginDTOInput!
+}
+
+input RatingCreateDTOInput {
+  recipeId: UUID!
+  value: Int!
+}
+
+input RatingFilterInput {
+  and: [RatingFilterInput!]
+  or: [RatingFilterInput!]
+  id: UuidOperationFilterInput
+  value: IntOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
+  updatedAt: DateTimeOperationFilterInput
+  userId: UuidOperationFilterInput
+  recipeId: UuidOperationFilterInput
+  user: UserFilterInput
+  recipe: RecipeFilterInput
+}
+
+input RatingPatchDTOInput {
+  value: Int
+}
+
+input RatingSortInput {
+  id: SortEnumType @cost(weight: "10")
+  value: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+  userId: SortEnumType @cost(weight: "10")
+  recipeId: SortEnumType @cost(weight: "10")
+  user: UserSortInput @cost(weight: "10")
+  recipe: RecipeSortInput @cost(weight: "10")
+}
+
+input RecipeCreateDTOInput {
+  title: String!
+  description: String!
+  instructions: String!
+  cookingTimeMinutes: Int!
+  difficultyLevel: DifficultyLevel!
+  tags: [UUID!]!
+  ingredients: [RecipeCreateIngredientDTOInput!]!
+  images: [UUID!]!
+}
+
+input RecipeCreateIngredientDTOInput {
+  amount: String!
+  ingredientId: UUID!
+}
+
+input RecipeFilterInput {
+  and: [RecipeFilterInput!]
+  or: [RecipeFilterInput!]
+  id: UuidOperationFilterInput
+  title: StringOperationFilterInput
+  description: StringOperationFilterInput
+  instructions: StringOperationFilterInput
+  cookingTimeMinutes: IntOperationFilterInput
+  difficultyLevel: DifficultyLevelOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
+  updatedAt: DateTimeOperationFilterInput
+  userId: UuidOperationFilterInput
+  user: UserFilterInput
+  recipeIngredients: ListFilterInputTypeOfRecipeIngredientFilterInput
+  recipeTags: ListFilterInputTypeOfRecipeTagFilterInput
+  images: ListFilterInputTypeOfRecipeImageFilterInput
+  comments: ListFilterInputTypeOfCommentFilterInput
+  ratings: ListFilterInputTypeOfRatingFilterInput
+  likes: ListFilterInputTypeOfRecipeLikeFilterInput
+}
+
+input RecipeImageFilterInput {
+  and: [RecipeImageFilterInput!]
+  or: [RecipeImageFilterInput!]
+  id: UuidOperationFilterInput
+  url: StringOperationFilterInput
+  order: IntOperationFilterInput
+  recipeId: UuidOperationFilterInput
+  recipe: RecipeFilterInput
+}
+
+input RecipeIngredientFilterInput {
+  and: [RecipeIngredientFilterInput!]
+  or: [RecipeIngredientFilterInput!]
+  id: UuidOperationFilterInput
+  amount: StringOperationFilterInput
+  recipeId: UuidOperationFilterInput
+  ingredientId: UuidOperationFilterInput
+  recipe: RecipeFilterInput
+  ingredient: IngredientFilterInput
+}
+
+input RecipeLikeFilterInput {
+  and: [RecipeLikeFilterInput!]
+  or: [RecipeLikeFilterInput!]
+  id: UuidOperationFilterInput
+  userId: UuidOperationFilterInput
+  recipeId: UuidOperationFilterInput
+  user: UserFilterInput
+  recipe: RecipeFilterInput
+}
+
+input RecipeLikeSortInput {
+  id: SortEnumType @cost(weight: "10")
+  userId: SortEnumType @cost(weight: "10")
+  recipeId: SortEnumType @cost(weight: "10")
+  user: UserSortInput @cost(weight: "10")
+  recipe: RecipeSortInput @cost(weight: "10")
+}
+
+input RecipePatchDTOInput {
+  title: String
+  description: String
+  instructions: String
+  cookingTimeMinutes: Int
+  difficultyLevel: DifficultyLevel
+  tags: [UUID!]
+  ingredients: [UUID!]
+  images: [UUID!]
+}
+
+input RecipeSearchCriteriaInput {
+  matching: String
+  tags: [String!]
+  ingredientNames: [String!]
+  minCookingTime: Int
+  maxCookingTime: Int
+  minRating: Float
+  maxRating: Float
+  difficultyLevels: [DifficultyLevel!]
+  createdAfter: DateTime
+  createdBefore: DateTime
+}
+
+input RecipeSortInput {
+  id: SortEnumType @cost(weight: "10")
+  title: SortEnumType @cost(weight: "10")
+  description: SortEnumType @cost(weight: "10")
+  instructions: SortEnumType @cost(weight: "10")
+  cookingTimeMinutes: SortEnumType @cost(weight: "10")
+  difficultyLevel: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+  userId: SortEnumType @cost(weight: "10")
+  user: UserSortInput @cost(weight: "10")
+}
+
+input RecipeTagFilterInput {
+  and: [RecipeTagFilterInput!]
+  or: [RecipeTagFilterInput!]
+  recipeId: UuidOperationFilterInput
+  tagId: UuidOperationFilterInput
+  recipe: RecipeFilterInput
+  tag: TagFilterInput
+}
+
+input RegisterUserInput {
+  userCreateDto: UserCreateDTOInput!
+}
+
+input RoleFilterInput {
+  and: [RoleFilterInput!]
+  or: [RoleFilterInput!]
+  id: UuidOperationFilterInput
+  name: StringOperationFilterInput
+  userRoles: ListFilterInputTypeOfUserRoleFilterInput
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String @cost(weight: "10")
+  neq: String @cost(weight: "10")
+  contains: String @cost(weight: "20")
+  ncontains: String @cost(weight: "20")
+  in: [String] @cost(weight: "10")
+  nin: [String] @cost(weight: "10")
+  startsWith: String @cost(weight: "20")
+  nstartsWith: String @cost(weight: "20")
+  endsWith: String @cost(weight: "20")
+  nendsWith: String @cost(weight: "20")
+  containsIgnoreCase: String @cost(weight: "10")
+  ncontainsIgnoreCase: String @cost(weight: "10")
+  eqIgnoreCase: String @cost(weight: "10")
+  neqIgnoreCase: String @cost(weight: "10")
+  endsWithIgnoreCase: String @cost(weight: "10")
+  nendsWithIgnoreCase: String @cost(weight: "10")
+  startsWithIgnoreCase: String @cost(weight: "10")
+  nstartsWithIgnoreCase: String @cost(weight: "10")
+}
+
+input SubscribeInput {
+  subscribeeId: UUID!
+}
+
+input TagCreateDTOInput {
+  name: String!
+}
+
+input TagFilterInput {
+  and: [TagFilterInput!]
+  or: [TagFilterInput!]
+  id: UuidOperationFilterInput
+  name: StringOperationFilterInput
+  recipeTags: ListFilterInputTypeOfRecipeTagFilterInput
+}
+
+input TagPatchDTOInput {
+  name: String
+}
+
+input TagSortInput {
+  id: SortEnumType @cost(weight: "10")
+  name: SortEnumType @cost(weight: "10")
+}
+
+input UnlikeRecipeInput {
+  recipeId: UUID!
+}
+
+input UnsubscribeInput {
+  userId: UUID!
+}
+
+input UpdateCommentInput {
+  commentId: UUID!
+  updateDto: CommentPatchDTOInput!
+}
+
+input UpdateIngredientInput {
+  ingredientId: UUID!
+  updateDto: IngredientPatchDTOInput!
+}
+
+input UpdateRatingByIdInput {
+  ratingId: UUID!
+  patchDto: RatingPatchDTOInput!
+}
+
+input UpdateRatingForRecipeInput {
+  recipeId: UUID!
+  patchDto: RatingPatchDTOInput!
+}
+
+input UpdateRecipeInput {
+  recipeId: UUID!
+  updateDto: RecipePatchDTOInput!
+}
+
+input UpdateTagInput {
+  tagId: UUID!
+  updateDto: TagPatchDTOInput!
+}
+
+input UpdateUserByIdInput {
+  userPatchDto: UserPatchDTOInput!
+}
+
+input UserCreateDTOInput {
+  username: String!
+  email: String!
+  password: String!
+  profilePictureUrl: String
+  bio: String
+}
+
+input UserFilterInput {
+  and: [UserFilterInput!]
+  or: [UserFilterInput!]
+  id: UuidOperationFilterInput
+  username: StringOperationFilterInput
+  email: StringOperationFilterInput
+  passwordHash: StringOperationFilterInput
+  profilePictureUrl: StringOperationFilterInput
+  bio: StringOperationFilterInput
+  isActive: BooleanOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
+  updatedAt: DateTimeOperationFilterInput
+  recipes: ListFilterInputTypeOfRecipeFilterInput
+  comments: ListFilterInputTypeOfCommentFilterInput
+  ratings: ListFilterInputTypeOfRatingFilterInput
+  userRoles: ListFilterInputTypeOfUserRoleFilterInput
+  subscriptions: ListFilterInputTypeOfUserSubscriptionFilterInput
+  subscribers: ListFilterInputTypeOfUserSubscriptionFilterInput
+  likedRecipes: ListFilterInputTypeOfRecipeLikeFilterInput
+}
+
+input UserPatchDTOInput {
+  username: String
+  profilePictureUrl: String
+  bio: String
+  isActive: Boolean
+}
+
+input UserRoleFilterInput {
+  and: [UserRoleFilterInput!]
+  or: [UserRoleFilterInput!]
+  id: UuidOperationFilterInput
+  userId: UuidOperationFilterInput
+  roleId: UuidOperationFilterInput
+  user: UserFilterInput
+  role: RoleFilterInput
+}
+
+input UserSearchCriteriaInput {
+  matching: String
+  minAverageRating: Float
+  maxAverageRating: Float
+  minRecipesCount: Int
+  maxRecipesCount: Int
+  registeredAfter: DateTime
+  registeredBefore: DateTime
+  hasPublishedRecipes: Boolean
+  recipeTagNames: [String!]
+}
+
+input UserSortInput {
+  id: SortEnumType @cost(weight: "10")
+  username: SortEnumType @cost(weight: "10")
+  email: SortEnumType @cost(weight: "10")
+  passwordHash: SortEnumType @cost(weight: "10")
+  profilePictureUrl: SortEnumType @cost(weight: "10")
+  bio: SortEnumType @cost(weight: "10")
+  isActive: SortEnumType @cost(weight: "10")
+  createdAt: SortEnumType @cost(weight: "10")
+  updatedAt: SortEnumType @cost(weight: "10")
+}
+
+input UserSubscriptionFilterInput {
+  and: [UserSubscriptionFilterInput!]
+  or: [UserSubscriptionFilterInput!]
+  id: UuidOperationFilterInput
+  subscriberId: UuidOperationFilterInput
+  subscribeeId: UuidOperationFilterInput
+  subscriber: UserFilterInput
+  subscribee: UserFilterInput
+}
+
+input UserSubscriptionSortInput {
+  id: SortEnumType @cost(weight: "10")
+  subscriberId: SortEnumType @cost(weight: "10")
+  subscribeeId: SortEnumType @cost(weight: "10")
+  subscriber: UserSortInput @cost(weight: "10")
+  subscribee: UserSortInput @cost(weight: "10")
+}
+
+input UuidOperationFilterInput {
+  eq: UUID @cost(weight: "10")
+  neq: UUID @cost(weight: "10")
+  in: [UUID] @cost(weight: "10")
+  nin: [UUID] @cost(weight: "10")
+  gt: UUID @cost(weight: "10")
+  ngt: UUID @cost(weight: "10")
+  gte: UUID @cost(weight: "10")
+  ngte: UUID @cost(weight: "10")
+  lt: UUID @cost(weight: "10")
+  nlt: UUID @cost(weight: "10")
+  lte: UUID @cost(weight: "10")
+  nlte: UUID @cost(weight: "10")
+}
+
+"Defines when a policy shall be executed."
+enum ApplyPolicy {
+  "Before the resolver was executed."
+  BEFORE_RESOLVER
+  "After the resolver was executed."
+  AFTER_RESOLVER
+  "The policy is applied in the validation step before the execution."
+  VALIDATION
+}
+
+enum DifficultyLevel {
+  BEGINNER
+  EASY
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+directive @allowAnonymous repeatable on FIELD_DEFINITION
+
+"The authorize directive."
+directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the authorize directive shall be applied.By default the authorize directives are applied during the validation phase." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on OBJECT | FIELD_DEFINITION
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
+
+"The purpose of the `@listSize` directive is to either inform the static analysis about the size of returned lists (if that information is statically available), or to point the analysis to where to find that information."
+directive @listSize("The `assumedSize` argument can be used to statically define the maximum length of a list returned by a field." assumedSize: Int "The `slicingArguments` argument can be used to define which of the field's arguments with numeric type are slicing arguments, so that their value determines the size of the list returned by that field. It may specify a list of multiple slicing arguments." slicingArguments: [String!] "The `slicingArgumentDefaultValue` argument can be used to define a default value for a slicing argument, which is used if the argument is not present in a query." slicingArgumentDefaultValue: Int "The `sizedFields` argument can be used to define that the value of the `assumedSize` argument or of a slicing argument does not affect the size of a list returned by a field itself, but that of a list returned by one of its sub-fields." sizedFields: [String!] "The `requireOneSlicingArgument` argument can be used to inform the static analysis that it should expect that exactly one of the defined slicing arguments is present in a query. If that is not the case (i.e., if none or multiple slicing arguments are present), the static analysis may throw an error." requireOneSlicingArgument: Boolean! = true) on FIELD_DEFINITION
+
+"The `@specifiedBy` directive is used within the type system definition language to provide a URL for specifying the behavior of custom scalar definitions."
+directive @specifiedBy("The specifiedBy URL points to a human-readable specification. This field will only read a result for scalar types." url: String!) on SCALAR
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
+
+scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
