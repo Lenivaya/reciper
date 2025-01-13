@@ -56,6 +56,7 @@ public class QueryRecipesResolver
                 new RecipeSearchCriteriaCookingTimeHandler(),
                 new RecipeSearchCriteriaCreationDateHandler(),
                 new RecipeSearchCriteriaTagsHandler(),
+                new RecipeSearchCriteriaDifficultyHandler(),
                 new RecipeSearchCriteriaIngredientsHandler(),
                 new RecipeSearchCriteriaRatingHandler(),
             ]

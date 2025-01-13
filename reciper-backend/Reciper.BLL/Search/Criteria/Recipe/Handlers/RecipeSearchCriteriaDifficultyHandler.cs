@@ -1,9 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using Reciper.DAL.Models;
 
 namespace Reciper.BLL.Search.Criteria.Recipe.Handlers;
 
-public class RecipeSearchCriteriaTagsHandler
+public class RecipeSearchCriteriaDifficultyHandler
     : SearchCriteriaQueryHandler<ReciperContext, RecipeSearchCriteria, DAL.Models.Recipe>
 {
     public override IQueryable<DAL.Models.Recipe> HandleQuery(
@@ -14,18 +13,15 @@ public class RecipeSearchCriteriaTagsHandler
     {
         query ??= context.Recipes.AsQueryable();
 
-        if (searchCriteria?.Tags is null or { Length: 0 })
+        if (searchCriteria?.DifficultyLevels is null or { Length: 0 })
             return Next?.HandleQuery(context, searchCriteria, query) ?? query;
 
-        var patterns = searchCriteria.Tags.Select(tag => $"%{tag.ToLower()}%").ToArray();
+        var patterns = searchCriteria.DifficultyLevels.Select(dl => dl.ToString().ToLower());
 
         query = query
-            .Include(r => r.RecipeTags)
             .Where(r =>
-                patterns.All(pattern =>
-                    r.RecipeTags.Any(t =>
-                        EF.Functions.Like(t.Tag.Name.ToLower(), pattern)
-                    )
+                patterns.Any(pattern =>
+                    r.DifficultyLevel.ToString().ToLower().Contains(pattern)
                 )
             );
 

@@ -14,7 +14,7 @@ public class RecipeSearchCriteriaOverallMatchingHandler
     {
         query ??= context.Recipes.AsQueryable();
 
-        if (searchCriteria?.Matching is null)
+        if (string.IsNullOrWhiteSpace(searchCriteria?.Matching))
             return Next?.HandleQuery(context, searchCriteria, query) ?? query;
 
         var patterns = searchCriteria.Matching.Split(' ').Select(word => $"%{word}%").ToArray();
@@ -26,13 +26,18 @@ public class RecipeSearchCriteriaOverallMatchingHandler
             .ThenInclude(i => i.Ingredient)
             .Where(r =>
                 patterns.All(pattern =>
-                    r.Title.ToLower().Contains(pattern.ToLower())
-                    || r.Description.ToLower().Contains(pattern.ToLower())
-                    || r.Instructions.ToLower().Contains(pattern.ToLower())
-                    || r.RecipeTags.Any(t => t.Tag.Name.ToLower().Contains(pattern.ToLower()))
-                    || r.RecipeIngredients.Any(i =>
-                        i.Ingredient.Name.ToLower().Contains(pattern.ToLower())
+                    EF.Functions.Like(r.Title.ToLower(), pattern) ||
+                    EF.Functions.Like(r.Description.ToLower(), pattern) ||
+                    EF.Functions.Like(r.Instructions.ToLower(), pattern) ||
+                    r.RecipeTags.Any(t =>
+                        EF.Functions.Like(t.Tag.Name.ToLower(), pattern)
                     )
+                    || r.RecipeIngredients.Any(i =>
+                        EF.Functions.Like(i.Ingredient.Name.ToLower(), pattern)
+                    ) ||
+                    r.DifficultyLevel.ToString().ToLower().Contains(pattern.ToLower()) || pattern.ToLower()
+                        .Contains(r.DifficultyLevel.ToString().ToLower()
+                        )
                 )
             );
 

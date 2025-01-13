@@ -303,6 +303,8 @@ type Recipe {
   comments: [Comment!]!
   ratings: [Rating!]!
   likes: [RecipeLike!]!
+  averageRating: Float! @cost(weight: "10")
+  likesCount: Int! @cost(weight: "10")
 }
 
 type RecipeImage {
@@ -1051,6 +1053,7 @@ input RecipeSearchCriteriaInput {
   maxCookingTime: Int
   minRating: Float
   maxRating: Float
+  difficultyLevels: [DifficultyLevel!]
   createdAfter: DateTime
   createdBefore: DateTime
 }

@@ -111,6 +111,7 @@ builder
     .AddTypeExtension<SubscriptionRecipesResolver>()
     .AddTypeExtension<UserType>()
     .AddTypeExtension<UserQueryExtensions>()
+    .AddTypeExtension<RecipeQueryExtensions>()
     .UseAutomaticPersistedOperationPipeline()
     .AddRedisOperationDocumentStorage(_ =>
         ConnectionMultiplexer.Connect(redisConnectionString).GetDatabase()
@@ -148,7 +149,8 @@ app.UseCors(corsPolicyBuilder =>
 );
 
 
-if (!app.Environment.IsDevelopment()) {
+if (!app.Environment.IsDevelopment())
+{
     app.UseResponseCompression();
 }
 
