@@ -110,6 +110,7 @@ builder
     .AddSubscriptionType<Subscription>()
     .AddTypeExtension<SubscriptionRecipesResolver>()
     .AddTypeExtension<UserType>()
+    .AddTypeExtension<UserQueryExtensions>()
     .UseAutomaticPersistedOperationPipeline()
     .AddRedisOperationDocumentStorage(_ =>
         ConnectionMultiplexer.Connect(redisConnectionString).GetDatabase()

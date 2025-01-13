@@ -570,6 +570,8 @@ type User {
   subscriptions: [UserSubscription!]!
   subscribers: [UserSubscription!]!
   likedRecipes: [RecipeLike!]!
+  recipesCount: Int! @cost(weight: "10")
+  subscribersCount: Int! @cost(weight: "10")
 }
 
 "A connection to a list of items."
