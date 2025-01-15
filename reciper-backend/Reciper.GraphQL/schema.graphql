@@ -212,7 +212,7 @@ type PageInfo {
   endCursor: String
 }
 
-type Query {
+type Query @authorize {
   recipesOffset(skip: Int take: Int searchCriteria: RecipeSearchCriteriaInput where: RecipeFilterInput @cost(weight: "10") order: [RecipeSortInput!] @cost(weight: "10")): RecipesOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
   recipesCursor(searchCriteria: RecipeSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RecipeFilterInput @cost(weight: "10") order: [RecipeSortInput!] @cost(weight: "10")): RecipesCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
   recipeById(recipeId: UUID!): Recipe @cost(weight: "10")
@@ -244,7 +244,7 @@ type Query {
   userLikesCursor(userId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RecipeLikeFilterInput @cost(weight: "10") order: [RecipeLikeSortInput!] @cost(weight: "10")): UserLikesCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
   recipeLikesCursor(recipeId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RecipeLikeFilterInput @cost(weight: "10") order: [RecipeLikeSortInput!] @cost(weight: "10")): RecipeLikesCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
   likeById(likeId: UUID!): RecipeLike @cost(weight: "10")
-  likeByCompositeKey(userId: UUID! recipeId: UUID!): RecipeLike @cost(weight: "10")
+  myRecipeLike(recipeId: UUID!): RecipeLike @cost(weight: "10")
 }
 
 type Rating {

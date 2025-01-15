@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { isNone } from '@/lib/utils'
 import { graphql } from 'gql.tada'
+import { useMemo } from 'react'
 import { useQuery } from 'urql'
 
 const NavbarUserQuery = graphql(`
@@ -20,7 +21,11 @@ const extractUserNameTwoLetters = (username: string) => {
 }
 
 export function NavbarUser() {
-  const [{ data, fetching, error }] = useQuery({ query: NavbarUserQuery })
+  const context = useMemo(() => ({ additionalTypenames: ['User'] }), [])
+  const [{ data, fetching, error }] = useQuery({
+    query: NavbarUserQuery,
+    context
+  })
 
   if (error) {
     console.error(error)
