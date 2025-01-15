@@ -57,6 +57,8 @@ interface Props {
 }
 
 export const RecipeCardLike = ({ totalRecipeLikes = 0, recipeId }: Props) => {
+  const [likes, setLikes] = useState(totalRecipeLikes)
+
   const isAuthTokenPresent = useIsAuthTokenPresent()
   const { toast } = useToast()
 
@@ -68,8 +70,6 @@ export const RecipeCardLike = ({ totalRecipeLikes = 0, recipeId }: Props) => {
     pause: !isAuthTokenPresent
   })
 
-  const [likes, setLikes] = useState(totalRecipeLikes)
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_likeResult, like] = useMutation(LikeRecipeMutation)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -79,45 +79,29 @@ export const RecipeCardLike = ({ totalRecipeLikes = 0, recipeId }: Props) => {
   const isLiked = isSome(recipeLike)
 
   const handleLike = useCallback(async () => {
-    try {
-      const result = await like({ recipeId })
-      if (result.error) {
-        toast({
-          title: 'Error',
-          description: 'An error occurred while liking the recipe'
-        })
-        console.error(result.error)
-      }
-      setLikes((likes) => likes + 1)
-      console.log('Liked recipe with id', recipeId)
-    } catch (error) {
+    const result = await like({ recipeId })
+    if (result.error) {
       toast({
         title: 'Error',
         description: 'An error occurred while liking the recipe'
       })
-      console.error(error)
+      console.error(result.error)
     }
+    setLikes((likes) => likes + 1)
+    console.log('Liked recipe with id', recipeId)
   }, [like, recipeId, toast])
 
   const handleUnLike = useCallback(async () => {
-    try {
-      const result = await unlike({ recipeId })
-      if (result.error) {
-        console.error(result.error)
-        toast({
-          title: 'Error',
-          description: 'An error occurred while unliking the recipe'
-        })
-      }
-      setLikes((likes) => Math.max(likes - 1, 0))
-      console.log('Unliked recipe with id', recipeId)
-    } catch (error) {
-      console.error(error)
+    const result = await unlike({ recipeId })
+    if (result.error) {
+      console.error(result.error)
       toast({
         title: 'Error',
         description: 'An error occurred while unliking the recipe'
       })
     }
+    setLikes((likes) => Math.max(likes - 1, 0))
+    console.log('Unliked recipe with id', recipeId)
   }, [unlike, recipeId, toast])
 
   const handleToggleLike = useCallback(() => {

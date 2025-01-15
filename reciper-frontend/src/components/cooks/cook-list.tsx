@@ -2,7 +2,7 @@
 
 import { useQuery } from '@urql/next'
 import { graphql } from 'gql.tada'
-import { CookCard, CookCardFragment } from './cook-card'
+import { CookCard, CookCardFragment } from './cook-card/cook-card'
 
 const CooksListQuery = graphql(
   `

@@ -1,7 +1,7 @@
 import { getClient } from '@/lib/graphql/urql/client'
 import { graphql } from 'gql.tada'
 import { Key } from 'react'
-import { CookCard, CookCardFragment } from '../cook-card'
+import { CookCard, CookCardFragment } from '../cook-card/cook-card'
 import { cookSearchParamsCache } from './cooks-search-params'
 import { PaginationControls } from '@/components/ui/pagination-controls'
 
