@@ -9,11 +9,12 @@ import {
 } from '@/components/ui/card'
 import { format } from 'date-fns'
 import { FragmentOf, graphql, readFragment } from 'gql.tada'
-import { CalendarDays, Clock, Heart, Star, User } from 'lucide-react'
+import { CalendarDays, Clock, Star, User } from 'lucide-react'
 import Image from 'next/image'
 import { FC } from 'react'
 import { RecipeCardTags } from './recip-card-tags'
 import { RecipeCardDifficulty } from './recipe-card-difficulty'
+import { RecipeCardLike } from './recipe-card-like'
 
 export const RecipeCardFragment = graphql(`
   fragment RecipeCardFragment on Recipe {
@@ -129,10 +130,10 @@ export const RecipeCard: FC<Props> = ({ data }) => {
                 {recipe.averageRating?.toFixed(1) ?? 0}
               </span>
             </div>
-            <div className='flex items-center gap-1.5 transition-colors duration-300 hover:text-primary'>
-              <Heart className='h-4 w-4 shrink-0' />
-              <span className='text-sm font-medium'>{recipe.likesCount}</span>
-            </div>
+            <RecipeCardLike
+              recipeId={recipe.id as string}
+              totalRecipeLikes={recipe.likesCount}
+            />
           </div>
         </CardContent>
 

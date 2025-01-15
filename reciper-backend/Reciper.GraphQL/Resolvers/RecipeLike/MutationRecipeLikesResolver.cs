@@ -24,7 +24,7 @@ public class MutationRecipeLikesResolver
     [Error(typeof(ReciperException))]
     [UseFirstOrDefault]
     [UseProjection]
-    public async Task<IQueryable<DAL.Models.RecipeLike>> LikeRecipe(
+    public async Task<DAL.Models.RecipeLike> LikeRecipe(
         ReciperUnitOfWork unitOfWork,
         [Service] IMapper mapper,
         [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser,
@@ -44,15 +44,12 @@ public class MutationRecipeLikesResolver
                 throw new ReciperException("Failed to create like");
 
             await unitOfWork.SaveChanges();
-            return unitOfWork
-                .RecipeLikesRepository.StartQuery()
-                .AsNoTracking()
-                .Where(l => l.Id == like.Id);
+            return like;
         }
         catch (DbUpdateException e)
             when (e.InnerException is SqlException
-                && e.InnerException.Message.Contains("duplicate key")
-            )
+                  && e.InnerException.Message.Contains("duplicate key")
+                 )
         {
             throw new ReciperException("Recipe is already liked");
         }
@@ -103,9 +100,9 @@ public class MutationRecipeLikesResolver
     )
     {
         return authenticatedUser != null
-            && await unitOfWork
-                .RecipeLikesRepository.StartQuery()
-                .AsNoTracking()
-                .AnyAsync(like => like.Id == likeId && like.UserId == authenticatedUser.UserId);
+               && await unitOfWork
+                   .RecipeLikesRepository.StartQuery()
+                   .AsNoTracking()
+                   .AnyAsync(like => like.Id == likeId && like.UserId == authenticatedUser.UserId);
     }
 }
