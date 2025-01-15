@@ -50,6 +50,7 @@ export function RecipeCardDifficulty({
         getDifficultyColor(difficultyLevel),
         'border-none capitalize shadow-none'
       )}
+      variant='tag'
       onClick={() => handleDifficultyLevelClick(difficultyLevel)}
     >
       {difficultyLevel.toLowerCase()}

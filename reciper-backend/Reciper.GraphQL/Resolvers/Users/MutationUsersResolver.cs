@@ -3,6 +3,7 @@ using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Reciper.BLL.Contracts;
 using Reciper.BLL.DTO;
+using Reciper.BLL.Exceptions;
 using Reciper.BLL.Services;
 using Reciper.DAL.Models;
 using Reciper.DAL.UnitOfWork;
@@ -12,6 +13,8 @@ using Reciper.GraphQL.Schema;
 namespace Reciper.GraphQL.Resolvers.Users;
 
 public record UserLoginPayload(string? Token, User? User);
+
+public record UserRegisterPayload(string? Token, User? User);
 
 [ExtendObjectType(typeof(Mutation))]
 [Authorize]
@@ -30,16 +33,18 @@ public class MutationUsersResolver
     )
     {
         return authenticatedUser != null
-            && await unitOfWork
-                .UsersRepository.StartQuery()
-                .AsNoTracking()
-                .AnyAsync(user => user.Id == authenticatedUser.UserId);
+               && await unitOfWork
+                   .UsersRepository.StartQuery()
+                   .AsNoTracking()
+                   .AnyAsync(user => user.Id == authenticatedUser.UserId);
     }
 
+    [Error(typeof(ReciperException))]
     [AllowAnonymous]
-    public async Task<User?> RegisterUser(
+    public async Task<UserRegisterPayload> RegisterUser(
         [Service] IMapper mapper,
         [Service] IPasswordService passwordService,
+        [Service] ITokenService tokenService,
         ReciperUnitOfWork unitOfWork,
         UserCreateDTO userCreateDto
     )
@@ -48,13 +53,16 @@ public class MutationUsersResolver
         account.PasswordHash = passwordService.HashPassword(userCreateDto.Password);
 
         if (!await unitOfWork.UsersRepository.Insert(account))
-            return null;
+            throw new ReciperException("Error while creating user");
 
         await unitOfWork.SaveChanges();
 
-        return account;
+        var token = tokenService.GenerateToken(account.Id.ToString(), account.Email);
+
+        return new UserRegisterPayload(token, account);
     }
 
+    [Error(typeof(ReciperException))]
     [AllowAnonymous]
     public async Task<UserLoginPayload> LoginUser(
         [Service] IMapper mapper,
@@ -67,15 +75,15 @@ public class MutationUsersResolver
         var account = await unitOfWork
             .UsersRepository.StartQuery()
             .AsNoTracking()
-            .FirstOrDefaultAsync(seeker => seeker.Email == loginDto.Email);
+            .FirstOrDefaultAsync(seeker => seeker.Email == loginDto.Login || seeker.Username == loginDto.Login);
 
         if (account == null)
-            return new UserLoginPayload(null, null);
+            throw new ReciperException("Invalid credentials");
 
         var isAuthorized = passwordService.VerifyPassword(loginDto.Password, account.PasswordHash);
 
         if (!isAuthorized)
-            return new UserLoginPayload(null, null);
+            throw new ReciperException("Invalid credentials");
 
         var token = tokenService.GenerateToken(account.Id.ToString(), account.Email);
 

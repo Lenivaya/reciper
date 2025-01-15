@@ -5,15 +5,17 @@ import { Tag } from 'lucide-react'
 
 interface RecipeCardTagProps {
   tag: string
-  index: number
   onClick?: (tag: string) => void
+  index: number
 }
 
-export function RecipeCardTag({ tag, index, onClick }: RecipeCardTagProps) {
+export function RecipeCardTag({ tag, onClick, index }: RecipeCardTagProps) {
+  const colors = getTagColorV2(index)
   return (
     <Badge
       onClick={() => onClick?.(tag)}
-      className={cn(getTagColorV2(index), 'border-none shadow-none')}
+      variant='tag'
+      className={cn('cursor-pointer', colors)}
     >
       <Tag className='mr-1 h-3 w-3' />
       <span className='capitalize'>{tag}</span>

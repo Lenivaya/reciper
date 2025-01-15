@@ -11,6 +11,7 @@ import { format } from 'date-fns'
 import { FragmentOf, graphql, readFragment } from 'gql.tada'
 import { CalendarDays, Users, Utensils } from 'lucide-react'
 import { FC } from 'react'
+import { ZoomableImage } from '../ui/zoomable-image'
 
 export const CookCardFragment = graphql(`
   fragment CookCardFragment on User {
@@ -39,12 +40,15 @@ export const CookCard: FC<Props> = ({ data }) => {
 
         <CardHeader className='relative space-y-4'>
           <div className='flex items-center space-x-4'>
-            <Avatar className='h-12 w-12 shrink-0 ring-2 ring-border/40 transition-all duration-300 group-hover:scale-110 group-hover:ring-border/60'>
-              <AvatarImage src={cook.profilePictureUrl ?? ''} />
-              <AvatarFallback className='bg-gradient-to-r from-rose-500/10 to-amber-500/10'>
-                {cook.username[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            <ZoomableImage src={cook.profilePictureUrl ?? ''}>
+              <Avatar className='h-12 w-12 shrink-0 ring-2 ring-border/40 transition-all duration-300 group-hover:scale-110 group-hover:ring-border/60'>
+                <AvatarImage src={cook.profilePictureUrl ?? ''} />
+                <AvatarFallback className='bg-gradient-to-r from-rose-500/10 to-amber-500/10'>
+                  {cook.username[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </ZoomableImage>
+
             <div className='min-w-0'>
               <CardTitle className='truncate text-lg font-bold transition-colors duration-300 group-hover:text-primary'>
                 {cook.username}
