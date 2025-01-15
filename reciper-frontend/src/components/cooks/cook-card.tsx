@@ -13,7 +13,7 @@ interface CookCardProps {
 
 export const CookCard: FC<CookCardProps> = ({ cook }) => {
   return (
-    <div className="group relative overflow-hidden rounded-lg border bg-card p-3 transition-colors hover:border-primary">
+    <div className='group relative overflow-hidden rounded-lg border bg-card p-3 transition-colors hover:border-primary'>
       {/* ... existing avatar and name code ... */}
 
       <div className='flex justify-center gap-6'>

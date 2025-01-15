@@ -13,10 +13,12 @@ import { recipeSearchParamsSchema } from './recipes-search-params'
 
 interface RecipesSearchProps {
   isAutoFocusable?: boolean
+  isClient?: boolean
 }
 
 export const RecipesSearch = ({
-  isAutoFocusable = false
+  isAutoFocusable = false,
+  isClient = false
 }: RecipesSearchProps) => {
   const inputRef = useRef<HTMLInputElement>(null)
   const [search, setSearch] = useState('')
@@ -43,8 +45,9 @@ export const RecipesSearch = ({
   })
 
   useEffect(() => {
+    if (isClient) return
     setSearch(paramsSearch)
-  }, [paramsSearch])
+  }, [paramsSearch, isClient])
 
   useEffect(() => {
     if (isAutoFocusable && inputRef.current) {

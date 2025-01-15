@@ -7,7 +7,7 @@ import {
   PaginationItem,
   PaginationLink,
   PaginationNext,
-  PaginationPrevious,
+  PaginationPrevious
 } from '@/components/ui/pagination'
 import { cn } from '@/lib/utils'
 import { useCallback } from 'react'
@@ -56,21 +56,30 @@ export function PaginationControls({
     next: 'Next',
     previous: 'Previous',
     first: 'First',
-    last: 'Last',
+    last: 'Last'
   },
-  onPageChange,
+  onPageChange
 }: PaginationControlsProps) {
-  const createPageUrl = useCallback((pageNum: number) => {
-    const searchParams = new URLSearchParams({ ...params, page: String(pageNum) })
-    return `?${searchParams.toString()}`
-  }, [params])
+  const createPageUrl = useCallback(
+    (pageNum: number) => {
+      const searchParams = new URLSearchParams({
+        ...params,
+        page: String(pageNum)
+      })
+      return `?${searchParams.toString()}`
+    },
+    [params]
+  )
 
-  const handlePageClick = useCallback((pageNum: number, event?: React.MouseEvent) => {
-    if (onPageChange) {
-      event?.preventDefault()
-      onPageChange(pageNum)
-    }
-  }, [onPageChange])
+  const handlePageClick = useCallback(
+    (pageNum: number, event?: React.MouseEvent) => {
+      if (onPageChange) {
+        event?.preventDefault()
+        onPageChange(pageNum)
+      }
+    },
+    [onPageChange]
+  )
 
   const getVisiblePages = useCallback(() => {
     const pages: (number | 'ellipsis')[] = []
@@ -101,20 +110,23 @@ export function PaginationControls({
     return pages
   }, [currentPage, totalPages, maxVisiblePages, showFirstLast, showEllipsis])
 
-  const renderPageLink = useCallback((page: number, isActive: boolean) => {
-    const props = onPageChange
-      ? {
-          onClick: (e: React.MouseEvent) => handlePageClick(page, e),
-          href: createPageUrl(page),
-        }
-      : { href: createPageUrl(page) }
+  const renderPageLink = useCallback(
+    (page: number, isActive: boolean) => {
+      const props = onPageChange
+        ? {
+            onClick: (e: React.MouseEvent) => handlePageClick(page, e),
+            href: createPageUrl(page)
+          }
+        : { href: createPageUrl(page) }
 
-    return (
-      <PaginationLink {...props} isActive={isActive}>
-        {page}
-      </PaginationLink>
-    )
-  }, [createPageUrl, handlePageClick, onPageChange])
+      return (
+        <PaginationLink {...props} isActive={isActive}>
+          {page}
+        </PaginationLink>
+      )
+    },
+    [createPageUrl, handlePageClick, onPageChange]
+  )
 
   if (totalPages <= 1) return null
 

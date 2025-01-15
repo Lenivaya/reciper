@@ -56,8 +56,8 @@ public class MutationUserSubscriptionsResolver
         }
         catch (DbUpdateException e)
             when (e.InnerException is SqlException
-                && e.InnerException.Message.Contains("duplicate key")
-            )
+                  && e.InnerException.Message.Contains("duplicate key")
+                 )
         {
             throw new ReciperException("Subscription already exists");
         }
@@ -108,11 +108,11 @@ public class MutationUserSubscriptionsResolver
     )
     {
         return authenticatedUser != null
-            && await unitOfWork
-                .SubscriptionsRepository.StartQuery()
-                .AsNoTracking()
-                .AnyAsync(sub =>
-                    sub.Id == subscriptionId && sub.SubscriberId == authenticatedUser.UserId
-                );
+               && await unitOfWork
+                   .SubscriptionsRepository.StartQuery()
+                   .AsNoTracking()
+                   .AnyAsync(sub =>
+                       sub.Id == subscriptionId && sub.SubscriberId == authenticatedUser.UserId
+                   );
     }
 }

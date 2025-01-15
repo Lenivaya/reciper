@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Reciper.DAL.Models;
+using Reciper.GraphQL.Interceptors;
 
 namespace Reciper.GraphQL.Resolvers.Users;
 
@@ -28,5 +29,35 @@ public class UserQueryExtensions
     )
     {
         return await context.UserSubscriptions.CountAsync(subscription => subscription.SubscribeeId == user.Id);
+    }
+
+    public async Task<int> GetLikesCount(
+        ReciperContext context,
+        [Parent] User user
+    )
+    {
+        return await context.RecipeLikes.CountAsync(like => like.UserId == user.Id);
+    }
+
+    public async Task<int> GetTotalRecipesLikes(
+        ReciperContext context,
+        [Parent] User user
+    )
+    {
+        return await context.RecipeLikes.Include(rl => rl.Recipe)
+            .CountAsync(like => like.Recipe.UserId == user.Id);
+    }
+
+    public async Task<bool> IsSubscribed(
+        ReciperContext context,
+        [Parent] User user,
+        [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser
+    )
+    {
+        if (authenticatedUser == null)
+            return false;
+
+        return await context.UserSubscriptions.AnyAsync(sub =>
+            sub.SubscriberId == authenticatedUser.UserId && sub.SubscribeeId == user.Id);
     }
 }
