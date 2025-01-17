@@ -1,3 +1,4 @@
+import { AddRecipeDialog } from '@/components/forms/recipes/add-recipe/add-recipe-dialog'
 import { RecipesSearch } from '@/components/recipes/recipes-search/recipes-search'
 import { RecipesSearchList } from '@/components/recipes/recipes-search/recipes-search-list'
 import { recipeSearchParamsCache } from '@/components/recipes/recipes-search/recipes-search-params'
@@ -46,6 +47,8 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
           </Suspense>
         </div>
       </div>
+
+      <AddRecipeDialog />
     </main>
   )
 }

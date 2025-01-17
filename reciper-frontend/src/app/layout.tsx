@@ -1,5 +1,6 @@
 import { Navbar } from '@/components/layout/navbar/navbar'
 import { Toaster } from '@/components/ui/toaster'
+import { Toaster as Sonner } from "@/components/ui/sonner"
 import { AppUrqlClient } from '@/lib/graphql/urql/AppUrqlClient'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
@@ -36,6 +37,7 @@ export default function RootLayout({
             <Navbar />
             <div className='mb-10 mt-10'>{children}</div>
             <Toaster />
+            <Sonner />
           </AppUrqlClient>
         </NuqsAdapter>
       </body>

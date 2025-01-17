@@ -51,7 +51,7 @@ interface Props {
 
 export const RecipeCard: FC<Props> = ({ data }) => {
   const recipe = readFragment(RecipeCardFragment, data)
-  const coverImage = recipe.images.find((img) => img.order === 0)
+  const coverImage = recipe.images.sort((a, b) => a.order - b.order).at(0)
 
   return (
     <div className='group transform transition-all duration-300 hover:-translate-y-1'>

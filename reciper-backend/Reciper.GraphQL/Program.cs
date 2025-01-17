@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json.Serialization;
+using CloudinaryDotNet;
 using HotChocolate.AspNetCore.Voyager;
 using HotChocolate.Language;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,6 +11,7 @@ using Microsoft.IdentityModel.Tokens;
 using Reciper.BLL.Contracts;
 using Reciper.BLL.DTO;
 using Reciper.BLL.Services;
+using Reciper.DAL.Migrations;
 using Reciper.DAL.Models;
 using Reciper.DAL.UnitOfWork;
 using Reciper.GraphQL.Interceptors;
@@ -77,10 +79,24 @@ builder.Services.AddTransient<IPasswordService, PasswordService>()
     ))
     ;
 
+builder.Services.AddTransient<ICloudinary>(prov =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("Cloudinary");
+    var cloudinary = new Cloudinary(connectionString)
+    {
+        Api =
+        {
+            Secure = true
+        }
+    };
+    return cloudinary;
+});
+
 builder.Services.AddSha256DocumentHashProvider(HashFormat.Hex);
 
 builder
     .Services.AddGraphQLServer()
+    .AddType<UploadType>()
     .AddAuthorization()
     .RegisterDbContextFactory<ReciperContext>()
     .AddRedisSubscriptions(_ => ConnectionMultiplexer.Connect(redisConnectionString))

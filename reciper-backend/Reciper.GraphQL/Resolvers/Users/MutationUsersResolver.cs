@@ -1,3 +1,5 @@
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using HotChocolate.Authorization;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
@@ -119,5 +121,61 @@ public class MutationUsersResolver
                 userPatchDto
             )
             : null;
+    }
+
+    [Error(typeof(ReciperException))]
+    [UseFirstOrDefault]
+    [UseProjection]
+    public async Task<IQueryable<User>> UpdateUserProfilePhoto(
+        ReciperUnitOfWork unitOfWork,
+        [Service] ICloudinary cloudinary,
+        [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser, IFile file
+    )
+    {
+        try
+        {
+            var user = await unitOfWork.UsersRepository
+                .StartQuery().Where(u => u.Id == authenticatedUser!.UserId)
+                .Include(u => u.Images)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+                throw new ReciperException("User not found");
+
+            await using Stream stream = file.OpenReadStream();
+
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(file.Name, stream)
+            };
+            var uploadResult = await cloudinary.UploadAsync(uploadParams);
+
+            await unitOfWork.BeginTransaction();
+            var newPhoto = new UserImage
+            {
+                Order = 1,
+                PublicId = uploadResult.PublicId,
+                Url = uploadResult.Url.ToString(),
+                CreatedAt = uploadResult.CreatedAt,
+                User = user
+            };
+            var success = await unitOfWork.UserImagesRepository.Insert(newPhoto);
+            if (!success)
+                throw new ReciperException("Error while inserting photo to db");
+
+            user.Images.Add(newPhoto);
+            user.ProfilePictureUrl = newPhoto.Url;
+
+            await unitOfWork.Commit();
+
+            return unitOfWork.UsersRepository
+                .StartQuery()
+                .AsNoTracking()
+                .Where(u => u.Id == authenticatedUser.UserId);
+        }
+        catch (Exception e)
+        {
+            throw new ReciperException(e.Message);
+        }
     }
 }

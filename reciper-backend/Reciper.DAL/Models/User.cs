@@ -42,7 +42,6 @@ public class User
     /// <summary>
     /// Gets or sets the URL of the user's profile picture. Optional, limited to 255 characters.
     /// </summary>
-    [MaxLength(255)]
     public string? ProfilePictureUrl { get; set; }
 
     /// <summary>
@@ -105,4 +104,10 @@ public class User
     /// Gets or sets the collection of recipes liked by the user.
     /// </summary>
     public virtual ICollection<RecipeLike> LikedRecipes { get; set; } = new List<RecipeLike>();
+
+
+    /// <summary>
+    /// Gets or sets the collection of images associated with this user.
+    /// </summary>
+    public virtual ICollection<UserImage> Images { get; set; } = new List<UserImage>();
 }

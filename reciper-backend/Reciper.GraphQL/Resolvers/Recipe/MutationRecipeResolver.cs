@@ -1,3 +1,5 @@
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using HotChocolate.Authorization;
 using HotChocolate.Subscriptions;
 using MapsterMapper;
@@ -5,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Reciper.BLL.DTO;
 using Reciper.BLL.Exceptions;
 using Reciper.BLL.Services;
+using Reciper.DAL.Models;
 using Reciper.DAL.UnitOfWork;
 using Reciper.GraphQL.Interceptors;
 using Reciper.GraphQL.Schema;
@@ -98,11 +101,70 @@ public class MutationRecipesResolver
     )
     {
         return authenticatedUser != null
-            && await unitOfWork
-                .RecipesRepository.StartQuery()
+               && await unitOfWork
+                   .RecipesRepository.StartQuery()
+                   .AsNoTracking()
+                   .AnyAsync(recipe =>
+                       recipe.Id == recipeId && recipe.UserId == authenticatedUser.UserId
+                   );
+    }
+
+    [Error(typeof(ReciperException))]
+    [UseFirstOrDefault]
+    [UseProjection]
+    public async Task<IQueryable<DAL.Models.Recipe>> AddRecipePhoto(
+        ReciperUnitOfWork unitOfWork,
+        [Service] ICloudinary cloudinary,
+        [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser,
+        Guid recipeId,
+        int order,
+        IFile file
+    )
+    {
+        try
+        {
+            var recipe = await unitOfWork.RecipesRepository
+                .StartQuery().Where(r =>
+                    r.UserId == authenticatedUser!.UserId
+                    && r.Id == recipeId)
+                .Include(r => r.Images)
+                .FirstOrDefaultAsync();
+
+            if (recipe == null)
+                throw new ReciperException("Recipe not found");
+
+            await using Stream stream = file.OpenReadStream();
+
+            var uploadParams = new ImageUploadParams
+            {
+                File = new FileDescription(file.Name, stream)
+            };
+            var uploadResult = await cloudinary.UploadAsync(uploadParams);
+
+            await unitOfWork.BeginTransaction();
+            var newPhoto = new RecipeImage
+            {
+                Order = order,
+                PublicId = uploadResult.PublicId,
+                Url = uploadResult.Url.ToString(),
+                CreatedAt = uploadResult.CreatedAt,
+                Recipe = recipe
+            };
+            var success = await unitOfWork.RecipeImagesRepository.Insert(newPhoto);
+            if (!success)
+                throw new ReciperException("Error while inserting photo to db");
+
+            recipe.Images.Add(newPhoto);
+            await unitOfWork.Commit();
+
+            return unitOfWork.RecipesRepository
+                .StartQuery()
                 .AsNoTracking()
-                .AnyAsync(recipe =>
-                    recipe.Id == recipeId && recipe.UserId == authenticatedUser.UserId
-                );
+                .Where(r => r.Id == recipe.Id);
+        }
+        catch (Exception e)
+        {
+            throw new ReciperException(e.Message);
+        }
     }
 }

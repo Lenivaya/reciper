@@ -73,7 +73,10 @@ const client = createClient({
   fetchOptions: () => {
     const { token } = initializeAuthState()
     return {
-      headers: { Authorization: 'Bearer ' + token }
+      headers: {
+        Authorization: 'Bearer ' + token,
+        'GraphQL-Preflight': 1
+      }
     }
   },
   suspense: true

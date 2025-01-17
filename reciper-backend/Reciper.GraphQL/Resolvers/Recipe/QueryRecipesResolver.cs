@@ -68,7 +68,7 @@ public class QueryRecipesResolver
 
 
     /// <summary>
-    /// Returns recipes liked by user and saved for the future
+    /// Returns recipes liked by user
     /// </summary>
     /// <param name="context"></param>
     /// <param name="searchCriteria"></param>

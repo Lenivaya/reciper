@@ -1,17 +1,22 @@
 'use client'
 
+import { FileUploader } from '@/components/file-uploader'
 import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { useControllableState } from '@/hooks/use-controllable-state'
 import { useToast } from '@/hooks/use-toast'
+import { isSome } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@urql/next'
 import { FragmentOf, graphql, readFragment } from 'gql.tada'
@@ -42,7 +47,10 @@ const settingsSchema = z.object({
     .nullable()
 })
 
-type SettingsFormValues = z.infer<typeof settingsSchema>
+type SettingsFormValues = z.infer<typeof settingsSchema> & {
+  profilePicture?: File
+  profilePictureUrl?: string
+}
 
 const UpdateUserMutation = graphql(`
   mutation UpdateUser(
@@ -74,6 +82,16 @@ const UpdateUserMutation = graphql(`
   }
 `)
 
+const UpdateUserProfilePhotoMutation = graphql(`
+  mutation UpdateUserProfilePhoto($input: UpdateUserProfilePhotoInput!) {
+    updateUserProfilePhoto(input: $input) {
+      user {
+        profilePictureUrl
+      }
+    }
+  }
+`)
+
 interface SettingsFormProps {
   data: FragmentOf<typeof UpdateUserFragment>
 }
@@ -83,6 +101,13 @@ export function SettingsForm({ data }: SettingsFormProps) {
 
   const { toast } = useToast()
   const [{ fetching }, updateUser] = useMutation(UpdateUserMutation)
+  const [{ fetching: isUploading }, updateProfilePhoto] = useMutation(
+    UpdateUserProfilePhotoMutation
+  )
+
+  const [files, setFiles] = useControllableState<File[]>({
+    defaultProp: []
+  })
 
   const form = useForm<SettingsFormValues>({
     resolver: zodResolver(settingsSchema),
@@ -96,9 +121,36 @@ export function SettingsForm({ data }: SettingsFormProps) {
   const onSubmit = useCallback(
     async (values: SettingsFormValues) => {
       try {
+        const isThereFile = isSome(files?.[0])
+        if (isThereFile) {
+          const uploadResult = await updateProfilePhoto(
+            {
+              input: {
+                file: files[0]
+              }
+            },
+            {
+              headers: {
+                'GraphQL-Preflight': 1
+              }
+            }
+          )
+
+          if (uploadResult.error) {
+            toast({
+              title: 'Error',
+              description: 'Failed to upload profile photo',
+              variant: 'destructive'
+            })
+            return
+          }
+        }
+
         const result = await updateUser({
           username: values.username,
-          profilePictureUrl: values.profilePictureUrl || null,
+          profilePictureUrl: isThereFile
+            ? null // Since we already uploading it as file
+            : values.profilePictureUrl || null,
           bio: values.bio || null
         })
 
@@ -124,6 +176,8 @@ export function SettingsForm({ data }: SettingsFormProps) {
           return
         }
 
+        setFiles([])
+
         toast({
           title: 'Settings updated',
           description: 'Your profile has been updated successfully'
@@ -137,12 +191,12 @@ export function SettingsForm({ data }: SettingsFormProps) {
         })
       }
     },
-    [updateUser, form, toast]
+    [updateUser, updateProfilePhoto, form, toast, files, setFiles]
   )
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
         <FormField
           control={form.control}
           name='username'
@@ -161,6 +215,21 @@ export function SettingsForm({ data }: SettingsFormProps) {
           )}
         />
 
+        <div className='space-y-2'>
+          <Label>Profile Picture</Label>
+          <FileUploader
+            accept={{ 'image/*': [] }}
+            maxFileCount={1}
+            maxSize={1024 * 1024 * 2} // 2MB
+            value={files}
+            onValueChange={setFiles}
+            disabled={fetching || isUploading}
+          />
+          <p className='text-sm text-muted-foreground'>
+            Upload a profile picture or provide a URL. Maximum file size: 2MB
+          </p>
+        </div>
+
         <FormField
           control={form.control}
           name='profilePictureUrl'
@@ -169,12 +238,15 @@ export function SettingsForm({ data }: SettingsFormProps) {
               <FormLabel>Profile Picture URL</FormLabel>
               <FormControl>
                 <Input
-                  placeholder='https://example.com/your-picture.jpg'
+                  placeholder='https://example.com/avatar.jpg'
                   {...field}
                   value={field.value ?? ''}
                   disabled={fetching}
                 />
               </FormControl>
+              <FormDescription>
+                Alternatively, you can provide a URL to your profile picture
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -206,8 +278,8 @@ export function SettingsForm({ data }: SettingsFormProps) {
           </div>
         )}
 
-        <Button type='submit' disabled={fetching}>
-          {fetching ? (
+        <Button type='submit' disabled={fetching || isUploading}>
+          {fetching || isUploading ? (
             <>
               <span className='mr-2'>Saving</span>
               <span className='h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent' />
