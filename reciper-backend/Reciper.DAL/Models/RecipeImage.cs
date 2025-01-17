@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Reciper.DAL.Contracts;
 
 namespace Reciper.DAL.Models;
 
@@ -6,13 +8,19 @@ namespace Reciper.DAL.Models;
 /// Represents an image associated with a recipe.
 /// Multiple images can be associated with a single recipe and ordered using the Order property.
 /// </summary>
-public class RecipeImage
+public class RecipeImage : ICloudinaryImage
 {
     /// <summary>
     /// Gets or sets the unique identifier for the recipe image.
     /// </summary>
     [Key]
     public Guid Id { get; set; }
+
+    /// <summary>
+    /// Image id from cloudinary
+    /// </summary>
+    [Required]
+    public string PublicId { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the URL where the image is stored.
@@ -30,6 +38,12 @@ public class RecipeImage
     /// Gets or sets the ID of the recipe this image belongs to.
     /// </summary>
     public Guid RecipeId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the timestamp when the image was created
+    /// </summary>
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public DateTime CreatedAt { get; set; }
 
     /// <summary>
     /// Gets or sets the recipe this image belongs to. Navigation property.

@@ -20,12 +20,14 @@ public class RecipeSearchCriteriaOverallMatchingHandler
         var patterns = searchCriteria.Matching.Split(' ').Select(word => $"%{word}%").ToArray();
 
         query = query
+            .Include(r => r.User)
             .Include(r => r.RecipeTags)
             .ThenInclude(t => t.Tag)
             .Include(r => r.RecipeIngredients)
             .ThenInclude(i => i.Ingredient)
             .Where(r =>
                 patterns.All(pattern =>
+                    EF.Functions.Like(r.User.Username, pattern) ||
                     EF.Functions.Like(r.Title.ToLower(), pattern) ||
                     EF.Functions.Like(r.Description.ToLower(), pattern) ||
                     EF.Functions.Like(r.Instructions.ToLower(), pattern) ||

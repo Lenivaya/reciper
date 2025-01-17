@@ -22,7 +22,9 @@ public class UnitOfWork<TContext>(TContext context, ILogger logger) : IUnitOfWor
     /// <param name="contextFactory">The factory for creating DbContext instances.</param>
     /// <param name="logger">The logger instance for error logging.</param>
     public UnitOfWork(IDbContextFactory<TContext> contextFactory, ILogger logger)
-        : this(contextFactory.CreateDbContext(), logger) { }
+        : this(contextFactory.CreateDbContext(), logger)
+    {
+    }
 
     /// <summary>
     /// Gets the current database context instance.

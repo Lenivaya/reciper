@@ -28,6 +28,11 @@ type AddRecipePayload {
   errors: [AddRecipeError!]
 }
 
+type AddRecipePhotoPayload {
+  recipe: Recipe
+  errors: [AddRecipePhotoError!]
+}
+
 type AddTagPayload {
   tag: Tag
   errors: [AddTagError!]
@@ -174,6 +179,7 @@ type Mutation @authorize @authorize @authorize @authorize @authorize @authorize 
   addRecipe(input: AddRecipeInput!): AddRecipePayload! @cost(weight: "10")
   deleteRecipeById(input: DeleteRecipeByIdInput!): DeleteRecipeByIdPayload! @cost(weight: "10")
   updateRecipe(input: UpdateRecipeInput!): UpdateRecipePayload! @cost(weight: "10")
+  addRecipePhoto(input: AddRecipePhotoInput!): AddRecipePhotoPayload! @cost(weight: "10")
   addTag(input: AddTagInput!): AddTagPayload! @cost(weight: "10")
   deleteTagById(input: DeleteTagByIdInput!): DeleteTagByIdPayload! @cost(weight: "10")
   updateTag(input: UpdateTagInput!): UpdateTagPayload! @cost(weight: "10")
@@ -184,6 +190,7 @@ type Mutation @authorize @authorize @authorize @authorize @authorize @authorize 
   loginUser(input: LoginUserInput!): LoginUserPayload! @allowAnonymous @cost(weight: "10")
   deleteUser: DeleteUserPayload! @cost(weight: "10")
   updateUser(input: UpdateUserInput!): UpdateUserPayload! @cost(weight: "10")
+  updateUserProfilePhoto(input: UpdateUserProfilePhotoInput!): UpdateUserProfilePhotoPayload! @cost(weight: "10")
   addComment(input: AddCommentInput!): AddCommentPayload! @cost(weight: "10")
   deleteCommentById(input: DeleteCommentByIdInput!): DeleteCommentByIdPayload! @cost(weight: "10")
   updateComment(input: UpdateCommentInput!): UpdateCommentPayload! @cost(weight: "10")
@@ -315,11 +322,11 @@ type Query {
   myRecipesCursor(searchCriteria: RecipeSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RecipeFilterInput @cost(weight: "10") order: [RecipeSortInput!] @cost(weight: "10")): MyRecipesCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
   mySavedRecipesOffset(skip: Int take: Int searchCriteria: RecipeSearchCriteriaInput where: RecipeFilterInput @cost(weight: "10") order: [RecipeSortInput!] @cost(weight: "10")): MySavedRecipesOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
   recipeById(recipeId: UUID!): Recipe @cost(weight: "10")
-  tagsOffset(skip: Int take: Int where: TagFilterInput @cost(weight: "10") order: [TagSortInput!] @cost(weight: "10")): TagsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
-  tagsCursor("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: TagFilterInput @cost(weight: "10") order: [TagSortInput!] @cost(weight: "10")): TagsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  tagsOffset(skip: Int take: Int searchCriteria: TagSearchCriteriaInput where: TagFilterInput @cost(weight: "10") order: [TagSortInput!] @cost(weight: "10")): TagsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  tagsCursor(searchCriteria: TagSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: TagFilterInput @cost(weight: "10") order: [TagSortInput!] @cost(weight: "10")): TagsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
   tagById(tagId: UUID!): Tag @cost(weight: "10")
-  ingredientsOffset(skip: Int take: Int where: IngredientFilterInput @cost(weight: "10") order: [IngredientSortInput!] @cost(weight: "10")): IngredientsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
-  ingredientsCursor("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: IngredientFilterInput @cost(weight: "10") order: [IngredientSortInput!] @cost(weight: "10")): IngredientsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  ingredientsOffset(skip: Int take: Int searchCriteria: IngredientSearchCriteriaInput where: IngredientFilterInput @cost(weight: "10") order: [IngredientSortInput!] @cost(weight: "10")): IngredientsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  ingredientsCursor(searchCriteria: IngredientSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: IngredientFilterInput @cost(weight: "10") order: [IngredientSortInput!] @cost(weight: "10")): IngredientsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
   ingredientById(ingredientId: UUID!): Ingredient @cost(weight: "10")
   me: User @cost(weight: "10")
   usersOffset(skip: Int take: Int searchCriteria: UserSearchCriteriaInput where: UserFilterInput @cost(weight: "10") order: [UserSortInput!] @cost(weight: "10")): UsersOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
@@ -414,9 +421,11 @@ type Recipe {
 
 type RecipeImage {
   id: UUID!
+  publicId: String!
   url: String!
   order: Int!
   recipeId: UUID!
+  createdAt: DateTime!
   recipe: Recipe!
 }
 
@@ -664,6 +673,11 @@ type UpdateUserPayload {
   errors: [UpdateUserError!]
 }
 
+type UpdateUserProfilePhotoPayload {
+  user: User
+  errors: [UpdateUserProfilePhotoError!]
+}
+
 type User {
   id: UUID!
   username: String!
@@ -679,11 +693,22 @@ type User {
   subscriptions: [UserSubscription!]!
   subscribers: [UserSubscription!]!
   likedRecipes: [RecipeLike!]!
+  images: [UserImage!]!
   recipesCount: Int! @cost(weight: "10")
   subscribersCount: Int! @cost(weight: "10")
   likesCount: Int! @cost(weight: "10")
   totalRecipesLikes: Int! @cost(weight: "10")
   isSubscribed: Boolean! @cost(weight: "10")
+}
+
+type UserImage {
+  id: UUID!
+  publicId: String!
+  url: String!
+  order: Int!
+  userId: UUID!
+  createdAt: DateTime!
+  user: User!
 }
 
 "A connection to a list of items."
@@ -778,6 +803,8 @@ union AddRatingError = ReciperError
 
 union AddRecipeError = ReciperError
 
+union AddRecipePhotoError = ReciperError
+
 union AddTagError = ReciperError
 
 union DeleteCommentByIdError = ReciperError
@@ -822,6 +849,8 @@ union UpdateTagError = ReciperError
 
 union UpdateUserError = ReciperError
 
+union UpdateUserProfilePhotoError = ReciperError
+
 input AddCommentInput {
   createDto: CommentCreateDTOInput!
 }
@@ -836,6 +865,12 @@ input AddRatingInput {
 
 input AddRecipeInput {
   createDto: RecipeCreateDTOInput!
+}
+
+input AddRecipePhotoInput {
+  recipeId: UUID!
+  order: Int!
+  file: Upload!
 }
 
 input AddTagInput {
@@ -950,6 +985,10 @@ input IngredientPatchDTOInput {
   name: String
 }
 
+input IngredientSearchCriteriaInput {
+  overallMatching: String
+}
+
 input IngredientSortInput {
   id: SortEnumType @cost(weight: "10")
   name: SortEnumType @cost(weight: "10")
@@ -1020,6 +1059,13 @@ input ListFilterInputTypeOfRecipeTagFilterInput {
   all: RecipeTagFilterInput @cost(weight: "10")
   none: RecipeTagFilterInput @cost(weight: "10")
   some: RecipeTagFilterInput @cost(weight: "10")
+  any: Boolean @cost(weight: "10")
+}
+
+input ListFilterInputTypeOfUserImageFilterInput {
+  all: UserImageFilterInput @cost(weight: "10")
+  none: UserImageFilterInput @cost(weight: "10")
+  some: UserImageFilterInput @cost(weight: "10")
   any: Boolean @cost(weight: "10")
 }
 
@@ -1120,9 +1166,11 @@ input RecipeImageFilterInput {
   and: [RecipeImageFilterInput!]
   or: [RecipeImageFilterInput!]
   id: UuidOperationFilterInput
+  publicId: StringOperationFilterInput
   url: StringOperationFilterInput
   order: IntOperationFilterInput
   recipeId: UuidOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
   recipe: RecipeFilterInput
 }
 
@@ -1256,6 +1304,10 @@ input TagPatchDTOInput {
   name: String
 }
 
+input TagSearchCriteriaInput {
+  overallMatching: String
+}
+
 input TagSortInput {
   id: SortEnumType @cost(weight: "10")
   name: SortEnumType @cost(weight: "10")
@@ -1303,6 +1355,10 @@ input UpdateUserInput {
   userPatchDto: UserPatchDTOInput!
 }
 
+input UpdateUserProfilePhotoInput {
+  file: Upload!
+}
+
 input UserCreateDTOInput {
   username: String!
   email: String!
@@ -1330,6 +1386,19 @@ input UserFilterInput {
   subscriptions: ListFilterInputTypeOfUserSubscriptionFilterInput
   subscribers: ListFilterInputTypeOfUserSubscriptionFilterInput
   likedRecipes: ListFilterInputTypeOfRecipeLikeFilterInput
+  images: ListFilterInputTypeOfUserImageFilterInput
+}
+
+input UserImageFilterInput {
+  and: [UserImageFilterInput!]
+  or: [UserImageFilterInput!]
+  id: UuidOperationFilterInput
+  publicId: StringOperationFilterInput
+  url: StringOperationFilterInput
+  order: IntOperationFilterInput
+  userId: UuidOperationFilterInput
+  createdAt: DateTimeOperationFilterInput
+  user: UserFilterInput
 }
 
 input UserPatchDTOInput {
@@ -1451,3 +1520,6 @@ directive @specifiedBy("The specifiedBy URL points to a human-readable specifica
 scalar DateTime @specifiedBy(url: "https:\/\/www.graphql-scalars.com\/date-time")
 
 scalar UUID @specifiedBy(url: "https:\/\/tools.ietf.org\/html\/rfc4122")
+
+"The `Upload` scalar type represents a file upload."
+scalar Upload

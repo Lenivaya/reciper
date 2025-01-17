@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Reciper.BLL.Search;
+using Reciper.BLL.Search.Criteria.Tag;
+using Reciper.BLL.Search.Criteria.Tag.Handlers;
 using Reciper.DAL.Models;
 using Reciper.GraphQL.Schema;
 
@@ -11,18 +14,22 @@ public class QueryTagsResolver
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<DAL.Models.Tag> GetTagsOffset(ReciperContext context)
+    public IQueryable<DAL.Models.Tag> GetTagsOffset(
+        ReciperContext context,
+        TagSearchCriteria? searchCriteria)
     {
-        return context.Tags.AsNoTracking();
+        return QueryHandler(context, searchCriteria);
     }
 
     [UsePaging(MaxPageSize = 50, IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering]
     [UseSorting]
-    public IQueryable<DAL.Models.Tag> GetTagsCursor(ReciperContext context)
+    public IQueryable<DAL.Models.Tag> GetTagsCursor(
+        ReciperContext context,
+        TagSearchCriteria? searchCriteria)
     {
-        return context.Tags.AsNoTracking();
+        return QueryHandler(context, searchCriteria);
     }
 
     [UseFirstOrDefault]
@@ -30,5 +37,22 @@ public class QueryTagsResolver
     public IQueryable<DAL.Models.Tag> GetTagById(ReciperContext context, Guid tagId)
     {
         return context.Tags.AsNoTracking().Where(tag => tag.Id == tagId);
+    }
+
+    private IQueryable<DAL.Models.Tag> QueryHandler(
+        ReciperContext context,
+        TagSearchCriteria? searchCriteria)
+    {
+        var queryHandlerChain = new SearchCriteriaHandlerChainBuilder<
+            ReciperContext,
+            TagSearchCriteria,
+            DAL.Models.Tag
+        >().BuildChain(
+            [
+                new TagSearchCriteriaOverallMatchingHandler()
+            ]
+        );
+
+        return queryHandlerChain.HandleQuery(context, searchCriteria).AsNoTracking();
     }
 }

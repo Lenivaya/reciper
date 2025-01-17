@@ -28,8 +28,23 @@ const GetUserQuery = graphql(
 
 export default function SettingsPage() {
   const [result] = useQuery({ query: GetUserQuery })
+  const { data, fetching, error } = result
 
-  const data = result.data?.me
+  if (fetching) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center">
+        <p className="text-destructive">Failed to load settings</p>
+      </div>
+    )
+  }
 
   return (
     <div className='space-y-6'>
@@ -54,7 +69,7 @@ export default function SettingsPage() {
               <CardDescription>Update your profile information</CardDescription>
             </CardHeader>
             <CardContent>
-              <SettingsForm data={data} />
+              <SettingsForm data={data?.me} />
             </CardContent>
           </Card>
         </TabsContent>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Reciper.DAL.Models;
 
@@ -11,9 +12,11 @@ using Reciper.DAL.Models;
 namespace Reciper.DAL.Migrations
 {
     [DbContext(typeof(ReciperContext))]
-    partial class ReciperContextModelSnapshot : ModelSnapshot
+    [Migration("20250117194347_add cloudinary images fields for recipe images")]
+    partial class addcloudinaryimagesfieldsforrecipeimages
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -315,7 +318,8 @@ namespace Reciper.DAL.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("ProfilePictureUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -336,37 +340,6 @@ namespace Reciper.DAL.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Reciper.DAL.Models.UserImage", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PublicId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserImages");
                 });
 
             modelBuilder.Entity("Reciper.DAL.Models.UserRole", b =>
@@ -526,17 +499,6 @@ namespace Reciper.DAL.Migrations
                     b.Navigation("Tag");
                 });
 
-            modelBuilder.Entity("Reciper.DAL.Models.UserImage", b =>
-                {
-                    b.HasOne("Reciper.DAL.Models.User", "User")
-                        .WithMany("Images")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Reciper.DAL.Models.UserRole", b =>
                 {
                     b.HasOne("Reciper.DAL.Models.Role", "Role")
@@ -608,8 +570,6 @@ namespace Reciper.DAL.Migrations
             modelBuilder.Entity("Reciper.DAL.Models.User", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Images");
 
                     b.Navigation("LikedRecipes");
 
