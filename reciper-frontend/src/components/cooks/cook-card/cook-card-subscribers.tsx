@@ -19,8 +19,8 @@ export const CookCardSubscribersFragment = graphql(`
 
 export const GetCookCardSubscribersQuery = graphql(
   `
-    query GetCookCardSubscribersQuery($userId: UUID!) {
-      mySubscription(otherUserId: $userId) {
+    query GetCookCardSubscribersQuery($id: UUID!) {
+      mySubscription(otherUserId: $id) {
         ...CookCardSubscribersFragment
       }
     }
@@ -30,8 +30,13 @@ export const GetCookCardSubscribersQuery = graphql(
 
 export const SubscribeToCookMutation = graphql(
   `
-    mutation SubscribeToCook($userId: UUID!) {
-      subscribe(input: { subscribeeId: $userId }) {
+    mutation SubscribeToCook($id: UUID!) {
+      subscribe(input: { subscribeeId: $id }) {
+        errors {
+          ... on ReciperError {
+            message
+          }
+        }
         userSubscription {
           ...CookCardSubscribersFragment
         }
@@ -43,8 +48,13 @@ export const SubscribeToCookMutation = graphql(
 
 export const UnsubscribeFromCookMutation = graphql(
   `
-    mutation UnsubscribeFromCook($userId: UUID!) {
-      unsubscribe(input: { userId: $userId }) {
+    mutation UnsubscribeFromCook($id: UUID!) {
+      unsubscribe(input: { userId: $id }) {
+        errors {
+          ... on ReciperError {
+            message
+          }
+        }
         userSubscription {
           ...CookCardSubscribersFragment
         }
@@ -80,7 +90,7 @@ export const CookCardSubscribers: FC<CookCardSubscribersProps> = ({
   const [result] = useQuery({
     query: GetCookCardSubscribersQuery,
     context,
-    variables: { userId: cookId },
+    variables: { id: cookId },
     pause: !isAuthTokenPresent
   })
 
@@ -103,25 +113,28 @@ export const CookCardSubscribers: FC<CookCardSubscribersProps> = ({
   }
 
   const handleSubscribe = useCallback(async () => {
-    const result = await subscribe({ userId: cookId })
-    if (result.error) {
+    const result = await subscribe({ id: cookId })
+    if (result.error || result.data?.subscribe.errors) {
       toast({
         title: 'Error',
         description: 'An error occurred while subscribing'
       })
+      return
     }
     setSubscribers((subscribers) => subscribers + 1)
   }, [subscribe, cookId, toast])
 
   const handleUnsubscribe = useCallback(async () => {
-    const result = await unsubscribe({ userId: cookId })
-    if (result.error) {
+    const result = await unsubscribe({ id: cookId })
+    if (result.error || result.data?.unsubscribe.errors) {
       toast({
         title: 'Error',
         description: 'An error occurred while unsubscribing'
       })
+      return
     }
-    setSubscribers((subscribers) => subscribers - 1)
+
+    setSubscribers((subscribers) => Math.max(subscribers - 1, 0))
   }, [unsubscribe, cookId, toast])
 
   const handleToggleSubscribe = useCallback(() => {

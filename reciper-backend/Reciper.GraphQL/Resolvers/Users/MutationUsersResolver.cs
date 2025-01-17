@@ -103,7 +103,8 @@ public class MutationUsersResolver
             : null;
     }
 
-    public async Task<User?> UpdateUserById(
+    [Error(typeof(ReciperException))]
+    public async Task<User?> UpdateUser(
         [Service] IMapper mapper,
         ReciperUnitOfWork unitOfWork,
         [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser,

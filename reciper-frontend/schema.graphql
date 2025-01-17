@@ -183,7 +183,7 @@ type Mutation @authorize @authorize @authorize @authorize @authorize @authorize 
   registerUser(input: RegisterUserInput!): RegisterUserPayload! @allowAnonymous @cost(weight: "10")
   loginUser(input: LoginUserInput!): LoginUserPayload! @allowAnonymous @cost(weight: "10")
   deleteUser: DeleteUserPayload! @cost(weight: "10")
-  updateUserById(input: UpdateUserByIdInput!): UpdateUserByIdPayload! @cost(weight: "10")
+  updateUser(input: UpdateUserInput!): UpdateUserPayload! @cost(weight: "10")
   addComment(input: AddCommentInput!): AddCommentPayload! @cost(weight: "10")
   deleteCommentById(input: DeleteCommentByIdInput!): DeleteCommentByIdPayload! @cost(weight: "10")
   updateComment(input: UpdateCommentInput!): UpdateCommentPayload! @cost(weight: "10")
@@ -198,6 +198,44 @@ type Mutation @authorize @authorize @authorize @authorize @authorize @authorize 
   likeRecipe(input: LikeRecipeInput!): LikeRecipePayload! @cost(weight: "10")
   unlikeRecipe(input: UnlikeRecipeInput!): UnlikeRecipePayload! @cost(weight: "10")
   deleteLikeById(input: DeleteLikeByIdInput!): DeleteLikeByIdPayload! @cost(weight: "10")
+}
+
+"A connection to a list of items."
+type MyRecipesCursorConnection {
+  "Information to aid in pagination."
+  pageInfo: PageInfo!
+  "A list of edges."
+  edges: [MyRecipesCursorEdge!]
+  "A flattened list of the nodes."
+  nodes: [Recipe!]
+  "Identifies the total count of items in the connection."
+  totalCount: Int! @cost(weight: "10")
+}
+
+"An edge in a connection."
+type MyRecipesCursorEdge {
+  "A cursor for use in pagination."
+  cursor: String!
+  "The item at the end of the edge."
+  node: Recipe!
+}
+
+"A segment of a collection."
+type MyRecipesOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [Recipe!]
+  totalCount: Int! @cost(weight: "10")
+}
+
+"A segment of a collection."
+type MySavedRecipesOffsetCollectionSegment {
+  "Information to aid in pagination."
+  pageInfo: CollectionSegmentInfo!
+  "A flattened list of the items."
+  items: [Recipe!]
+  totalCount: Int! @cost(weight: "10")
 }
 
 "A connection to a list of items."
@@ -273,6 +311,9 @@ type PageInfo {
 type Query {
   recipesOffset(skip: Int take: Int searchCriteria: RecipeSearchCriteriaInput where: RecipeFilterInput @cost(weight: "10") order: [RecipeSortInput!] @cost(weight: "10")): RecipesOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
   recipesCursor(searchCriteria: RecipeSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RecipeFilterInput @cost(weight: "10") order: [RecipeSortInput!] @cost(weight: "10")): RecipesCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  myRecipesOffset(skip: Int take: Int searchCriteria: RecipeSearchCriteriaInput where: RecipeFilterInput @cost(weight: "10") order: [RecipeSortInput!] @cost(weight: "10")): MyRecipesOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  myRecipesCursor(searchCriteria: RecipeSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RecipeFilterInput @cost(weight: "10") order: [RecipeSortInput!] @cost(weight: "10")): MyRecipesCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  mySavedRecipesOffset(skip: Int take: Int searchCriteria: RecipeSearchCriteriaInput where: RecipeFilterInput @cost(weight: "10") order: [RecipeSortInput!] @cost(weight: "10")): MySavedRecipesOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
   recipeById(recipeId: UUID!): Recipe @cost(weight: "10")
   tagsOffset(skip: Int take: Int where: TagFilterInput @cost(weight: "10") order: [TagSortInput!] @cost(weight: "10")): TagsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
   tagsCursor("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: TagFilterInput @cost(weight: "10") order: [TagSortInput!] @cost(weight: "10")): TagsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
@@ -291,17 +332,17 @@ type Query {
   ratingsCursor(recipeId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RatingFilterInput @cost(weight: "10") order: [RatingSortInput!] @cost(weight: "10")): RatingsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
   ratingById(ratingId: UUID!): Rating @cost(weight: "10")
   ratingByCompositeKey(recipeId: UUID! userId: UUID!): Rating @cost(weight: "10")
-  subscriptionsOffset(skip: Int take: Int userId: UUID! where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscriptionsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
-  subscribersOffset(skip: Int take: Int userId: UUID! where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscribersOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
-  mySubscriptionsOffset(skip: Int take: Int where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): MySubscriptionsOffsetCollectionSegment @authorize @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
-  mySubscribersOffset(skip: Int take: Int where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): MySubscribersOffsetCollectionSegment @authorize @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
-  subscriptionsCursor(userId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscriptionsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
-  subscribersCursor(userId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscribersCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
-  mySubscriptionsCursor("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): MySubscriptionsCursorConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
-  mySubscribersCursor("Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): MySubscribersCursorConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
-  subscriptionById(subscriptionId: UUID!): UserSubscription @cost(weight: "10")
-  subscriptionByCompositeKey(subscriberId: UUID! subscribeeId: UUID!): UserSubscription @cost(weight: "10")
-  mySubscription(otherUserId: UUID!): UserSubscription @authorize @cost(weight: "10")
+  subscriptionsOffset(skip: Int take: Int userId: UUID! searchCriteria: UserSubscriptionSearchCriteriaInput where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscriptionsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  subscribersOffset(skip: Int take: Int userId: UUID! searchCriteria: UserSubscriptionSearchCriteriaInput where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscribersOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  mySubscriptionsOffset(skip: Int take: Int searchCriteria: UserSubscriptionSearchCriteriaInput where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): MySubscriptionsOffsetCollectionSegment @authorize @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  mySubscribersOffset(skip: Int take: Int searchCriteria: UserSubscriptionSearchCriteriaInput where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): MySubscribersOffsetCollectionSegment @authorize @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  subscriptionsCursor(userId: UUID! searchCriteria: UserSubscriptionSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscriptionsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  subscribersCursor(userId: UUID! searchCriteria: UserSubscriptionSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscribersCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  mySubscriptionsCursor(searchCriteria: UserSubscriptionSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): MySubscriptionsCursorConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  mySubscribersCursor(searchCriteria: UserSubscriptionSearchCriteriaInput "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): MySubscribersCursorConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
+  subscriptionById(subscriptionId: UUID! searchCriteria: UserSubscriptionSearchCriteriaInput): UserSubscription @cost(weight: "10")
+  subscriptionByCompositeKey(subscriberId: UUID! subscribeeId: UUID! searchCriteria: UserSubscriptionSearchCriteriaInput): UserSubscription @cost(weight: "10")
+  mySubscription(searchCriteria: UserSubscriptionSearchCriteriaInput otherUserId: UUID!): UserSubscription @authorize @cost(weight: "10")
   userLikesOffset(skip: Int take: Int userId: UUID! where: RecipeLikeFilterInput @cost(weight: "10") order: [RecipeLikeSortInput!] @cost(weight: "10")): UserLikesOffsetCollectionSegment @authorize @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
   recipeLikesOffset(skip: Int take: Int recipeId: UUID! where: RecipeLikeFilterInput @cost(weight: "10") order: [RecipeLikeSortInput!] @cost(weight: "10")): RecipeLikesOffsetCollectionSegment @authorize @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
   userLikesCursor(userId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RecipeLikeFilterInput @cost(weight: "10") order: [RecipeLikeSortInput!] @cost(weight: "10")): UserLikesCursorConnection @authorize @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
@@ -618,8 +659,9 @@ type UpdateTagPayload {
   errors: [UpdateTagError!]
 }
 
-type UpdateUserByIdPayload {
+type UpdateUserPayload {
   user: User
+  errors: [UpdateUserError!]
 }
 
 type User {
@@ -639,6 +681,9 @@ type User {
   likedRecipes: [RecipeLike!]!
   recipesCount: Int! @cost(weight: "10")
   subscribersCount: Int! @cost(weight: "10")
+  likesCount: Int! @cost(weight: "10")
+  totalRecipesLikes: Int! @cost(weight: "10")
+  isSubscribed: Boolean! @cost(weight: "10")
 }
 
 "A connection to a list of items."
@@ -774,6 +819,8 @@ union UpdateRatingForRecipeError = ReciperError
 union UpdateRecipeError = ReciperError
 
 union UpdateTagError = ReciperError
+
+union UpdateUserError = ReciperError
 
 input AddCommentInput {
   createDto: CommentCreateDTOInput!
@@ -1252,7 +1299,7 @@ input UpdateTagInput {
   updateDto: TagPatchDTOInput!
 }
 
-input UpdateUserByIdInput {
+input UpdateUserInput {
   userPatchDto: UserPatchDTOInput!
 }
 
@@ -1334,6 +1381,10 @@ input UserSubscriptionFilterInput {
   subscribeeId: UuidOperationFilterInput
   subscriber: UserFilterInput
   subscribee: UserFilterInput
+}
+
+input UserSubscriptionSearchCriteriaInput {
+  matching: String
 }
 
 input UserSubscriptionSortInput {

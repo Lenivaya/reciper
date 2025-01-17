@@ -14,6 +14,7 @@ import { useAuthToken } from '@/hooks/use-auth-token'
 import { logout } from '@/lib/auth/auth'
 import { FragmentOf, graphql, readFragment } from 'gql.tada'
 import { LogOut, Settings, User } from 'lucide-react'
+import Link from 'next/link'
 import { useCallback } from 'react'
 
 const extractUserNameTwoLetters = (username: string) => {
@@ -82,14 +83,18 @@ function MenuItem({
       <DropdownMenuContent align='end' className='w-56'>
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className='cursor-pointer'>
-          <User className='mr-2 h-4 w-4' />
-          Profile
-        </DropdownMenuItem>
-        <DropdownMenuItem className='cursor-pointer'>
-          <Settings className='mr-2 h-4 w-4' />
-          Settings
-        </DropdownMenuItem>
+        <Link href='/dashboard'>
+          <DropdownMenuItem className='cursor-pointer'>
+            <User className='mr-2 h-4 w-4' />
+            Profile
+          </DropdownMenuItem>
+        </Link>
+        <Link href='/dashboard'>
+          <DropdownMenuItem className='cursor-pointer'>
+            <Settings className='mr-2 h-4 w-4' />
+            Settings
+          </DropdownMenuItem>
+        </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           className='cursor-pointer text-destructive'
