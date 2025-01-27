@@ -118,7 +118,6 @@ interface AddRecipeFormProps {
 }
 
 export function AddRecipeForm({ onSuccess }: AddRecipeFormProps) {
-  const router = useRouter()
   const { toast } = useToast()
   const [{ fetching }, addRecipe] = useMutation(AddRecipeMutation)
   const [files, setFiles] = useControllableState<File[]>({
@@ -167,20 +166,13 @@ export function AddRecipeForm({ onSuccess }: AddRecipeFormProps) {
         // Upload images if there are any
         if (recipeId && files?.length > 0) {
           const uploadPromises = files.map((file, index) =>
-            addRecipePhoto(
-              {
-                input: {
-                  recipeId,
-                  file,
-                  order: index
-                }
-              },
-              {
-                headers: {
-                  'GraphQL-Preflight': 1
-                }
+            addRecipePhoto({
+              input: {
+                recipeId,
+                file,
+                order: index
               }
-            )
+            })
           )
 
           await Promise.all(uploadPromises)

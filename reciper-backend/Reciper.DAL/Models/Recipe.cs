@@ -68,34 +68,40 @@ public class Recipe
     /// </summary>
     public virtual User User { get; set; } = null!;
 
-    /// <summary>
+    /// <summarye>
     /// Gets or sets the collection of ingredients associated with this recipe, including their quantities.
-    /// </summary>
+    /// </summarye
+    [DeleteBehavior(DeleteBehavior.Cascade)]
     public virtual ICollection<RecipeIngredient> RecipeIngredients { get; set; } =
         new List<RecipeIngredient>();
 
     /// <summary>
     /// Gets or sets the collection of tags associated with this recipe.
     /// </summary>
+    [DeleteBehavior(DeleteBehavior.Cascade)]
     public virtual ICollection<RecipeTag> RecipeTags { get; set; } = new List<RecipeTag>();
 
     /// <summary>
     /// Gets or sets the collection of images associated with this recipe.
     /// </summary>
+    [DeleteBehavior(DeleteBehavior.Cascade)]
     public virtual ICollection<RecipeImage> Images { get; set; } = new List<RecipeImage>();
 
     /// <summary>
     /// Gets or sets the collection of user comments on this recipe.
     /// </summary>
+    [DeleteBehavior(DeleteBehavior.Cascade)]
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     /// <summary>
     /// Gets or sets the collection of user ratings for this recipe.
     /// </summary>
+    [DeleteBehavior(DeleteBehavior.Cascade)]
     public virtual ICollection<Rating> Ratings { get; set; } = new List<Rating>();
 
     /// <summary>
     /// Gets or sets the collection of user likes for this recipe.
     /// </summary>
+    [DeleteBehavior(DeleteBehavior.Cascade)]
     public virtual ICollection<RecipeLike> Likes { get; set; } = new List<RecipeLike>();
 }

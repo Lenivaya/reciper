@@ -13,6 +13,7 @@ import { CalendarDays, Clock, Star, User } from 'lucide-react'
 import Image from 'next/image'
 import { FC } from 'react'
 import { RecipeCardTags } from './recip-card-tags'
+import { RecipeCardDeleteButton } from './recipe-card-delete-button'
 import { RecipeCardDifficulty } from './recipe-card-difficulty'
 import { RecipeCardLike } from './recipe-card-like'
 
@@ -143,6 +144,12 @@ export const RecipeCard: FC<Props> = ({ data }) => {
             <Clock className='ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:rotate-12' />
           </Button>
         </CardFooter>
+
+        <RecipeCardDeleteButton
+          recipeId={recipe.id as string}
+          recipeName={recipe.title}
+          recipeAuthorId={recipe.user.id as string}
+        />
       </Card>
     </div>
   )

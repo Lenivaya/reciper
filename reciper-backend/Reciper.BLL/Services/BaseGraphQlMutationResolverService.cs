@@ -127,7 +127,7 @@ public class BaseGraphQlMutationResolverService<TEntity, TPrimaryKey, TCreateDto
         }
         catch (Exception e)
         {
-            throw new ReciperException(e.Message);
+            throw new ReciperException(e.InnerException?.Message ?? e.Message);
         }
     }
 }

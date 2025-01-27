@@ -16,7 +16,8 @@ public class QueryIngredientsResolver
     [UseSorting]
     public IQueryable<DAL.Models.Ingredient> GetIngredientsOffset(
         ReciperContext context,
-        IngredientSearchCriteria? searchCriteria)
+        IngredientSearchCriteria? searchCriteria
+    )
     {
         return QueryHandler(context, searchCriteria);
     }
@@ -27,31 +28,34 @@ public class QueryIngredientsResolver
     [UseSorting]
     public IQueryable<DAL.Models.Ingredient> GetIngredientsCursor(
         ReciperContext context,
-        IngredientSearchCriteria? searchCriteria)
+        IngredientSearchCriteria? searchCriteria
+    )
     {
         return QueryHandler(context, searchCriteria);
     }
 
     [UseFirstOrDefault]
     [UseProjection]
-    public IQueryable<DAL.Models.Ingredient> GetIngredientById(ReciperContext context, Guid ingredientId)
+    public IQueryable<DAL.Models.Ingredient> GetIngredientById(
+        ReciperContext context,
+        Guid ingredientId
+    )
     {
-        return context.Ingredients.AsNoTracking().Where(ingredient => ingredient.Id == ingredientId);
+        return context
+            .Ingredients.AsNoTracking()
+            .Where(ingredient => ingredient.Id == ingredientId);
     }
 
     private IQueryable<DAL.Models.Ingredient> QueryHandler(
         ReciperContext context,
-        IngredientSearchCriteria? searchCriteria)
+        IngredientSearchCriteria? searchCriteria
+    )
     {
         var queryHandlerChain = new SearchCriteriaHandlerChainBuilder<
             ReciperContext,
             IngredientSearchCriteria,
             DAL.Models.Ingredient
-        >().BuildChain(
-            [
-                new IngredientSearchCriteriaOverallMatchingHandler()
-            ]
-        );
+        >().BuildChain([new IngredientSearchCriteriaOverallMatchingHandler()]);
 
         return queryHandlerChain.HandleQuery(context, searchCriteria).AsNoTracking();
     }

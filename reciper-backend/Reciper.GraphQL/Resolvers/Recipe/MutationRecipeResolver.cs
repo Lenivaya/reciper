@@ -101,12 +101,12 @@ public class MutationRecipesResolver
     )
     {
         return authenticatedUser != null
-               && await unitOfWork
-                   .RecipesRepository.StartQuery()
-                   .AsNoTracking()
-                   .AnyAsync(recipe =>
-                       recipe.Id == recipeId && recipe.UserId == authenticatedUser.UserId
-                   );
+            && await unitOfWork
+                .RecipesRepository.StartQuery()
+                .AsNoTracking()
+                .AnyAsync(recipe =>
+                    recipe.Id == recipeId && recipe.UserId == authenticatedUser.UserId
+                );
     }
 
     [Error(typeof(ReciperException))]
@@ -123,10 +123,9 @@ public class MutationRecipesResolver
     {
         try
         {
-            var recipe = await unitOfWork.RecipesRepository
-                .StartQuery().Where(r =>
-                    r.UserId == authenticatedUser!.UserId
-                    && r.Id == recipeId)
+            var recipe = await unitOfWork
+                .RecipesRepository.StartQuery()
+                .Where(r => r.UserId == authenticatedUser!.UserId && r.Id == recipeId)
                 .Include(r => r.Images)
                 .FirstOrDefaultAsync();
 
@@ -137,7 +136,7 @@ public class MutationRecipesResolver
 
             var uploadParams = new ImageUploadParams
             {
-                File = new FileDescription(file.Name, stream)
+                File = new FileDescription(file.Name, stream),
             };
             var uploadResult = await cloudinary.UploadAsync(uploadParams);
 
@@ -148,7 +147,7 @@ public class MutationRecipesResolver
                 PublicId = uploadResult.PublicId,
                 Url = uploadResult.Url.ToString(),
                 CreatedAt = uploadResult.CreatedAt,
-                Recipe = recipe
+                Recipe = recipe,
             };
             var success = await unitOfWork.RecipeImagesRepository.Insert(newPhoto);
             if (!success)
@@ -157,8 +156,8 @@ public class MutationRecipesResolver
             recipe.Images.Add(newPhoto);
             await unitOfWork.Commit();
 
-            return unitOfWork.RecipesRepository
-                .StartQuery()
+            return unitOfWork
+                .RecipesRepository.StartQuery()
                 .AsNoTracking()
                 .Where(r => r.Id == recipe.Id);
         }

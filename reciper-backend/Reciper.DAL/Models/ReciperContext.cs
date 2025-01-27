@@ -5,14 +5,10 @@ namespace Reciper.DAL.Models;
 
 public class ReciperContext : DbContext
 {
-    public ReciperContext()
-    {
-    }
+    public ReciperContext() { }
 
     public ReciperContext(DbContextOptions<ReciperContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Recipe> Recipes { get; set; } = null!;
@@ -115,13 +111,8 @@ public class ReciperContext : DbContext
             .ValueGeneratedOnAddOrUpdate()
             .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
 
-
         // Configure timestamps for images
-        modelBuilder
-            .Entity<RecipeImage>()
-            .Property(recipeImage => recipeImage.CreatedAt);
-        modelBuilder
-            .Entity<UserImage>()
-            .Property(userImage => userImage.CreatedAt);
+        modelBuilder.Entity<RecipeImage>().Property(recipeImage => recipeImage.CreatedAt);
+        modelBuilder.Entity<UserImage>().Property(userImage => userImage.CreatedAt);
     }
 }
