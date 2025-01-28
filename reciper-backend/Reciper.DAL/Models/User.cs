@@ -105,7 +105,6 @@ public class User
     /// </summary>
     public virtual ICollection<RecipeLike> LikedRecipes { get; set; } = new List<RecipeLike>();
 
-
     /// <summary>
     /// Gets or sets the collection of images associated with this user.
     /// </summary>

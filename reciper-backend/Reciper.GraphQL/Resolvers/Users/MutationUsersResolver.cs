@@ -35,10 +35,10 @@ public class MutationUsersResolver
     )
     {
         return authenticatedUser != null
-               && await unitOfWork
-                   .UsersRepository.StartQuery()
-                   .AsNoTracking()
-                   .AnyAsync(user => user.Id == authenticatedUser.UserId);
+            && await unitOfWork
+                .UsersRepository.StartQuery()
+                .AsNoTracking()
+                .AnyAsync(user => user.Id == authenticatedUser.UserId);
     }
 
     [Error(typeof(ReciperException))]
@@ -77,7 +77,9 @@ public class MutationUsersResolver
         var account = await unitOfWork
             .UsersRepository.StartQuery()
             .AsNoTracking()
-            .FirstOrDefaultAsync(seeker => seeker.Email == loginDto.Login || seeker.Username == loginDto.Login);
+            .FirstOrDefaultAsync(seeker =>
+                seeker.Email == loginDto.Login || seeker.Username == loginDto.Login
+            );
 
         if (account == null)
             throw new ReciperException("Invalid credentials");
@@ -129,13 +131,15 @@ public class MutationUsersResolver
     public async Task<IQueryable<User>> UpdateUserProfilePhoto(
         ReciperUnitOfWork unitOfWork,
         [Service] ICloudinary cloudinary,
-        [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser, IFile file
+        [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser,
+        IFile file
     )
     {
         try
         {
-            var user = await unitOfWork.UsersRepository
-                .StartQuery().Where(u => u.Id == authenticatedUser!.UserId)
+            var user = await unitOfWork
+                .UsersRepository.StartQuery()
+                .Where(u => u.Id == authenticatedUser!.UserId)
                 .Include(u => u.Images)
                 .FirstOrDefaultAsync();
 
@@ -146,7 +150,7 @@ public class MutationUsersResolver
 
             var uploadParams = new ImageUploadParams
             {
-                File = new FileDescription(file.Name, stream)
+                File = new FileDescription(file.Name, stream),
             };
             var uploadResult = await cloudinary.UploadAsync(uploadParams);
 
@@ -157,7 +161,7 @@ public class MutationUsersResolver
                 PublicId = uploadResult.PublicId,
                 Url = uploadResult.Url.ToString(),
                 CreatedAt = uploadResult.CreatedAt,
-                User = user
+                User = user,
             };
             var success = await unitOfWork.UserImagesRepository.Insert(newPhoto);
             if (!success)
@@ -168,8 +172,8 @@ public class MutationUsersResolver
 
             await unitOfWork.Commit();
 
-            return unitOfWork.UsersRepository
-                .StartQuery()
+            return unitOfWork
+                .UsersRepository.StartQuery()
                 .AsNoTracking()
                 .Where(u => u.Id == authenticatedUser.UserId);
         }

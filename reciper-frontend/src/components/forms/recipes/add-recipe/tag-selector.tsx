@@ -10,10 +10,10 @@ import {
   CommandItem,
   CommandList
 } from '@/components/ui/command'
-import { useQuery } from '@urql/next'
+import { useMutation, useQuery } from '@urql/next'
 import { graphql } from 'gql.tada'
-import { X } from 'lucide-react'
-import { useCallback, useState } from 'react'
+import { Plus, X } from 'lucide-react'
+import { useCallback, useMemo, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
 const TagsQuery = graphql(`
@@ -23,6 +23,17 @@ const TagsQuery = graphql(`
       where: { and: [{ id: { nin: $alreadySelected } }] }
     ) {
       nodes {
+        id
+        name
+      }
+    }
+  }
+`)
+
+const AddTagMutation = graphql(`
+  mutation AddTag($name: String!) {
+    addTag(input: { createDto: { name: $name } }) {
+      tag {
         id
         name
       }
@@ -47,13 +58,18 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
     Record<string, TagDetails>
   >({})
 
+  const context = useMemo(() => ({ additionalTypenames: ['Tag'] }), [])
   const [{ data }] = useQuery({
     query: TagsQuery,
+    context,
+    requestPolicy: 'cache-and-network',
     variables: {
       search: debouncedSearch,
       alreadySelected: value
     }
   })
+
+  const [{ fetching: isAddingTag }, addTag] = useMutation(AddTagMutation)
 
   const debouncedSetSearch = useDebouncedCallback((value: string) => {
     setDebouncedSearch(value)
@@ -88,6 +104,20 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
     [value, onChange]
   )
 
+  const handleCreateTag = useCallback(async () => {
+    if (!search.trim()) return
+
+    const result = await addTag({
+      name: search.trim()
+    })
+
+    if (result.data?.addTag?.tag) {
+      const newTag = result.data.addTag.tag
+      handleSelect(newTag.id as string)
+      setDebouncedSearch('') // Refresh the search results
+    }
+  }, [search, addTag, handleSelect])
+
   return (
     <div className='space-y-4'>
       <div className='flex flex-wrap gap-2'>
@@ -115,7 +145,30 @@ export function TagSelector({ value, onChange }: TagSelectorProps) {
             placeholder='Search tags...'
           />
           <CommandList>
-            <CommandEmpty>No tags found.</CommandEmpty>
+            <CommandEmpty>
+              <div className='flex flex-col gap-2 p-4 text-center'>
+                <p className='text-sm text-muted-foreground'>
+                  No matching tags found for &quot;{search}&quot;
+                </p>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className='mx-auto w-full'
+                  disabled={!search.trim() || isAddingTag}
+                  onClick={handleCreateTag}
+                >
+                  <Plus className='mr-2 h-4 w-4' />
+                  {isAddingTag ? (
+                    <>
+                      <span className='mr-2'>Creating tag...</span>
+                      <span className='h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent' />
+                    </>
+                  ) : (
+                    `Create "${search}" tag`
+                  )}
+                </Button>
+              </div>
+            </CommandEmpty>
             <CommandGroup>
               {data?.tagsCursor?.nodes?.map((tag) => (
                 <CommandItem

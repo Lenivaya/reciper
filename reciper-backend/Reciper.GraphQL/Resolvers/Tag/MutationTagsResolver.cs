@@ -1,3 +1,4 @@
+using HotChocolate.Authorization;
 using MapsterMapper;
 using Reciper.BLL.DTO;
 using Reciper.BLL.Exceptions;
@@ -19,6 +20,7 @@ public class MutationTagsResolver
 
     [Error(typeof(ReciperException))]
     [UseProjection]
+    [Authorize]
     public Task<DAL.Models.Tag?> AddTag(
         ReciperUnitOfWork unitOfWork,
         [Service] IMapper mapper,
@@ -30,6 +32,7 @@ public class MutationTagsResolver
 
     [Error(typeof(ReciperException))]
     [UseProjection]
+    [Authorize]
     public Task<DAL.Models.Tag?> DeleteTagById(ReciperUnitOfWork unitOfWork, Guid tagId)
     {
         return GraphQlMutationResolverService.DeleteEntity(unitOfWork, tagId);
@@ -37,6 +40,7 @@ public class MutationTagsResolver
 
     [Error(typeof(ReciperException))]
     [UseProjection]
+    [Authorize]
     public Task<DAL.Models.Tag?> UpdateTag(
         ReciperUnitOfWork unitOfWork,
         [Service] IMapper mapper,
