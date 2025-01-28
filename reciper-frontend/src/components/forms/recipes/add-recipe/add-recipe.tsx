@@ -20,12 +20,12 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useControllableState } from '@/hooks/use-controllable-state'
+import { useRefreshWithSearchParams } from '@/hooks/use-refresh-with-search-params'
 import { useToast } from '@/hooks/use-toast'
 import { DifficultyLevel } from '@/lib/getDifficultyColor'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@urql/next'
 import { graphql } from 'gql.tada'
-import { useRouter } from 'next/navigation'
 import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -126,6 +126,7 @@ export function AddRecipeForm({ onSuccess }: AddRecipeFormProps) {
   const [{ fetching: isUploading }, addRecipePhoto] = useMutation(
     AddRecipePhotoMutation
   )
+  const refreshWithSearchParams = useRefreshWithSearchParams()
 
   const form = useForm<AddRecipeFormValues>({
     resolver: zodResolver(addRecipeSchema),
@@ -154,17 +155,21 @@ export function AddRecipeForm({ onSuccess }: AddRecipeFormProps) {
         })
 
         if (result.error || result.data?.addRecipe.errors) {
-          const error = result.data?.addRecipe.errors[0]
-          form.setError('root', {
-            message: error.message
-          })
+          const errors = result.data?.addRecipe.errors
+          if (errors) {
+            errors.forEach((error) => {
+              form.setError('root', {
+                message: error.message
+              })
+            })
+          }
           return
         }
 
         const recipeId = result.data?.addRecipe.recipe?.id
 
         // Upload images if there are any
-        if (recipeId && files?.length > 0) {
+        if (recipeId && files?.length) {
           const uploadPromises = files.map((file, index) =>
             addRecipePhoto({
               input: {
@@ -185,6 +190,7 @@ export function AddRecipeForm({ onSuccess }: AddRecipeFormProps) {
         })
         setFiles([])
         onSuccess?.()
+        refreshWithSearchParams()
       } catch (error) {
         console.error(error)
         toast({
@@ -193,7 +199,16 @@ export function AddRecipeForm({ onSuccess }: AddRecipeFormProps) {
         })
       }
     },
-    [addRecipe, files, toast, setFiles, onSuccess, form, addRecipePhoto]
+    [
+      addRecipe,
+      files,
+      toast,
+      setFiles,
+      onSuccess,
+      form,
+      addRecipePhoto,
+      refreshWithSearchParams
+    ]
   )
 
   return (
