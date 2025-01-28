@@ -26,20 +26,24 @@ public class UserSearchCriteriaOverallMatchingHandler
             u.Username.ToLower().Contains(searchTerm)
             || u.Bio.ToLower().Contains(searchTerm)
             || u.Email.ToLower().Contains(searchTerm)
-            || u.Recipes
-                .Any(r =>
-                    (r.Title.ToLower().Contains(searchTerm) || searchTerm.ToLower().Contains(r.Title.ToLower())) ||
-                    (r.Description.ToLower().Contains(searchTerm) ||
-                     searchTerm.ToLower().Contains(r.Description.ToLower())) ||
-                    r.RecipeTags.Any(rt =>
-                        rt.Tag.Name.ToLower().Contains(searchTerm) ||
-                        searchTerm.ToLower().Contains(rt.Tag.Name.ToLower())
-                    ) ||
-                    r.RecipeIngredients.Any(recipeIngredient =>
-                        recipeIngredient.Ingredient.Name.ToLower().Contains(searchTerm) ||
-                        searchTerm.ToLower().Contains(recipeIngredient.Ingredient.Name.ToLower())
-                    )
+            || u.Recipes.Any(r =>
+                (
+                    r.Title.ToLower().Contains(searchTerm)
+                    || searchTerm.ToLower().Contains(r.Title.ToLower())
                 )
+                || (
+                    r.Description.ToLower().Contains(searchTerm)
+                    || searchTerm.ToLower().Contains(r.Description.ToLower())
+                )
+                || r.RecipeTags.Any(rt =>
+                    rt.Tag.Name.ToLower().Contains(searchTerm)
+                    || searchTerm.ToLower().Contains(rt.Tag.Name.ToLower())
+                )
+                || r.RecipeIngredients.Any(recipeIngredient =>
+                    recipeIngredient.Ingredient.Name.ToLower().Contains(searchTerm)
+                    || searchTerm.ToLower().Contains(recipeIngredient.Ingredient.Name.ToLower())
+                )
+            )
         );
 
         return Next?.HandleQuery(context, searchCriteria, query) ?? query;

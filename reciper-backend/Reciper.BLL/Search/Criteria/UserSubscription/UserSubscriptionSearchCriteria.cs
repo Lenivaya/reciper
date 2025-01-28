@@ -1,5 +1,3 @@
 namespace Reciper.BLL.Search.Criteria.UserSubscription;
 
-public record UserSubscriptionSearchCriteria(
-    string? Matching
-);
+public record UserSubscriptionSearchCriteria(string? Matching);

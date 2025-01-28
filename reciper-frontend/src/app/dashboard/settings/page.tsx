@@ -32,16 +32,16 @@ export default function SettingsPage() {
 
   if (fetching) {
     return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className='flex h-[50vh] items-center justify-center'>
+        <div className='h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent' />
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <p className="text-destructive">Failed to load settings</p>
+      <div className='flex h-[50vh] items-center justify-center'>
+        <p className='text-destructive'>Failed to load settings</p>
       </div>
     )
   }

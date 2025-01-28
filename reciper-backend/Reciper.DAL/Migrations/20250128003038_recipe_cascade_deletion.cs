@@ -12,15 +12,15 @@ namespace Reciper.DAL.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Comments_Recipes_RecipeId",
-                table: "Comments");
+                table: "Comments"
+            );
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Ratings_Recipes_RecipeId",
-                table: "Ratings");
+            migrationBuilder.DropForeignKey(name: "FK_Ratings_Recipes_RecipeId", table: "Ratings");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_RecipeIngredients_Recipes_RecipeId",
-                table: "RecipeIngredients");
+                table: "RecipeIngredients"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Comments_Recipes_RecipeId",
@@ -28,7 +28,8 @@ namespace Reciper.DAL.Migrations
                 column: "RecipeId",
                 principalTable: "Recipes",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Ratings_Recipes_RecipeId",
@@ -36,7 +37,8 @@ namespace Reciper.DAL.Migrations
                 column: "RecipeId",
                 principalTable: "Recipes",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RecipeIngredients_Recipes_RecipeId",
@@ -44,7 +46,8 @@ namespace Reciper.DAL.Migrations
                 column: "RecipeId",
                 principalTable: "Recipes",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
 
         /// <inheritdoc />
@@ -52,36 +55,39 @@ namespace Reciper.DAL.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Comments_Recipes_RecipeId",
-                table: "Comments");
+                table: "Comments"
+            );
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_Ratings_Recipes_RecipeId",
-                table: "Ratings");
+            migrationBuilder.DropForeignKey(name: "FK_Ratings_Recipes_RecipeId", table: "Ratings");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_RecipeIngredients_Recipes_RecipeId",
-                table: "RecipeIngredients");
+                table: "RecipeIngredients"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Comments_Recipes_RecipeId",
                 table: "Comments",
                 column: "RecipeId",
                 principalTable: "Recipes",
-                principalColumn: "Id");
+                principalColumn: "Id"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Ratings_Recipes_RecipeId",
                 table: "Ratings",
                 column: "RecipeId",
                 principalTable: "Recipes",
-                principalColumn: "Id");
+                principalColumn: "Id"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_RecipeIngredients_Recipes_RecipeId",
                 table: "RecipeIngredients",
                 column: "RecipeId",
                 principalTable: "Recipes",
-                principalColumn: "Id");
+                principalColumn: "Id"
+            );
         }
     }
 }

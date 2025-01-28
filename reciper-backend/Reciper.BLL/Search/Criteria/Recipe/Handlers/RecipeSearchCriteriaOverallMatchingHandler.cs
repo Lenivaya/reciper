@@ -27,19 +27,16 @@ public class RecipeSearchCriteriaOverallMatchingHandler
             .ThenInclude(i => i.Ingredient)
             .Where(r =>
                 patterns.All(pattern =>
-                    EF.Functions.Like(r.User.Username, pattern) ||
-                    EF.Functions.Like(r.Title.ToLower(), pattern) ||
-                    EF.Functions.Like(r.Description.ToLower(), pattern) ||
-                    EF.Functions.Like(r.Instructions.ToLower(), pattern) ||
-                    r.RecipeTags.Any(t =>
-                        EF.Functions.Like(t.Tag.Name.ToLower(), pattern)
-                    )
+                    EF.Functions.Like(r.User.Username, pattern)
+                    || EF.Functions.Like(r.Title.ToLower(), pattern)
+                    || EF.Functions.Like(r.Description.ToLower(), pattern)
+                    || EF.Functions.Like(r.Instructions.ToLower(), pattern)
+                    || r.RecipeTags.Any(t => EF.Functions.Like(t.Tag.Name.ToLower(), pattern))
                     || r.RecipeIngredients.Any(i =>
                         EF.Functions.Like(i.Ingredient.Name.ToLower(), pattern)
-                    ) ||
-                    r.DifficultyLevel.ToString().ToLower().Contains(pattern.ToLower()) || pattern.ToLower()
-                        .Contains(r.DifficultyLevel.ToString().ToLower()
-                        )
+                    )
+                    || r.DifficultyLevel.ToString().ToLower().Contains(pattern.ToLower())
+                    || pattern.ToLower().Contains(r.DifficultyLevel.ToString().ToLower())
                 )
             );
 

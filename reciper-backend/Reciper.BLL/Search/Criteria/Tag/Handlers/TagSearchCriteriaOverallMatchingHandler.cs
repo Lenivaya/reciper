@@ -9,19 +9,21 @@ public class TagSearchCriteriaOverallMatchingHandler
     public override IQueryable<DAL.Models.Tag> HandleQuery(
         ReciperContext context,
         TagSearchCriteria? criteria,
-        IQueryable<DAL.Models.Tag>? query = null)
+        IQueryable<DAL.Models.Tag>? query = null
+    )
     {
         query ??= context.Tags;
 
         if (string.IsNullOrWhiteSpace(criteria?.OverallMatching))
             return query;
 
-        var patterns = criteria.OverallMatching.Split(' ').Select(word => $"%{word.ToLower()}%").ToArray();
+        var patterns = criteria
+            .OverallMatching.Split(' ')
+            .Select(word => $"%{word.ToLower()}%")
+            .ToArray();
 
         return query.Where(tag =>
-            patterns.All(pattern =>
-                EF.Functions.Like(tag.Name.ToLower(), pattern)
-            )
+            patterns.All(pattern => EF.Functions.Like(tag.Name.ToLower(), pattern))
         );
     }
 }

@@ -9,19 +9,21 @@ public class IngredientSearchCriteriaOverallMatchingHandler
     public override IQueryable<DAL.Models.Ingredient> HandleQuery(
         ReciperContext context,
         IngredientSearchCriteria? criteria,
-        IQueryable<DAL.Models.Ingredient>? query = null)
+        IQueryable<DAL.Models.Ingredient>? query = null
+    )
     {
         query ??= context.Ingredients;
 
         if (string.IsNullOrWhiteSpace(criteria?.OverallMatching))
             return query;
 
-        var patterns = criteria.OverallMatching.Split(' ').Select(word => $"%{word.ToLower()}%").ToArray();
+        var patterns = criteria
+            .OverallMatching.Split(' ')
+            .Select(word => $"%{word.ToLower()}%")
+            .ToArray();
 
         return query.Where(ingredient =>
-            patterns.All(pattern =>
-                EF.Functions.Like(ingredient.Name.ToLower(), pattern)
-            )
+            patterns.All(pattern => EF.Functions.Like(ingredient.Name.ToLower(), pattern))
         );
     }
 }

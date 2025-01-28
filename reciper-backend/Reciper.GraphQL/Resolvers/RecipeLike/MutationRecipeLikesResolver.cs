@@ -48,8 +48,8 @@ public class MutationRecipeLikesResolver
         }
         catch (DbUpdateException e)
             when (e.InnerException is SqlException
-                  && e.InnerException.Message.Contains("duplicate key")
-                 )
+                && e.InnerException.Message.Contains("duplicate key")
+            )
         {
             throw new ReciperException("Recipe is already liked");
         }
@@ -100,9 +100,9 @@ public class MutationRecipeLikesResolver
     )
     {
         return authenticatedUser != null
-               && await unitOfWork
-                   .RecipeLikesRepository.StartQuery()
-                   .AsNoTracking()
-                   .AnyAsync(like => like.Id == likeId && like.UserId == authenticatedUser.UserId);
+            && await unitOfWork
+                .RecipeLikesRepository.StartQuery()
+                .AsNoTracking()
+                .AnyAsync(like => like.Id == likeId && like.UserId == authenticatedUser.UserId);
     }
 }
