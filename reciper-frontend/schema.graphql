@@ -180,9 +180,9 @@ type Mutation @authorize @authorize @authorize @authorize @authorize @authorize 
   deleteRecipeById(input: DeleteRecipeByIdInput!): DeleteRecipeByIdPayload! @cost(weight: "10")
   updateRecipe(input: UpdateRecipeInput!): UpdateRecipePayload! @cost(weight: "10")
   addRecipePhoto(input: AddRecipePhotoInput!): AddRecipePhotoPayload! @cost(weight: "10")
-  addTag(input: AddTagInput!): AddTagPayload! @cost(weight: "10")
-  deleteTagById(input: DeleteTagByIdInput!): DeleteTagByIdPayload! @cost(weight: "10")
-  updateTag(input: UpdateTagInput!): UpdateTagPayload! @cost(weight: "10")
+  addTag(input: AddTagInput!): AddTagPayload! @authorize @cost(weight: "10")
+  deleteTagById(input: DeleteTagByIdInput!): DeleteTagByIdPayload! @authorize @cost(weight: "10")
+  updateTag(input: UpdateTagInput!): UpdateTagPayload! @authorize @cost(weight: "10")
   addIngredient(input: AddIngredientInput!): AddIngredientPayload! @cost(weight: "10")
   deleteIngredientById(input: DeleteIngredientByIdInput!): DeleteIngredientByIdPayload! @cost(weight: "10")
   updateIngredient(input: UpdateIngredientInput!): UpdateIngredientPayload! @cost(weight: "10")
@@ -1210,7 +1210,7 @@ input RecipePatchDTOInput {
   cookingTimeMinutes: Int
   difficultyLevel: DifficultyLevel
   tags: [UUID!]
-  ingredients: [UUID!]
+  ingredients: [RecipeCreateIngredientDTOInput!]
   images: [UUID!]
 }
 

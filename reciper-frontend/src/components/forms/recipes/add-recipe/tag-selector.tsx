@@ -13,7 +13,7 @@ import {
 import { useMutation, useQuery } from '@urql/next'
 import { graphql } from 'gql.tada'
 import { Plus, X } from 'lucide-react'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
 const TagsQuery = graphql(`
@@ -44,6 +44,7 @@ const AddTagMutation = graphql(`
 interface TagSelectorProps {
   value: string[]
   onChange: (value: string[]) => void
+  initialTags?: { id: string; name: string }[]
 }
 
 interface TagDetails {
@@ -51,17 +52,27 @@ interface TagDetails {
   name: string
 }
 
-export function TagSelector({ value, onChange }: TagSelectorProps) {
+export function TagSelector({
+  value,
+  onChange,
+  initialTags = []
+}: TagSelectorProps) {
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [selectedTagsMap, setSelectedTagsMap] = useState<
     Record<string, TagDetails>
-  >({})
+  >(() => {
+    return initialTags.reduce(
+      (acc, tag) => {
+        acc[tag.id] = { id: tag.id, name: tag.name }
+        return acc
+      },
+      {} as Record<string, TagDetails>
+    )
+  })
 
-  const context = useMemo(() => ({ additionalTypenames: ['Tag'] }), [])
   const [{ data }] = useQuery({
     query: TagsQuery,
-    context,
     requestPolicy: 'cache-and-network',
     variables: {
       search: debouncedSearch,

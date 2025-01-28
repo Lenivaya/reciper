@@ -64,8 +64,9 @@ public class MutationRecipesResolver
     }
 
     [Error(typeof(ReciperException))]
+    [UseFirstOrDefault]
     [UseProjection]
-    public async Task<DAL.Models.Recipe?> UpdateRecipe(
+    public async Task<IQueryable<DAL.Models.Recipe>> UpdateRecipe(
         ReciperUnitOfWork unitOfWork,
         [Service] IMapper mapper,
         ITopicEventSender sender,
@@ -77,20 +78,42 @@ public class MutationRecipesResolver
         if (!await IsAuthor(recipeId, authenticatedUser, unitOfWork))
             throw new ReciperException("Not authorized to update this recipe");
 
-        return await GraphQlMutationResolverService.UpdateEntity(
-            unitOfWork,
-            mapper,
-            recipeId,
-            updateDto,
-            OnSuccess
-        );
-
-        async void OnSuccess(DAL.Models.Recipe result)
+        try
         {
+            await unitOfWork.BeginTransaction();
+
+            var entityToUpdate = await unitOfWork.RecipesRepository.GetById(recipeId);
+
+            if (entityToUpdate == null)
+                throw new ReciperException("Recipe not found");
+
+            await unitOfWork
+                .RecipeIngredientsRepository.StartQuery()
+                .Where(ri => ri.RecipeId == recipeId)
+                .ExecuteDeleteAsync();
+            await unitOfWork
+                .RecipeTagsRepository.StartQuery()
+                .Where(rt => rt.RecipeId == recipeId)
+                .ExecuteDeleteAsync();
+
+            var updatedEntity = mapper.Map(updateDto, entityToUpdate);
+
+            unitOfWork.RecipesRepository.Update(updatedEntity);
+            await unitOfWork.Commit();
+
             await sender.SendAsync(
                 $"{nameof(SubscriptionRecipesResolver.RecipeUpdated)}-{recipeId}",
-                result.Id
+                updatedEntity.Id
             );
+
+            return unitOfWork
+                .RecipesRepository.StartQuery()
+                .AsNoTracking()
+                .Where(r => r.Id == recipeId);
+        }
+        catch (Exception e)
+        {
+            throw new ReciperException(e.InnerException?.Message ?? e.Message);
         }
     }
 

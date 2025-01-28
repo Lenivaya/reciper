@@ -1,3 +1,5 @@
+import { EditRecipeDialog } from '@/components/forms/recipes/edit-recipe/edit-recipe-dialog'
+import { ShowOnlyForUser } from '@/components/layout/show-only-for-user'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -150,6 +152,9 @@ export const RecipeCard: FC<Props> = ({ data }) => {
           recipeName={recipe.title}
           recipeAuthorId={recipe.user.id as string}
         />
+        <ShowOnlyForUser userIdToCheckAuth={recipe.user.id as string}>
+          <EditRecipeDialog recipeId={recipe.id as string} />
+        </ShowOnlyForUser>
       </Card>
     </div>
   )

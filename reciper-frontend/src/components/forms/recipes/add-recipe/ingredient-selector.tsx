@@ -21,7 +21,7 @@ import {
 import { useMutation, useQuery } from '@urql/next'
 import { graphql } from 'gql.tada'
 import { Plus, X } from 'lucide-react'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
 const IngredientsQuery = graphql(`
@@ -57,6 +57,7 @@ interface Ingredient {
 interface IngredientSelectorProps {
   value: Ingredient[]
   onChange: (value: Ingredient[]) => void
+  initialIngredients?: { id: string; name: string }[]
 }
 
 const commonUnits = [
@@ -78,7 +79,8 @@ interface IngredientDetails {
 
 export function IngredientSelector({
   value,
-  onChange
+  onChange,
+  initialIngredients = []
 }: IngredientSelectorProps) {
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
@@ -90,12 +92,18 @@ export function IngredientSelector({
   } | null>(null)
   const [selectedIngredientsMap, setSelectedIngredientsMap] = useState<
     Record<string, IngredientDetails>
-  >({})
+  >(() => {
+    return initialIngredients.reduce(
+      (acc, ingredient) => {
+        acc[ingredient.id] = { id: ingredient.id, name: ingredient.name }
+        return acc
+      },
+      {} as Record<string, IngredientDetails>
+    )
+  })
 
-  const context = useMemo(() => ({ additionalTypenames: ['Ingredient'] }), [])
   const [{ data }] = useQuery({
     query: IngredientsQuery,
-    context,
     requestPolicy: 'cache-and-network',
     variables: {
       search: debouncedSearch,

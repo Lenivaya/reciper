@@ -20,7 +20,7 @@ public record RecipePatchDTO(
     int? CookingTimeMinutes,
     DifficultyLevel? DifficultyLevel,
     List<Guid>? Tags,
-    List<Guid>? Ingredients,
+    List<RecipeCreateIngredientDTO>? Ingredients,
     List<Guid>? Images
 );
 
