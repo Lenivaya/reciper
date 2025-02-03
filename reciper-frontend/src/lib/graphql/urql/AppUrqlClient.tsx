@@ -31,7 +31,7 @@ const ssr = ssrExchange({})
 const client = createClient({
   url: env.NEXT_PUBLIC_API_URL,
   exchanges: [
-    // cacheExchange,
+    cacheExchange,
     // normalizedCacheExchange({}),
     retryExchange(retryOptions),
     mapExchange({

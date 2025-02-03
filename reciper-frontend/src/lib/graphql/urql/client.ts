@@ -21,7 +21,7 @@ export const makeClient = () => {
   return createClient({
     url: env.API_URL,
     exchanges: [
-      // cacheExchange,
+      cacheExchange,
       // normalizedCacheExchange({}),
       persistedExchange({
         preferGetForPersistedQueries: true
