@@ -1,5 +1,6 @@
 import { RecipeCommentsSection } from '@/components/recipes/comments/recipe-comments-section'
 import { RecipeCardTags } from '@/components/recipes/recipe-card/recip-card-tags'
+import { RecipeRatingSection } from '@/components/recipes/recipe-page/recipe-rating-section'
 import {
   Card,
   CardContent,
@@ -16,7 +17,6 @@ import {
 } from '@/components/ui/carousel'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { FragmentOf, graphql, readFragment } from 'gql.tada'
-import { Star } from 'lucide-react'
 import Image from 'next/image'
 import { Key } from 'react'
 
@@ -93,22 +93,18 @@ export function RecipePageContent({
           <Card>
             <CardHeader>
               <CardTitle className='text-2xl'>{recipe.title}</CardTitle>
-              <div className='flex items-center gap-4'>
-                <div className='flex items-center gap-1'>
-                  <Star className='h-5 w-5 fill-yellow-400 text-yellow-400' />
-                  <span>
-                    {recipe.averageRating?.toFixed(1) || 'No ratings'}
-                  </span>
-                </div>
-                <div className='text-muted-foreground'>
-                  {recipe.likesCount} likes
-                </div>
-              </div>
             </CardHeader>
             <CardContent>
               <p className='text-muted-foreground'>{recipe.description}</p>
             </CardContent>
           </Card>
+
+          {/* Rating Section */}
+          <RecipeRatingSection
+            recipeId={recipe.id as string}
+            averageRating={recipe.averageRating}
+            likesCount={recipe.likesCount}
+          />
         </div>
 
         {/* Right column - Ingredients and Tags */}
