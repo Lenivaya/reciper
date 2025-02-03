@@ -116,6 +116,11 @@ type DeleteRecipeByIdPayload {
   errors: [DeleteRecipeByIdError!]
 }
 
+type DeleteRecipePhotoPayload {
+  recipeImage: RecipeImage
+  errors: [DeleteRecipePhotoError!]
+}
+
 type DeleteSubscriptionByIdPayload {
   userSubscription: UserSubscription
   errors: [DeleteSubscriptionByIdError!]
@@ -180,6 +185,7 @@ type Mutation @authorize @authorize @authorize @authorize @authorize @authorize 
   deleteRecipeById(input: DeleteRecipeByIdInput!): DeleteRecipeByIdPayload! @cost(weight: "10")
   updateRecipe(input: UpdateRecipeInput!): UpdateRecipePayload! @cost(weight: "10")
   addRecipePhoto(input: AddRecipePhotoInput!): AddRecipePhotoPayload! @cost(weight: "10")
+  deleteRecipePhoto(input: DeleteRecipePhotoInput!): DeleteRecipePhotoPayload! @cost(weight: "10")
   addTag(input: AddTagInput!): AddTagPayload! @authorize @cost(weight: "10")
   deleteTagById(input: DeleteTagByIdInput!): DeleteTagByIdPayload! @authorize @cost(weight: "10")
   updateTag(input: UpdateTagInput!): UpdateTagPayload! @authorize @cost(weight: "10")
@@ -819,6 +825,8 @@ union DeleteRatingForRecipeError = ReciperError
 
 union DeleteRecipeByIdError = ReciperError
 
+union DeleteRecipePhotoError = ReciperError
+
 union DeleteSubscriptionByIdError = ReciperError
 
 union DeleteTagByIdError = ReciperError
@@ -952,6 +960,11 @@ input DeleteRatingForRecipeInput {
 
 input DeleteRecipeByIdInput {
   recipeId: UUID!
+}
+
+input DeleteRecipePhotoInput {
+  recipeId: UUID!
+  photoId: UUID!
 }
 
 input DeleteSubscriptionByIdInput {

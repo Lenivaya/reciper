@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useControllableState } from '@/hooks/use-controllable-state'
+import { useRefreshWithSearchParams } from '@/hooks/use-refresh-with-search-params'
 import { useToast } from '@/hooks/use-toast'
 import type * as getDifficultyColor from '@/lib/getDifficultyColor'
 import { isSome } from '@/lib/utils'
@@ -32,7 +33,7 @@ import { useMutation, useQuery } from 'urql'
 import { z } from 'zod'
 import { IngredientSelector } from '../add-recipe/ingredient-selector'
 import { TagSelector } from '../add-recipe/tag-selector'
-import { useRefreshWithSearchParams } from '@/hooks/use-refresh-with-search-params'
+import { EditRecipeImages, RecpeImageFragment } from './edit-recipe-image'
 
 const difficultyLevels: Record<getDifficultyColor.DifficultyLevel, string> = {
   BEGINNER: 'Beginner',
@@ -69,37 +70,38 @@ const editRecipeSchema = z.object({
 
 type EditRecipeFormValues = z.infer<typeof editRecipeSchema>
 
-const GetRecipeForEditQuery = graphql(`
-  query GetRecipeForEditQuery($recipeId: UUID!) {
-    recipeById(recipeId: $recipeId) {
-      id
-      title
-      description
-      cookingTimeMinutes
-      difficultyLevel
-      instructions
-      recipeIngredients {
+const GetRecipeForEditQuery = graphql(
+  `
+    query GetRecipeForEditQuery($recipeId: UUID!) {
+      recipeById(recipeId: $recipeId) {
         id
-        amount
-        ingredient {
+        title
+        description
+        cookingTimeMinutes
+        difficultyLevel
+        instructions
+        recipeIngredients {
           id
-          name
+          amount
+          ingredient {
+            id
+            name
+          }
         }
-      }
-      recipeTags {
-        tag {
-          id
-          name
+        recipeTags {
+          tag {
+            id
+            name
+          }
         }
-      }
-      images {
-        id
-        publicId
-        url
+        images {
+          ...RecipeImageFragment
+        }
       }
     }
-  }
-`)
+  `,
+  [RecpeImageFragment]
+)
 
 const UpdateRecipeMutation = graphql(`
   mutation UpdateRecipe($input: UpdateRecipeInput!) {
@@ -173,9 +175,9 @@ export const EditRecipeForm = memo(
   ({ recipeId, onSuccess }: EditRecipeFormProps) => {
     const { toast } = useToast()
 
-    const [{ data }] = useQuery({
+    const [{ data }, reexecuteQuery] = useQuery({
       query: GetRecipeForEditQuery,
-      requestPolicy: 'network-only',
+      requestPolicy: 'cache-and-network',
       variables: { recipeId }
     })
 
@@ -261,6 +263,10 @@ export const EditRecipeForm = memo(
       },
       [addRecipePhoto]
     )
+
+    const handleImageDeleted = useCallback(() => {
+      reexecuteQuery({ requestPolicy: 'network-only' })
+    }, [reexecuteQuery])
 
     const onSubmit = useCallback(
       async (values: EditRecipeFormValues) => {
@@ -429,6 +435,13 @@ export const EditRecipeForm = memo(
 
           <div className='space-y-2'>
             <FormLabel>Recipe Images</FormLabel>
+
+            <EditRecipeImages
+              data={data?.recipeById?.images ?? []}
+              recipeId={recipeId}
+              onImageDeleted={handleImageDeleted}
+            />
+
             <FileUploader
               accept={{ 'image/*': [] }}
               maxFileCount={4}

@@ -1,10 +1,10 @@
 import { PaginationControls } from '@/components/ui/pagination-controls'
+import type { DifficultyLevel } from '@/lib/getDifficultyColor'
 import { getClient } from '@/lib/graphql/urql/client'
 import { graphql } from 'gql.tada'
 import type { Key } from 'react'
 import { RecipeCard, RecipeCardFragment } from '../recipe-card/recipe-card'
 import { recipeSearchParamsCache } from './recipes-search-params'
-import type { DifficultyLevel } from '@/lib/getDifficultyColor'
 
 const RecipesListQuery = graphql(
   `

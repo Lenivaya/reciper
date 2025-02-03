@@ -13,7 +13,7 @@ import { format } from 'date-fns'
 import { FragmentOf, graphql, readFragment } from 'gql.tada'
 import { CalendarDays, Clock, Star, User } from 'lucide-react'
 import Image from 'next/image'
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import { RecipeCardTags } from './recip-card-tags'
 import { RecipeCardDeleteButton } from './recipe-card-delete-button'
 import { RecipeCardDifficulty } from './recipe-card-difficulty'
@@ -54,7 +54,10 @@ interface Props {
 
 export const RecipeCard: FC<Props> = ({ data }) => {
   const recipe = readFragment(RecipeCardFragment, data)
-  const coverImage = recipe.images.sort((a, b) => a.order - b.order).at(0)
+  const coverImage = useMemo(
+    () => recipe.images.sort((a, b) => a.order - b.order).at(0),
+    [recipe.images]
+  )
 
   return (
     <div className='group transform transition-all duration-300 hover:-translate-y-1'>

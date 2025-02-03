@@ -189,4 +189,47 @@ public class MutationRecipesResolver
             throw new ReciperException(e.Message);
         }
     }
+
+    [Error(typeof(ReciperException))]
+    [UseProjection]
+    public async Task<DAL.Models.RecipeImage> DeleteRecipePhoto(
+        ReciperUnitOfWork unitOfWork,
+        [Service] ICloudinary cloudinary,
+        [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser,
+        Guid recipeId,
+        Guid photoId
+    )
+    {
+        try
+        {
+            var recipe = await unitOfWork
+                .RecipesRepository.StartQuery()
+                .Where(r => r.UserId == authenticatedUser!.UserId && r.Id == recipeId)
+                .Include(r => r.Images)
+                .FirstOrDefaultAsync();
+            if (recipe == null)
+                throw new ReciperException("Recipe not found");
+
+            var photo = recipe.Images.FirstOrDefault(pi => pi.Id == photoId);
+            if (photo == null)
+                throw new ReciperException("Photo not found");
+
+            await unitOfWork.BeginTransaction();
+
+            var deleteParams = new DeletionParams(photo.PublicId);
+            var deleteResult = await cloudinary.DestroyAsync(deleteParams);
+            if (!deleteResult.Result.Equals("ok"))
+                throw new ReciperException("Error while deleting photo from cloudinary");
+
+            unitOfWork.RecipeImagesRepository.Delete(photo);
+
+            await unitOfWork.Commit();
+
+            return photo;
+        }
+        catch (Exception e)
+        {
+            throw new ReciperException(e.Message);
+        }
+    }
 }
