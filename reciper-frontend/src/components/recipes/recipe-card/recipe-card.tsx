@@ -13,6 +13,7 @@ import { format } from 'date-fns'
 import { FragmentOf, graphql, readFragment } from 'gql.tada'
 import { CalendarDays, Clock, Star, User } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { FC, useMemo } from 'react'
 import { RecipeCardTags } from './recip-card-tags'
 import { RecipeCardDeleteButton } from './recipe-card-delete-button'
@@ -91,9 +92,11 @@ export const RecipeCard: FC<Props> = ({ data }) => {
               </AvatarFallback>
             </Avatar>
             <div className='min-w-0 flex-1'>
-              <CardTitle className='group-hover:text-primary truncate text-lg font-bold transition-colors duration-300'>
-                {recipe.title}
-              </CardTitle>
+              <Link href={`/recipes/${recipe.id}`}>
+                <CardTitle className='group-hover:text-primary truncate text-lg font-bold transition-colors duration-300'>
+                  {recipe.title}
+                </CardTitle>
+              </Link>
               <div className='flex flex-col gap-0.5'>
                 <p className='text-muted-foreground flex items-center gap-1 text-sm'>
                   <User className='h-4 w-4 shrink-0' />
