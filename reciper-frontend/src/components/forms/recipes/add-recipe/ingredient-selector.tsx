@@ -189,7 +189,7 @@ export function IngredientSelector({
           <Badge
             key={item.ingredientId}
             variant='secondary'
-            className='group flex items-center gap-2 p-2 pr-1 transition-colors hover:bg-secondary/80'
+            className='group hover:bg-secondary/80 flex items-center gap-2 p-2 pr-1 transition-colors'
           >
             <span className='font-medium'>
               {selectedIngredientsMap[item.ingredientId]?.name ??
@@ -231,7 +231,7 @@ export function IngredientSelector({
             <Button
               variant='ghost'
               size='sm'
-              className='ml-1 h-6 w-6 p-0 opacity-50 hover:bg-destructive/10 hover:opacity-100 group-hover:opacity-75'
+              className='hover:bg-destructive/10 ml-1 h-6 w-6 p-0 opacity-50 group-hover:opacity-75 hover:opacity-100'
               onClick={() => handleRemove(item.ingredientId)}
             >
               <X className='h-3 w-3' />
@@ -284,7 +284,7 @@ export function IngredientSelector({
           </div>
         ) : (
           <div className='space-y-1.5'>
-            <p className='text-sm text-muted-foreground'>
+            <p className='text-muted-foreground text-sm'>
               Search for an ingredient to add
             </p>
             <Command className='rounded-md border' shouldFilter={false}>
@@ -296,7 +296,7 @@ export function IngredientSelector({
               <CommandList>
                 <CommandEmpty>
                   <div className='flex flex-col gap-2 p-4 text-center'>
-                    <p className='text-sm text-muted-foreground'>
+                    <p className='text-muted-foreground text-sm'>
                       No matching ingredients found for &quot;{search}&quot;
                     </p>
                     <Button

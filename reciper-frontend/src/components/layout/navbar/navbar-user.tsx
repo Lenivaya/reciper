@@ -36,8 +36,8 @@ export function NavbarUser() {
   if (isNone(data?.me)) return null
 
   return (
-    <div className='flex items-center gap-2 rounded-full pl-5 pr-5 transition-all duration-300 hover:bg-primary/10'>
-      <span className='text-sm font-medium transition-colors duration-300 hover:text-primary'>
+    <div className='hover:bg-primary/10 flex items-center gap-2 rounded-full pr-5 pl-5 transition-all duration-300'>
+      <span className='hover:text-primary text-sm font-medium transition-colors duration-300'>
         {data?.me?.username}
       </span>
       <Avatar>

@@ -17,7 +17,7 @@ export function AppSidebar() {
       <SidebarHeader className='border-b px-4'>
         <Link
           href='/dashboard'
-          className='flex items-center gap-2 font-semibold transition-colors hover:text-primary'
+          className='hover:text-primary flex items-center gap-2 font-semibold transition-colors'
         >
           <ChefHat className='h-5 w-5' />
           <span className='text-sm'>Dashboard</span>

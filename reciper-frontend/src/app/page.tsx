@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { LucideIcon } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 
 export default async function Home() {
@@ -12,7 +12,7 @@ export default async function Home() {
           <br />
           Starts Here
         </h1>
-        <p className='mx-auto max-w-2xl text-muted-foreground'>
+        <p className='text-muted-foreground mx-auto max-w-2xl'>
           Discover, create, and share amazing recipes with passionate cooks from
           around the world. Join our community of food lovers today.
         </p>
@@ -20,34 +20,34 @@ export default async function Home() {
 
       {/* Feature Cards */}
       <div className='grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3'>
-        <div className='group relative overflow-hidden rounded-xl border bg-background/50 p-6 shadow-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl'>
+        <div className='group bg-background/50 hover:border-primary/50 relative overflow-hidden rounded-xl border p-6 shadow-md transition-all duration-300 hover:shadow-xl'>
           <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
           <div className='relative space-y-2'>
             <span className='text-2xl'>🥘</span>
             <h3 className='font-semibold'>Explore Recipes</h3>
-            <p className='text-sm text-muted-foreground'>
+            <p className='text-muted-foreground text-sm'>
               Browse through thousands of curated recipes from expert chefs
             </p>
           </div>
         </div>
 
-        <div className='group relative overflow-hidden rounded-xl border bg-background/50 p-6 shadow-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl'>
+        <div className='group bg-background/50 hover:border-primary/50 relative overflow-hidden rounded-xl border p-6 shadow-md transition-all duration-300 hover:shadow-xl'>
           <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
           <div className='relative space-y-2'>
-            <span className='text-2xl'>👨‍🍳</span>
+            <span className='text-2xl'>👨</span>
             <h3 className='font-semibold'>Connect with Cooks</h3>
-            <p className='text-sm text-muted-foreground'>
+            <p className='text-muted-foreground text-sm'>
               Learn from and interact with passionate cooks worldwide
             </p>
           </div>
         </div>
 
-        <div className='group relative overflow-hidden rounded-xl border bg-background/50 p-6 shadow-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl'>
+        <div className='group bg-background/50 hover:border-primary/50 relative overflow-hidden rounded-xl border p-6 shadow-md transition-all duration-300 hover:shadow-xl'>
           <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
           <div className='relative space-y-2'>
             <span className='text-2xl'>📝</span>
             <h3 className='font-semibold'>Share Your Recipes</h3>
-            <p className='text-sm text-muted-foreground'>
+            <p className='text-muted-foreground text-sm'>
               Create and share your own culinary masterpieces
             </p>
           </div>
@@ -74,15 +74,15 @@ export default async function Home() {
       <div className='flex flex-wrap justify-center gap-8 pt-8'>
         <div className='text-center'>
           <p className='text-3xl font-bold'>1000+</p>
-          <p className='text-sm text-muted-foreground'>Recipes</p>
+          <p className='text-muted-foreground text-sm'>Recipes</p>
         </div>
         <div className='text-center'>
           <p className='text-3xl font-bold'>500+</p>
-          <p className='text-sm text-muted-foreground'>Active Cooks</p>
+          <p className='text-muted-foreground text-sm'>Active Cooks</p>
         </div>
         <div className='text-center'>
           <p className='text-3xl font-bold'>50k+</p>
-          <p className='text-sm text-muted-foreground'>Monthly Users</p>
+          <p className='text-muted-foreground text-sm'>Monthly Users</p>
         </div>
       </div>
     </div>
@@ -104,8 +104,8 @@ function DashboardCard({
 }: DashboardCardProps) {
   return (
     <Link href={href} className='group'>
-      <div className='h-full rounded-lg border border-border/50 p-6 shadow-xs transition-all hover:border-primary/50 hover:bg-muted/10 hover:shadow-md'>
-        <Icon className='mb-4 h-12 w-12 text-primary transition-transform group-hover:scale-110' />
+      <div className='border-border/50 hover:border-primary/50 hover:bg-muted/10 h-full rounded-lg border p-6 shadow-xs transition-all hover:shadow-md'>
+        <Icon className='text-primary mb-4 h-12 w-12 transition-transform group-hover:scale-110' />
         <h2 className='mb-2 text-2xl font-semibold'>{title}</h2>
         <p className='text-muted-foreground'>{description}</p>
       </div>

@@ -21,17 +21,20 @@ import {
 import { Textarea } from '@/components/ui/textarea'
 import { useControllableState } from '@/hooks/use-controllable-state'
 import { useToast } from '@/hooks/use-toast'
-import { DifficultyLevel } from '@/lib/getDifficultyColor'
+import type * as getDifficultyColor from '@/lib/getDifficultyColor'
+import { isSome } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQuery } from '@urql/next'
 import { graphql } from 'gql.tada'
+import type React from 'react'
 import { memo, useCallback, useEffect, useMemo } from 'react'
-import { Control, FieldValues, useForm } from 'react-hook-form'
+import * as reactHookForm from 'react-hook-form'
+import { useMutation, useQuery } from 'urql'
 import { z } from 'zod'
 import { IngredientSelector } from '../add-recipe/ingredient-selector'
 import { TagSelector } from '../add-recipe/tag-selector'
+import { useRefreshWithSearchParams } from '@/hooks/use-refresh-with-search-params'
 
-const difficultyLevels: Record<DifficultyLevel, string> = {
+const difficultyLevels: Record<getDifficultyColor.DifficultyLevel, string> = {
   BEGINNER: 'Beginner',
   EASY: 'Easy',
   INTERMEDIATE: 'Intermediate',
@@ -144,10 +147,10 @@ const FormFieldWrapper = memo(
     label,
     children
   }: {
-    control: Control<EditRecipeFormValues>
+    control: reactHookForm.Control<EditRecipeFormValues>
     name: string
     label: string
-    children: (field: FieldValues) => React.ReactNode
+    children: (field: reactHookForm.FieldValues) => React.ReactNode
   }) => {
     return (
       <FormField
@@ -169,11 +172,14 @@ FormFieldWrapper.displayName = 'FormFieldWrapper'
 export const EditRecipeForm = memo(
   ({ recipeId, onSuccess }: EditRecipeFormProps) => {
     const { toast } = useToast()
-    const [{ data, fetching: isFetching }] = useQuery({
+
+    const [{ data }] = useQuery({
       query: GetRecipeForEditQuery,
-      requestPolicy: 'cache-and-network',
+      requestPolicy: 'network-only',
       variables: { recipeId }
     })
+
+    const refreshWithSearchParams = useRefreshWithSearchParams()
 
     const [{ fetching: isUpdating }, updateRecipe] =
       useMutation(UpdateRecipeMutation)
@@ -184,7 +190,7 @@ export const EditRecipeForm = memo(
       AddRecipePhotoMutation
     )
 
-    const form = useForm<EditRecipeFormValues>({
+    const form = reactHookForm.useForm<EditRecipeFormValues>({
       resolver: zodResolver(editRecipeSchema),
       defaultValues: {
         title: '',
@@ -224,7 +230,8 @@ export const EditRecipeForm = memo(
           title: recipe.title as string,
           description: recipe.description as string,
           cookingTimeMinutes: recipe.cookingTimeMinutes as number,
-          difficultyLevel: recipe.difficultyLevel as DifficultyLevel,
+          difficultyLevel:
+            recipe.difficultyLevel as getDifficultyColor.DifficultyLevel,
           instructions: recipe.instructions as string,
           ingredients:
             recipe.recipeIngredients?.map((ri) => ({
@@ -283,9 +290,12 @@ export const EditRecipeForm = memo(
               message: result.error?.message ?? 'An unexpected error occurred'
             })
 
-            errors?.forEach((error) => {
-              console.error(error)
-            })
+            if (isSome(errors)) {
+              for (const error of errors) {
+                console.error(error)
+              }
+            }
+
             return
           }
 
@@ -297,6 +307,7 @@ export const EditRecipeForm = memo(
           })
           setFiles([])
           onSuccess?.()
+          refreshWithSearchParams()
         } catch (error) {
           console.error(error)
           toast({
@@ -308,11 +319,12 @@ export const EditRecipeForm = memo(
       [
         updateRecipe,
         recipeId,
-        files,
         handleImageUpload,
+        files,
         toast,
         setFiles,
         onSuccess,
+        refreshWithSearchParams,
         form
       ]
     )
@@ -326,10 +338,6 @@ export const EditRecipeForm = memo(
         )),
       []
     )
-
-    if (isFetching) {
-      return <div>Loading...</div>
-    }
 
     return (
       <Form {...form}>
@@ -359,7 +367,9 @@ export const EditRecipeForm = memo(
                 <Input
                   type='number'
                   {...field}
-                  onChange={(e) => field.onChange(parseInt(e.target.value))}
+                  onChange={(e) =>
+                    field.onChange(Number.parseInt(e.target.value))
+                  }
                 />
               )}
             </FormFieldWrapper>
@@ -428,13 +438,13 @@ export const EditRecipeForm = memo(
               disabled={isUpdating || isUploading}
               multiple
             />
-            <p className='text-sm text-muted-foreground'>
+            <p className='text-muted-foreground text-sm'>
               Upload up to 4 images. Maximum file size: 5MB each
             </p>
           </div>
 
           {form.formState.errors.root && (
-            <div className='rounded-md bg-destructive/10 p-3 text-sm text-destructive'>
+            <div className='bg-destructive/10 text-destructive rounded-md p-3 text-sm'>
               {form.formState.errors.root.message}
             </div>
           )}

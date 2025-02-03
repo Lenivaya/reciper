@@ -22,7 +22,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useControllableState } from '@/hooks/use-controllable-state'
 import { useRefreshWithSearchParams } from '@/hooks/use-refresh-with-search-params'
 import { useToast } from '@/hooks/use-toast'
-import { DifficultyLevel } from '@/lib/getDifficultyColor'
+import type { DifficultyLevel } from '@/lib/getDifficultyColor'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@urql/next'
 import { graphql } from 'gql.tada'
@@ -157,11 +157,11 @@ export function AddRecipeForm({ onSuccess }: AddRecipeFormProps) {
         if (result.error || result.data?.addRecipe.errors) {
           const errors = result.data?.addRecipe.errors
           if (errors) {
-            errors.forEach((error) => {
+            for (const error of errors) {
               form.setError('root', {
                 message: error.message
               })
-            })
+            }
           }
           return
         }
@@ -256,7 +256,9 @@ export function AddRecipeForm({ onSuccess }: AddRecipeFormProps) {
                   <Input
                     type='number'
                     {...field}
-                    onChange={(e) => field.onChange(parseInt(e.target.value))}
+                    onChange={(e) =>
+                      field.onChange(Number.parseInt(e.target.value))
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -349,13 +351,13 @@ export function AddRecipeForm({ onSuccess }: AddRecipeFormProps) {
             disabled={fetching || isUploading}
             multiple
           />
-          <p className='text-sm text-muted-foreground'>
+          <p className='text-muted-foreground text-sm'>
             Upload up to 4 images. Maximum file size: 5MB each
           </p>
         </div>
 
         {form.formState.errors.root && (
-          <div className='rounded-md bg-destructive/10 p-3 text-sm text-destructive'>
+          <div className='bg-destructive/10 text-destructive rounded-md p-3 text-sm'>
             {form.formState.errors.root.message}
           </div>
         )}

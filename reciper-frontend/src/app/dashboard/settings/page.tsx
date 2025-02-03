@@ -33,7 +33,7 @@ export default function SettingsPage() {
   if (fetching) {
     return (
       <div className='flex h-[50vh] items-center justify-center'>
-        <div className='h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent' />
+        <div className='border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent' />
       </div>
     )
   }
@@ -50,7 +50,7 @@ export default function SettingsPage() {
     <div className='space-y-6'>
       <div>
         <h2 className='text-2xl font-semibold tracking-tight'>Settings</h2>
-        <p className='text-sm text-muted-foreground'>
+        <p className='text-muted-foreground text-sm'>
           Manage your account settings and preferences
         </p>
       </div>

@@ -59,7 +59,7 @@ export const RecipeCard: FC<Props> = ({ data }) => {
   return (
     <div className='group transform transition-all duration-300 hover:-translate-y-1'>
       <div className='absolute inset-0 -z-10 h-[400px] w-[300px] rounded-xl bg-linear-to-r from-rose-500/20 via-amber-500/20 to-rose-500/20 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100' />
-      <Card className='relative flex w-[300px] flex-col overflow-hidden border-border/40 bg-background/80 backdrop-blur-xs transition-all duration-300 hover:border-border/60 hover:shadow-lg'>
+      <Card className='border-border/40 bg-background/80 hover:border-border/60 relative flex w-[300px] flex-col overflow-hidden backdrop-blur-xs transition-all duration-300 hover:shadow-lg'>
         <div className='absolute inset-0 bg-linear-to-r from-rose-500/5 via-amber-500/5 to-rose-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100' />
 
         {/* Cover Image */}
@@ -74,29 +74,29 @@ export const RecipeCard: FC<Props> = ({ data }) => {
             />
           ) : (
             <div className='flex h-full w-full items-center justify-center bg-linear-to-r from-rose-500/10 to-amber-500/10'>
-              <span className='text-lg text-muted-foreground'>No image</span>
+              <span className='text-muted-foreground text-lg'>No image</span>
             </div>
           )}
         </div>
 
         <CardHeader className='relative space-y-2'>
           <div className='flex items-center space-x-4'>
-            <Avatar className='h-10 w-10 shrink-0 ring-2 ring-border/40 transition-all duration-300 group-hover:scale-110 group-hover:ring-border/60'>
+            <Avatar className='ring-border/40 group-hover:ring-border/60 h-10 w-10 shrink-0 ring-2 transition-all duration-300 group-hover:scale-110'>
               <AvatarImage src={recipe.user.profilePictureUrl ?? ''} />
               <AvatarFallback className='bg-linear-to-r from-rose-500/10 to-amber-500/10'>
                 {recipe.user.username[0].toUpperCase()}
               </AvatarFallback>
             </Avatar>
             <div className='min-w-0 flex-1'>
-              <CardTitle className='truncate text-lg font-bold transition-colors duration-300 group-hover:text-primary'>
+              <CardTitle className='group-hover:text-primary truncate text-lg font-bold transition-colors duration-300'>
                 {recipe.title}
               </CardTitle>
               <div className='flex flex-col gap-0.5'>
-                <p className='flex items-center gap-1 text-sm text-muted-foreground'>
+                <p className='text-muted-foreground flex items-center gap-1 text-sm'>
                   <User className='h-4 w-4 shrink-0' />
                   <span className='truncate'>{recipe.user.username}</span>
                 </p>
-                <p className='flex items-center gap-1 text-sm text-muted-foreground'>
+                <p className='text-muted-foreground flex items-center gap-1 text-sm'>
                   <CalendarDays className='h-4 w-4 shrink-0' />
                   <span className='truncate'>
                     {format(new Date(recipe.createdAt as string), 'MMMM yyyy')}
@@ -108,7 +108,7 @@ export const RecipeCard: FC<Props> = ({ data }) => {
         </CardHeader>
 
         <CardContent className='relative flex-1 space-y-4'>
-          <p className='line-clamp-2 text-sm text-muted-foreground/90 transition-colors duration-300 group-hover:text-muted-foreground'>
+          <p className='text-muted-foreground/90 group-hover:text-muted-foreground line-clamp-2 text-sm transition-colors duration-300'>
             {recipe.description}
           </p>
 
@@ -121,13 +121,13 @@ export const RecipeCard: FC<Props> = ({ data }) => {
           </div>
 
           <div className='flex justify-between'>
-            <div className='flex items-center gap-1.5 transition-colors duration-300 hover:text-primary'>
+            <div className='hover:text-primary flex items-center gap-1.5 transition-colors duration-300'>
               <Clock className='h-4 w-4 shrink-0' />
               <span className='text-sm font-medium'>
                 {recipe.cookingTimeMinutes} min
               </span>
             </div>
-            <div className='flex items-center gap-1.5 transition-colors duration-300 hover:text-primary'>
+            <div className='hover:text-primary flex items-center gap-1.5 transition-colors duration-300'>
               <Star className='h-4 w-4 shrink-0 fill-current' />
               <span className='text-sm font-medium'>
                 {recipe.averageRating?.toFixed(1) ?? 0}
@@ -141,7 +141,7 @@ export const RecipeCard: FC<Props> = ({ data }) => {
         </CardContent>
 
         <CardFooter className='relative'>
-          <Button className='group/btn w-full bg-linear-to-r from-rose-500 to-amber-500 text-white transition-all duration-300 hover:shadow-lg hover:shadow-primary/10'>
+          <Button className='group/btn hover:shadow-primary/10 w-full bg-linear-to-r from-rose-500 to-amber-500 text-white transition-all duration-300 hover:shadow-lg'>
             View Recipe
             <Clock className='ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:rotate-12' />
           </Button>

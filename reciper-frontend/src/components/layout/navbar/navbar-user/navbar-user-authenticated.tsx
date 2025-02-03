@@ -48,10 +48,10 @@ export function NavbarUserAuthenticated({
   return (
     <div
       suppressHydrationWarning
-      className='group flex cursor-pointer items-center gap-3 rounded-full bg-linear-to-r from-background to-background px-4 py-2 transition-all duration-300 hover:from-primary/5 hover:to-secondary/5'
+      className='group from-background to-background hover:from-primary/5 hover:to-secondary/5 flex cursor-pointer items-center gap-3 rounded-full bg-linear-to-r px-4 py-2 transition-all duration-300'
     >
       <MenuItem handleLogout={handleLogout}>
-        <span className='text-sm font-medium text-muted-foreground transition-colors duration-300 group-hover:text-primary'>
+        <span className='text-muted-foreground group-hover:text-primary text-sm font-medium transition-colors duration-300'>
           {user.username}
         </span>
       </MenuItem>
@@ -97,7 +97,7 @@ function MenuItem({
         </Link>
         <DropdownMenuSeparator />
         <DropdownMenuItem
-          className='cursor-pointer text-destructive'
+          className='text-destructive cursor-pointer'
           onClick={handleLogout}
         >
           <LogOut className='mr-2 h-4 w-4' />

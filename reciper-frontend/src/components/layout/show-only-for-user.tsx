@@ -1,6 +1,7 @@
 'use client'
 
 import { useAuthUser } from '@/hooks/use-authentication'
+import { useMemo } from 'react'
 import { match, P } from 'ts-pattern'
 
 interface Props {
@@ -9,10 +10,14 @@ interface Props {
 }
 
 export function ShowOnlyForUser({ children, userIdToCheckAuth }: Props) {
-  const { data: user } = useAuthUser()
+  const { user } = useAuthUser()
 
-  return match({ user, userIdToCheckAuth })
-    .with({ user: P.nullish }, () => null)
-    .with({ user: { id: userIdToCheckAuth } }, () => <>{children}</>)
-    .otherwise(() => null)
+  const result = useMemo(() => {
+    return match({ user, userIdToCheckAuth })
+      .with({ user: P.nullish }, () => null)
+      .with({ user: { id: userIdToCheckAuth } }, () => <>{children}</>)
+      .otherwise(() => null)
+  }, [children, user, userIdToCheckAuth])
+
+  return result
 }

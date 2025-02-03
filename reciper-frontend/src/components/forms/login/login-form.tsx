@@ -120,7 +120,7 @@ export function LoginForm() {
           <h1 className='text-2xl font-semibold tracking-tight'>
             Welcome back
           </h1>
-          <p className='text-sm text-muted-foreground'>
+          <p className='text-muted-foreground text-sm'>
             Enter your credentials to access your account
           </p>
         </div>
@@ -166,7 +166,7 @@ export function LoginForm() {
         </div>
 
         {form.formState.errors.root && (
-          <div className='rounded-md bg-destructive/10 p-3 text-sm text-destructive'>
+          <div className='bg-destructive/10 text-destructive rounded-md p-3 text-sm'>
             {form.formState.errors.root.message}
           </div>
         )}

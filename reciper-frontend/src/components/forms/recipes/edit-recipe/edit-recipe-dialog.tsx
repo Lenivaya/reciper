@@ -25,7 +25,7 @@ export function EditRecipeDialog({ recipeId }: EditRecipeDialogProps) {
         <Button
           variant='ghost'
           size='icon'
-          className='absolute right-12 top-2 h-8 w-8 rounded-full bg-white/80 p-0 text-blue-600 opacity-90 shadow-xs backdrop-blur-xs hover:bg-blue-100 hover:text-blue-700'
+          className='absolute top-2 right-12 h-8 w-8 rounded-full bg-white/80 p-0 text-blue-600 opacity-90 shadow-xs backdrop-blur-xs hover:bg-blue-100 hover:text-blue-700'
         >
           <Pencil className='h-4 w-4' />
           <span className='sr-only'>Edit recipe</span>

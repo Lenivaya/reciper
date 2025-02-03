@@ -127,7 +127,7 @@ export const RecipeCardLike = ({ totalRecipeLikes = 0, recipeId }: Props) => {
       <Heart
         className={cn(
           'h-4 w-4 shrink-0 transition-all duration-200',
-          'hover:scale-150 group-active:scale-95',
+          'group-active:scale-95 hover:scale-150',
           isLiked
             ? 'fill-primary stroke-primary'
             : 'stroke-muted-foreground group-hover:stroke-primary'

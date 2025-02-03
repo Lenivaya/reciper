@@ -82,8 +82,8 @@ export const RecipesSearch = ({
     <div className='flex flex-col space-y-4'>
       <div className='group relative mx-auto w-full max-w-xl'>
         <div className='absolute inset-0 -z-10 rounded-lg bg-linear-to-r from-rose-500/20 via-amber-500/20 to-rose-500/20 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100' />
-        <div className='relative flex items-center rounded-lg border border-border/40 bg-background/80 shadow-lg shadow-primary/5 backdrop-blur-xs transition-all duration-300 focus-within:border-primary/60 focus-within:shadow-primary/20 hover:border-border/60 hover:shadow-primary/10'>
-          <Search className='ml-3 h-4 w-4 text-muted-foreground/60' />
+        <div className='border-border/40 bg-background/80 shadow-primary/5 focus-within:border-primary/60 focus-within:shadow-primary/20 hover:border-border/60 hover:shadow-primary/10 relative flex items-center rounded-lg border shadow-lg backdrop-blur-xs transition-all duration-300'>
+          <Search className='text-muted-foreground/60 ml-3 h-4 w-4' />
           <Input
             ref={inputRef}
             name='query'
@@ -93,7 +93,7 @@ export const RecipesSearch = ({
             className='border-0 bg-transparent text-center shadow-none focus-visible:ring-0'
           />
           {!search && (
-            <kbd className='pointer-events-none mr-2 hidden h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex'>
+            <kbd className='bg-muted pointer-events-none mr-2 hidden h-5 items-center gap-1 rounded border px-1.5 font-mono text-[10px] font-medium opacity-100 select-none sm:flex'>
               <span className='text-xs'>⌘</span>K
             </kbd>
           )}

@@ -4,6 +4,10 @@ import { retryExchange, RetryExchangeOptions } from '@urql/exchange-retry'
 import { registerUrql } from '@urql/next/rsc'
 import { cacheExchange, createClient, fetchExchange } from 'urql'
 
+// import {
+//   cacheExchange as normalizedCacheExchange,
+// } from '@urql/exchange-graphcache'
+
 const retryOptions: RetryExchangeOptions = {
   initialDelayMs: 1000,
   maxDelayMs: 15000,
@@ -17,7 +21,8 @@ export const makeClient = () => {
   return createClient({
     url: env.API_URL,
     exchanges: [
-      cacheExchange,
+      // cacheExchange,
+      // normalizedCacheExchange({}),
       persistedExchange({
         preferGetForPersistedQueries: true
       }),

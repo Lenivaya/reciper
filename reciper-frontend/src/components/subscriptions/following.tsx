@@ -34,7 +34,7 @@ export const Following: FC<IFollowingProps> = ({ data }) => {
         </Avatar>
         <div className='flex-1'>
           <h3 className='font-medium'>{following.subscribee.username}</h3>
-          <p className='text-sm text-muted-foreground'>
+          <p className='text-muted-foreground text-sm'>
             {following.subscribee.recipesCount} recipes
           </p>
         </div>

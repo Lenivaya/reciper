@@ -13,7 +13,7 @@ export default function DashboardPage() {
           <h2 className='text-2xl font-semibold tracking-tight'>
             Your Recipes
           </h2>
-          <p className='text-sm text-muted-foreground'>
+          <p className='text-muted-foreground text-sm'>
             Manage and track your created recipes
           </p>
         </div>

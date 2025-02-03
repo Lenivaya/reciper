@@ -78,7 +78,7 @@ export default function SavedRecipesPage() {
     <div className=''>
       <div>
         <h2 className='text-2xl font-semibold tracking-tight'>Saved Recipes</h2>
-        <p className='text-sm text-muted-foreground'>
+        <p className='text-muted-foreground text-sm'>
           Your collection of saved recipes from other cooks
         </p>
       </div>

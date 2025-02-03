@@ -2,19 +2,19 @@
 /** @typedef {import("prettier-plugin-tailwindcss").PluginOptions} TailwindConfig */
 /** @typedef {import("@ianvs/prettier-plugin-sort-imports").PluginConfig} SortImportsConfig */
 
-import { createRequire } from "module";
+import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url);
-const prettierConfigStandard = require("prettier-config-standard");
-const Belt = require("@mobily/ts-belt");
+const require = createRequire(import.meta.url)
+const prettierConfigStandard = require('prettier-config-standard')
+const Belt = require('@mobily/ts-belt')
 
 /** @type { PrettierConfig | SortImportsConfig | TailwindConfig } */
 const config = Belt.D.merge(prettierConfigStandard, {
   plugins: [
-    "@ianvs/prettier-plugin-sort-imports",
-    "prettier-plugin-tailwindcss",
+    '@ianvs/prettier-plugin-sort-imports',
+    'prettier-plugin-tailwindcss'
   ],
-  tailwindFunctions: ["cn", "cva"],
-});
+  tailwindFunctions: ['cn', 'cva']
+})
 
-export default config;
+export default config

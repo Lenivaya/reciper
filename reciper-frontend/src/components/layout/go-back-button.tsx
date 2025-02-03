@@ -19,7 +19,7 @@ export function GoBackButton({ text = 'Go back', onClick }: GoBackButtonProps) {
 
   return (
     <div
-      className='group flex cursor-pointer items-center gap-2 text-muted-foreground transition-colors hover:text-primary'
+      className='group text-muted-foreground hover:text-primary flex cursor-pointer items-center gap-2 transition-colors'
       onClick={handleClick}
     >
       <ArrowLeft className='h-4 w-4 transition-transform group-hover:-translate-x-1' />

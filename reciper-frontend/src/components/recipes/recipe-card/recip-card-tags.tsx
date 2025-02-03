@@ -48,7 +48,7 @@ export const RecipeCardTags = ({
       ))}
 
       {tags.length > maxTags && (
-        <span className='text-xs text-muted-foreground'>
+        <span className='text-muted-foreground text-xs'>
           +{tags.length - maxTags} more
         </span>
       )}

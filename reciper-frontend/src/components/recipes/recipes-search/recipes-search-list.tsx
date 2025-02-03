@@ -1,9 +1,10 @@
 import { PaginationControls } from '@/components/ui/pagination-controls'
 import { getClient } from '@/lib/graphql/urql/client'
 import { graphql } from 'gql.tada'
-import { Key } from 'react'
+import type { Key } from 'react'
 import { RecipeCard, RecipeCardFragment } from '../recipe-card/recipe-card'
 import { recipeSearchParamsCache } from './recipes-search-params'
+import type { DifficultyLevel } from '@/lib/getDifficultyColor'
 
 const RecipesListQuery = graphql(
   `
@@ -39,13 +40,13 @@ const DEFAULT_PAGE_SIZE = 12
 
 export async function RecipesSearchList() {
   const { search, page, tags, difficultyLevels } = recipeSearchParamsCache.all()
-  const currentPage = Math.max(1, parseInt(page ?? '1'))
+  const currentPage = Math.max(1, Number.parseInt(page ?? '1'))
 
   const result = await getClient().query(RecipesListQuery, {
     searchCriteria: {
       matching: search,
       tags,
-      difficultyLevels
+      difficultyLevels: difficultyLevels as DifficultyLevel[]
     },
     orderBy: {
       createdAt: 'DESC'

@@ -7,7 +7,7 @@ export default function RecipesPage() {
     <div className='space-y-6'>
       <div>
         <h2 className='text-2xl font-semibold tracking-tight'>My Recipes</h2>
-        <p className='text-sm text-muted-foreground'>
+        <p className='text-muted-foreground text-sm'>
           Manage and organize your created recipes
         </p>
       </div>

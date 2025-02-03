@@ -14,6 +14,10 @@ import {
   UrqlProvider
 } from '@urql/next'
 
+// import {
+//   cacheExchange as normalizedCacheExchange,
+// } from '@urql/exchange-graphcache'
+//
 const retryOptions: RetryExchangeOptions = {
   initialDelayMs: 1000,
   maxDelayMs: 15000,
@@ -27,7 +31,8 @@ const ssr = ssrExchange({})
 const client = createClient({
   url: env.NEXT_PUBLIC_API_URL,
   exchanges: [
-    cacheExchange,
+    // cacheExchange,
+    // normalizedCacheExchange({}),
     retryExchange(retryOptions),
     mapExchange({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

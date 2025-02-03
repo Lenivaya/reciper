@@ -73,7 +73,7 @@ export function TagSelector({
 
   const [{ data }] = useQuery({
     query: TagsQuery,
-    requestPolicy: 'cache-and-network',
+    // requestPolicy: 'network-only',
     variables: {
       search: debouncedSearch,
       alreadySelected: value
@@ -138,7 +138,7 @@ export function TagSelector({
             <Button
               variant='ghost'
               size='sm'
-              className='ml-1 h-auto p-0 hover:bg-destructive/10'
+              className='hover:bg-destructive/10 ml-1 h-auto p-0'
               onClick={() => handleRemove(tagId)}
             >
               <X className='h-3 w-3' />
@@ -148,7 +148,7 @@ export function TagSelector({
       </div>
 
       <div className='space-y-1.5'>
-        <p className='text-sm text-muted-foreground'>Search for tags to add</p>
+        <p className='text-muted-foreground text-sm'>Search for tags to add</p>
         <Command className='rounded-md border' shouldFilter={false}>
           <CommandInput
             value={search}
@@ -158,7 +158,7 @@ export function TagSelector({
           <CommandList>
             <CommandEmpty>
               <div className='flex flex-col gap-2 p-4 text-center'>
-                <p className='text-sm text-muted-foreground'>
+                <p className='text-muted-foreground text-sm'>
                   No matching tags found for &quot;{search}&quot;
                 </p>
                 <Button
