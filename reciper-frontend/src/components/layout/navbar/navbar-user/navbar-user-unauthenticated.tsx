@@ -6,7 +6,7 @@ export function NavbarUserUnauthenticated() {
   return (
     <div
       suppressHydrationWarning
-      className='flex items-center gap-2 rounded-full bg-gradient-to-r from-background to-background px-4 py-2 transition-all duration-300 hover:from-primary/5 hover:to-secondary/5'
+      className='flex items-center gap-2 rounded-full bg-linear-to-r from-background to-background px-4 py-2 transition-all duration-300 hover:from-primary/5 hover:to-secondary/5'
     >
       <Link suppressHydrationWarning href='/auth/sign-in' passHref>
         <Button

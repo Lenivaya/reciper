@@ -145,7 +145,7 @@ export function RegisterForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='mx-auto w-full max-w-md space-y-6 rounded-lg border p-6 shadow-sm sm:p-8'
+        className='mx-auto w-full max-w-md space-y-6 rounded-lg border p-6 shadow-xs sm:p-8'
       >
         <div className='space-y-2 text-center'>
           <h1 className='text-2xl font-semibold tracking-tight'>
@@ -168,7 +168,7 @@ export function RegisterForm() {
                     placeholder='Enter your username'
                     {...field}
                     disabled={fetching}
-                    className='shadow-sm'
+                    className='shadow-xs'
                   />
                 </FormControl>
                 <FormMessage />
@@ -187,7 +187,7 @@ export function RegisterForm() {
                     placeholder='Enter your email'
                     {...field}
                     disabled={fetching}
-                    className='shadow-sm'
+                    className='shadow-xs'
                   />
                 </FormControl>
                 <FormMessage />
@@ -206,7 +206,7 @@ export function RegisterForm() {
                     placeholder='Enter your password'
                     {...field}
                     disabled={fetching}
-                    className='shadow-sm'
+                    className='shadow-xs'
                   />
                 </FormControl>
                 <FormMessage />
@@ -225,7 +225,7 @@ export function RegisterForm() {
                     {...field}
                     value={field.value ?? ''}
                     disabled={fetching}
-                    className='shadow-sm'
+                    className='shadow-xs'
                   />
                 </FormControl>
                 <FormMessage />
@@ -244,7 +244,7 @@ export function RegisterForm() {
                     {...field}
                     value={field.value ?? ''}
                     disabled={fetching}
-                    className='h-32 resize-none shadow-sm'
+                    className='h-32 resize-none shadow-xs'
                   />
                 </FormControl>
                 <FormMessage />

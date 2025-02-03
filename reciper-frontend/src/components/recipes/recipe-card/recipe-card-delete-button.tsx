@@ -85,7 +85,7 @@ export function RecipeCardDeleteButton({
           <Button
             variant='ghost'
             size='icon'
-            className='absolute right-2 top-2 h-8 w-8 rounded-full bg-white/80 p-0 text-red-600 opacity-90 shadow-sm backdrop-blur-sm hover:bg-red-100 hover:text-red-700'
+            className='absolute right-2 top-2 h-8 w-8 rounded-full bg-white/80 p-0 text-red-600 opacity-90 shadow-xs backdrop-blur-xs hover:bg-red-100 hover:text-red-700'
           >
             <Trash className='h-4 w-4' />
             <span className='sr-only'>Delete recipe</span>

@@ -35,16 +35,16 @@ export const CookCard: FC<Props> = ({ data }) => {
 
   return (
     <div className='group transform transition-all duration-300 hover:-translate-y-1'>
-      <div className='absolute inset-0 -z-10 h-[300px] w-[300px] rounded-xl bg-gradient-to-r from-rose-500/20 via-amber-500/20 to-rose-500/20 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100' />
-      <Card className='relative flex w-[300px] flex-col overflow-hidden border-border/40 bg-background/80 backdrop-blur-sm transition-all duration-300 hover:border-border/60 hover:shadow-lg'>
-        <div className='absolute inset-0 bg-gradient-to-r from-rose-500/5 via-amber-500/5 to-rose-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100' />
+      <div className='absolute inset-0 -z-10 h-[300px] w-[300px] rounded-xl bg-linear-to-r from-rose-500/20 via-amber-500/20 to-rose-500/20 opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-100' />
+      <Card className='relative flex w-[300px] flex-col overflow-hidden border-border/40 bg-background/80 backdrop-blur-xs transition-all duration-300 hover:border-border/60 hover:shadow-lg'>
+        <div className='absolute inset-0 bg-linear-to-r from-rose-500/5 via-amber-500/5 to-rose-500/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100' />
 
         <CardHeader className='relative space-y-4'>
           <div className='flex items-center space-x-4'>
             <ZoomableImage src={cook.profilePictureUrl ?? ''}>
               <Avatar className='h-12 w-12 shrink-0 ring-2 ring-border/40 transition-all duration-300 group-hover:scale-110 group-hover:ring-border/60'>
                 <AvatarImage src={cook.profilePictureUrl ?? ''} />
-                <AvatarFallback className='bg-gradient-to-r from-rose-500/10 to-amber-500/10'>
+                <AvatarFallback className='bg-linear-to-r from-rose-500/10 to-amber-500/10'>
                   {cook.username[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
@@ -87,7 +87,7 @@ export const CookCard: FC<Props> = ({ data }) => {
         </CardContent>
 
         <CardFooter className='relative'>
-          <Button className='group/btn w-full bg-gradient-to-r from-rose-500 to-amber-500 text-white transition-all duration-300 hover:shadow-lg hover:shadow-primary/10'>
+          <Button className='group/btn w-full bg-linear-to-r from-rose-500 to-amber-500 text-white transition-all duration-300 hover:shadow-lg hover:shadow-primary/10'>
             View Recipes
             <Utensils className='ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:rotate-12' />
           </Button>

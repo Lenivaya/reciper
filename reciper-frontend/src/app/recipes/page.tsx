@@ -14,10 +14,10 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
   await recipeSearchParamsCache.parse(searchParams)
 
   return (
-    <main className='container relative mx-auto flex bg-gradient-to-b from-background via-background to-background/80 px-6 pt-20 dark:from-background dark:via-background/95 dark:to-background/75'>
+    <main className='container relative mx-auto flex bg-linear-to-b from-background via-background to-background/80 px-6 pt-20 dark:from-background dark:via-background/95 dark:to-background/75'>
       <div className='flex w-full flex-col items-center p-10'>
         <div className='flex w-full max-w-[1400px] flex-col items-center justify-center gap-4'>
-          <h1 className='flex items-center gap-2 bg-gradient-to-r from-primary/60 to-primary bg-clip-text text-4xl font-bold text-transparent'>
+          <h1 className='flex items-center gap-2 bg-linear-to-r from-primary/60 to-primary bg-clip-text text-4xl font-bold text-transparent'>
             <span className=''>
               <ScrollText className='mr-1 h-10 w-10 dark:text-primary' />
             </span>

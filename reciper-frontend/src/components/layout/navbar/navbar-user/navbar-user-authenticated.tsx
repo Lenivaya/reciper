@@ -48,7 +48,7 @@ export function NavbarUserAuthenticated({
   return (
     <div
       suppressHydrationWarning
-      className='group flex cursor-pointer items-center gap-3 rounded-full bg-gradient-to-r from-background to-background px-4 py-2 transition-all duration-300 hover:from-primary/5 hover:to-secondary/5'
+      className='group flex cursor-pointer items-center gap-3 rounded-full bg-linear-to-r from-background to-background px-4 py-2 transition-all duration-300 hover:from-primary/5 hover:to-secondary/5'
     >
       <MenuItem handleLogout={handleLogout}>
         <span className='text-sm font-medium text-muted-foreground transition-colors duration-300 group-hover:text-primary'>

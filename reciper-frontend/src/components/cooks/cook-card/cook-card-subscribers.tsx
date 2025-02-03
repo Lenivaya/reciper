@@ -188,7 +188,7 @@ export const CookCardSubscribers: FC<CookCardSubscribersProps> = ({
           <span
             className={cn(
               'absolute -right-1 -top-1 h-2 w-2 rounded-full',
-              'bg-primary shadow-sm'
+              'bg-primary shadow-xs'
             )}
           />
         )}

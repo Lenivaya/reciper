@@ -7,7 +7,7 @@ export default async function Home() {
     <div className='flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center space-y-8 px-4'>
       {/* Hero Section */}
       <div className='space-y-4 text-center'>
-        <h1 className='bg-gradient-to-r from-rose-500 via-amber-500 to-rose-500 bg-clip-text text-4xl font-black tracking-tight text-transparent sm:text-5xl md:text-6xl'>
+        <h1 className='bg-linear-to-r from-rose-500 via-amber-500 to-rose-500 bg-clip-text text-4xl font-black tracking-tight text-transparent sm:text-5xl md:text-6xl'>
           Your Culinary Journey
           <br />
           Starts Here
@@ -21,7 +21,7 @@ export default async function Home() {
       {/* Feature Cards */}
       <div className='grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3'>
         <div className='group relative overflow-hidden rounded-xl border bg-background/50 p-6 shadow-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl'>
-          <div className='absolute inset-0 bg-gradient-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+          <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
           <div className='relative space-y-2'>
             <span className='text-2xl'>🥘</span>
             <h3 className='font-semibold'>Explore Recipes</h3>
@@ -32,7 +32,7 @@ export default async function Home() {
         </div>
 
         <div className='group relative overflow-hidden rounded-xl border bg-background/50 p-6 shadow-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl'>
-          <div className='absolute inset-0 bg-gradient-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+          <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
           <div className='relative space-y-2'>
             <span className='text-2xl'>👨‍🍳</span>
             <h3 className='font-semibold'>Connect with Cooks</h3>
@@ -43,7 +43,7 @@ export default async function Home() {
         </div>
 
         <div className='group relative overflow-hidden rounded-xl border bg-background/50 p-6 shadow-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl'>
-          <div className='absolute inset-0 bg-gradient-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+          <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
           <div className='relative space-y-2'>
             <span className='text-2xl'>📝</span>
             <h3 className='font-semibold'>Share Your Recipes</h3>
@@ -66,7 +66,7 @@ export default async function Home() {
               🍳
             </span>
           </span>
-          <div className='absolute inset-0 bg-gradient-to-r from-rose-500 via-amber-500 to-rose-500 opacity-90' />
+          <div className='absolute inset-0 bg-linear-to-r from-rose-500 via-amber-500 to-rose-500 opacity-90' />
         </Button>
       </div>
 
@@ -104,7 +104,7 @@ function DashboardCard({
 }: DashboardCardProps) {
   return (
     <Link href={href} className='group'>
-      <div className='h-full rounded-lg border border-border/50 p-6 shadow-sm transition-all hover:border-primary/50 hover:bg-muted/10 hover:shadow-md'>
+      <div className='h-full rounded-lg border border-border/50 p-6 shadow-xs transition-all hover:border-primary/50 hover:bg-muted/10 hover:shadow-md'>
         <Icon className='mb-4 h-12 w-12 text-primary transition-transform group-hover:scale-110' />
         <h2 className='mb-2 text-2xl font-semibold'>{title}</h2>
         <p className='text-muted-foreground'>{description}</p>
