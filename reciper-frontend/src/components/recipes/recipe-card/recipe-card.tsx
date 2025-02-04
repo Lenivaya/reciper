@@ -147,10 +147,12 @@ export const RecipeCard: FC<Props> = ({ data }) => {
         </CardContent>
 
         <CardFooter className='relative'>
-          <Button className='group/btn hover:shadow-primary/10 w-full bg-linear-to-r from-rose-500 to-amber-500 text-white transition-all duration-300 hover:shadow-lg'>
-            View Recipe
-            <Clock className='ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:rotate-12' />
-          </Button>
+          <Link href={`/recipes/${recipe.id}`} className='w-full'>
+            <Button className='group/btn hover:shadow-primary/10 w-full bg-linear-to-r from-rose-500 to-amber-500 text-white transition-all duration-300 hover:shadow-lg'>
+              View Recipe
+              <Clock className='ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:rotate-12' />
+            </Button>
+          </Link>
         </CardFooter>
 
         <RecipeCardDeleteButton
