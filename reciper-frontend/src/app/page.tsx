@@ -2,6 +2,32 @@ import { Button } from '@/components/ui/button'
 import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
 
+const FEATURE_CARDS = [
+  {
+    href: '/recipes',
+    emoji: '🥘',
+    title: 'Explore Recipes',
+    description: 'Browse through thousands of curated recipes from expert chefs'
+  },
+  {
+    href: '/cooks',
+    emoji: '👨',
+    title: 'Connect with Cooks',
+    description: 'Learn from and interact with passionate cooks worldwide'
+  },
+  {
+    emoji: '📝',
+    title: 'Share Your Recipes',
+    description: 'Create and share your own culinary masterpieces'
+  }
+] as const
+
+const STATS = [
+  { value: '1000+', label: 'Recipes' },
+  { value: '500+', label: 'Active Cooks' },
+  { value: '50k+', label: 'Monthly Users' }
+] as const
+
 export default async function Home() {
   return (
     <div className='flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center space-y-8 px-4'>
@@ -20,38 +46,17 @@ export default async function Home() {
 
       {/* Feature Cards */}
       <div className='grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3'>
-        <div className='group bg-background/50 hover:border-primary/50 relative overflow-hidden rounded-xl border p-6 shadow-md transition-all duration-300 hover:shadow-xl'>
-          <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-          <div className='relative space-y-2'>
-            <span className='text-2xl'>🥘</span>
-            <h3 className='font-semibold'>Explore Recipes</h3>
-            <p className='text-muted-foreground text-sm'>
-              Browse through thousands of curated recipes from expert chefs
-            </p>
+        {FEATURE_CARDS.map((card) => (
+          <div key={card.title}>
+            {'href' in card ? (
+              <Link href={card.href}>
+                <FeatureCard {...card} />
+              </Link>
+            ) : (
+              <FeatureCard {...card} />
+            )}
           </div>
-        </div>
-
-        <div className='group bg-background/50 hover:border-primary/50 relative overflow-hidden rounded-xl border p-6 shadow-md transition-all duration-300 hover:shadow-xl'>
-          <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-          <div className='relative space-y-2'>
-            <span className='text-2xl'>👨</span>
-            <h3 className='font-semibold'>Connect with Cooks</h3>
-            <p className='text-muted-foreground text-sm'>
-              Learn from and interact with passionate cooks worldwide
-            </p>
-          </div>
-        </div>
-
-        <div className='group bg-background/50 hover:border-primary/50 relative overflow-hidden rounded-xl border p-6 shadow-md transition-all duration-300 hover:shadow-xl'>
-          <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-          <div className='relative space-y-2'>
-            <span className='text-2xl'>📝</span>
-            <h3 className='font-semibold'>Share Your Recipes</h3>
-            <p className='text-muted-foreground text-sm'>
-              Create and share your own culinary masterpieces
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* CTA Button */}
@@ -72,18 +77,31 @@ export default async function Home() {
 
       {/* Stats Section */}
       <div className='flex flex-wrap justify-center gap-8 pt-8'>
-        <div className='text-center'>
-          <p className='text-3xl font-bold'>1000+</p>
-          <p className='text-muted-foreground text-sm'>Recipes</p>
-        </div>
-        <div className='text-center'>
-          <p className='text-3xl font-bold'>500+</p>
-          <p className='text-muted-foreground text-sm'>Active Cooks</p>
-        </div>
-        <div className='text-center'>
-          <p className='text-3xl font-bold'>50k+</p>
-          <p className='text-muted-foreground text-sm'>Monthly Users</p>
-        </div>
+        {STATS.map(({ value, label }) => (
+          <div key={label} className='text-center'>
+            <p className='text-3xl font-bold'>{value}</p>
+            <p className='text-muted-foreground text-sm'>{label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+interface FeatureCardProps {
+  emoji: string
+  title: string
+  description: string
+}
+
+function FeatureCard({ emoji, title, description }: FeatureCardProps) {
+  return (
+    <div className='group bg-background/50 hover:border-primary/50 relative overflow-hidden rounded-xl border p-6 shadow-md transition-all duration-300 hover:shadow-xl'>
+      <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+      <div className='relative space-y-2'>
+        <span className='text-2xl'>{emoji}</span>
+        <h3 className='font-semibold'>{title}</h3>
+        <p className='text-muted-foreground text-sm'>{description}</p>
       </div>
     </div>
   )
