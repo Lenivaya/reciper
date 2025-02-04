@@ -1,3 +1,5 @@
+import { Utensils } from 'lucide-react'
+import { FC } from 'react'
 import { CookCardSubscribers } from './cook-card/cook-card-subscribers'
 
 interface CookCardProps {
@@ -25,7 +27,7 @@ export const CookCard: FC<CookCardProps> = ({ cook }) => {
         </div>
         <CookCardSubscribers
           subscribersCount={cook.subscribersCount}
-          isSubscribed={cook.isSubscribed}
+          cookId={cook.id}
         />
       </div>
     </div>

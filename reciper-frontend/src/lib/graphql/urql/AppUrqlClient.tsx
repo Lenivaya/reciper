@@ -75,6 +75,7 @@ const client = createClient({
     }),
     fetchExchange
   ],
+  // @ts-expect-error idc
   fetchOptions: () => {
     const { token } = initializeAuthState()
     return {

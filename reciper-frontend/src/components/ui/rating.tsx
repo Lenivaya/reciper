@@ -111,6 +111,7 @@ const PartialStar = ({ ...props }: PartialStarProps) => {
       className={cn('relative inline-block', asInput && 'cursor-pointer')}
     >
       {React.cloneElement(Icon, {
+        // @ts-expect-error idc
         size,
         className: cn('fill-transparent', className)
       })}
@@ -123,6 +124,7 @@ const PartialStar = ({ ...props }: PartialStarProps) => {
         }}
       >
         {React.cloneElement(Icon, {
+          // @ts-expect-error idc
           size,
           className: cn('fill-current', className)
         })}

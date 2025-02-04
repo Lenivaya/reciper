@@ -19,12 +19,16 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { FragmentOf, graphql, readFragment } from 'gql.tada'
 import Image from 'next/image'
 import { Key } from 'react'
+import { RecipeCard } from '../recipe-card/recipe-card'
+import { RecipeCardDifficulty } from '../recipe-card/recipe-card-difficulty'
+import { RecipeCardLike } from '../recipe-card/recipe-card-like'
 
 export const RecipePageFragment = graphql(`
   fragment RecipePageFragment on Recipe {
     id
     title
     description
+    difficultyLevel
     images {
       id
       url
@@ -44,7 +48,6 @@ export const RecipePageFragment = graphql(`
       }
     }
     averageRating
-    likesCount
   }
 `)
 
@@ -92,7 +95,16 @@ export function RecipePageContent({
           {/* Description */}
           <Card>
             <CardHeader>
-              <CardTitle className='text-2xl'>{recipe.title}</CardTitle>
+              <CardTitle className='flex items-center justify-between text-2xl'>
+                {recipe.title}
+                <div className='flex items-center gap-2'>
+                  <RecipeCardDifficulty
+                    difficultyLevel={recipe.difficultyLevel}
+                    isAlreadySearchWithDifficultyCriteria={false}
+                  />
+                  <RecipeCardLike recipeId={recipe.id as string} />
+                </div>
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <p className='text-muted-foreground'>{recipe.description}</p>
@@ -102,8 +114,7 @@ export function RecipePageContent({
           {/* Rating Section */}
           <RecipeRatingSection
             recipeId={recipe.id as string}
-            averageRating={recipe.averageRating}
-            likesCount={recipe.likesCount}
+            intialAverageRating={recipe.averageRating}
           />
         </div>
 

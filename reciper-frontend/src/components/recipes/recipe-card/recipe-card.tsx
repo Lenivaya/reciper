@@ -123,6 +123,7 @@ export const RecipeCard: FC<Props> = ({ data }) => {
             <RecipeCardTags
               tags={recipe.recipeTags.map((tag) => tag.tag.name)}
               maxTags={10}
+              isAlreadySearchWithTagsCriteria
             />
           </div>
 

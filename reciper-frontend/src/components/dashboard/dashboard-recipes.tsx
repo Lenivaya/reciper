@@ -4,10 +4,11 @@ import {
   RecipeCard,
   RecipeCardFragment
 } from '@/components/recipes/recipe-card/recipe-card'
+import { RecipeCardSkeleton } from '@/components/recipes/recipe-card/recipe-card-skeleton'
 import { PaginationControls } from '@/components/ui/pagination-controls'
 import { graphql } from 'gql.tada'
 import { useQueryStates } from 'nuqs'
-import { Key } from 'react'
+import { Key, Suspense } from 'react'
 import { useQuery } from 'urql'
 import { RecipesSearch } from '../recipes/recipes-search/recipes-search'
 import { recipeSearchParamsSchema } from '../recipes/recipes-search/recipes-search-params'
@@ -44,7 +45,7 @@ const DashboardRecipesQuery = graphql(
 
 const DEFAULT_PAGE_SIZE = 12
 
-export function DashboardRecipes() {
+function DashboardRecipesContent() {
   const [{ search, page, tags, difficultyLevels }, setSearchParams] =
     useQueryStates(recipeSearchParamsSchema)
   const currentPage = Math.max(1, parseInt(page ?? '1'))
@@ -78,12 +79,22 @@ export function DashboardRecipes() {
     <div className='flex flex-col space-y-12'>
       <RecipesSearch isClient />
       <div className='h-full space-y-12'>
-        <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-          {result.error && <div>Error: {result.error.message}</div>}
-          {result.data?.myRecipesOffset?.items?.map((item) => (
-            <RecipeCard key={item?.id as Key} data={item} />
-          ))}
-        </div>
+        <Suspense
+          fallback={
+            <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+              {Array.from({ length: 12 }).map((_, i) => (
+                <RecipeCardSkeleton key={i} />
+              ))}
+            </div>
+          }
+        >
+          <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+            {result.error && <div>Error: {result.error.message}</div>}
+            {result.data?.myRecipesOffset?.items?.map((item) => (
+              <RecipeCard key={item?.id as Key} data={item} />
+            ))}
+          </div>
+        </Suspense>
 
         {totalCount > 0 && (
           <div className='mt-8'>
@@ -101,5 +112,21 @@ export function DashboardRecipes() {
         )}
       </div>
     </div>
+  )
+}
+
+export function DashboardRecipes() {
+  return (
+    <Suspense
+      fallback={
+        <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+          {Array.from({ length: 12 }).map((_, i) => (
+            <RecipeCardSkeleton key={i} />
+          ))}
+        </div>
+      }
+    >
+      <DashboardRecipesContent />
+    </Suspense>
   )
 }

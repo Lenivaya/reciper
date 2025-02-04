@@ -6,7 +6,7 @@ import { cn, isSome } from '@/lib/utils'
 import { useMutation, useQuery } from '@urql/next'
 import { graphql } from 'gql.tada'
 import { Heart } from 'lucide-react'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 export const RecipeLikeFragment = graphql(`
   fragment RecipeLikeFragment on RecipeLike {
@@ -51,13 +51,34 @@ export const UnLikeRecipeMutation = graphql(
   [RecipeLikeFragment]
 )
 
+export const GetRecipeLikesQuery = graphql(`
+  query GetRecipeLikesQuery($recipeId: UUID!) {
+    recipeById(recipeId: $recipeId) {
+      id
+      likesCount
+    }
+  }
+`)
+
 interface Props {
   totalRecipeLikes?: number
   recipeId: string
 }
 
-export const RecipeCardLike = ({ totalRecipeLikes = 0, recipeId }: Props) => {
-  const [likes, setLikes] = useState(totalRecipeLikes)
+export const RecipeCardLike = ({ totalRecipeLikes, recipeId }: Props) => {
+  const [likes, setLikes] = useState(totalRecipeLikes ?? 0)
+  const isSomeInitialLikes = isSome(totalRecipeLikes)
+  const [resultGetLikes] = useQuery({
+    query: GetRecipeLikesQuery,
+    requestPolicy: 'cache-and-network',
+    pause: isSomeInitialLikes,
+    variables: { recipeId }
+  })
+  useEffect(() => {
+    if (!isSomeInitialLikes && resultGetLikes.data?.recipeById?.likesCount) {
+      setLikes(resultGetLikes.data?.recipeById?.likesCount)
+    }
+  }, [isSomeInitialLikes, resultGetLikes.data?.recipeById?.likesCount])
 
   const isAuthTokenPresent = useIsAuthTokenPresent()
   const { toast } = useToast()

@@ -3,25 +3,36 @@
 import { Badge } from '@/components/ui/badge'
 import { DifficultyLevel, getDifficultyColor } from '@/lib/getDifficultyColor'
 import { cn } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 import { useQueryStates } from 'nuqs'
 import { recipeSearchParamsSchema } from '../recipes-search/recipes-search-params'
 
 export interface RecipeCardDifficultyProps {
   difficultyLevel: DifficultyLevel
   onClick?: (difficultyLevel: DifficultyLevel) => void
+  isAlreadySearchWithDifficultyCriteria?: boolean
 }
 
 export function RecipeCardDifficulty({
   difficultyLevel,
-  onClick
+  onClick,
+  isAlreadySearchWithDifficultyCriteria = false
 }: RecipeCardDifficultyProps) {
   const [{ difficultyLevels: queryDifficultyLevels }, setSearchParams] =
     useQueryStates(recipeSearchParamsSchema, {
       shallow: false
     })
 
+  const router = useRouter()
+
   const handleDifficultyLevelClick = (difficultyLevel: DifficultyLevel) => {
     onClick?.(difficultyLevel)
+
+    if (!isAlreadySearchWithDifficultyCriteria) {
+      router.push(`/recipes?difficultyLevels=${difficultyLevel}`)
+      return
+    }
+
     if (onClick) return
 
     const isDifficultyLevelAlreadyInQuery =

@@ -96,12 +96,12 @@ interface FeatureCardProps {
 
 function FeatureCard({ emoji, title, description }: FeatureCardProps) {
   return (
-    <div className='group bg-background/50 hover:border-primary/50 relative overflow-hidden rounded-xl border p-6 shadow-md transition-all duration-300 hover:shadow-xl'>
+    <div className='group bg-background/50 hover:border-primary/50 relative h-[200px] overflow-hidden rounded-xl border p-6 shadow-md transition-all duration-300 hover:shadow-xl'>
       <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-      <div className='relative space-y-2'>
+      <div className='relative flex h-full flex-col'>
         <span className='text-2xl'>{emoji}</span>
         <h3 className='font-semibold'>{title}</h3>
-        <p className='text-muted-foreground text-sm'>{description}</p>
+        <p className='text-muted-foreground mt-2 text-sm'>{description}</p>
       </div>
     </div>
   )

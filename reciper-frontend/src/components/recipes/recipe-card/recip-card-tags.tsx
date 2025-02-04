@@ -1,15 +1,18 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { useQueryStates } from 'nuqs'
 import { recipeSearchParamsSchema } from '../recipes-search/recipes-search-params'
 import { RecipeCardTag } from './recipe-card-tag'
 
 export const RecipeCardTags = ({
   tags,
-  maxTags = 10
+  maxTags = 10,
+  isAlreadySearchWithTagsCriteria = false
 }: {
   tags: string[]
   maxTags?: number
+  isAlreadySearchWithTagsCriteria?: boolean
 }) => {
   const [{ tags: queryTags }, setSearchParams] = useQueryStates(
     recipeSearchParamsSchema,
@@ -18,7 +21,14 @@ export const RecipeCardTags = ({
     }
   )
 
+  const router = useRouter()
+
   const handleTagClick = (tag: string) => {
+    if (!isAlreadySearchWithTagsCriteria) {
+      router.push(`/recipes?tags=${tag}`)
+      return
+    }
+
     const isTagAlreadyInQuery = queryTags.includes(tag)
     if (isTagAlreadyInQuery) {
       setSearchParams((prev) => ({
