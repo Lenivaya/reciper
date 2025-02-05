@@ -97,6 +97,7 @@ export const RecipesSearch = ({
         <div className='border-border/40 bg-background/80 shadow-primary/5 focus-within:border-primary/60 focus-within:shadow-primary/20 hover:border-border/60 hover:shadow-primary/10 relative flex items-center rounded-lg border shadow-lg backdrop-blur-xs transition-all duration-300'>
           <Search className='text-muted-foreground/60 ml-3 h-4 w-4' />
           <Input
+            autoComplete='off'
             ref={inputRef}
             name='query'
             placeholder='Search for a recipe on reciper...'

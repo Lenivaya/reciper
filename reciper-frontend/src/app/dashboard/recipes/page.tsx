@@ -1,6 +1,7 @@
 'use client'
 
 import { DashboardRecipes } from '@/components/dashboard/dashboard-recipes'
+import { Suspense } from 'react'
 
 export default function RecipesPage() {
   return (
@@ -11,7 +12,9 @@ export default function RecipesPage() {
           Manage and organize your created recipes
         </p>
       </div>
-      <DashboardRecipes />
+      <Suspense>
+        <DashboardRecipes />
+      </Suspense>
     </div>
   )
 }

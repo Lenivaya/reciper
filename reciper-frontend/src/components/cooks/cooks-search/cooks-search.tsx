@@ -56,6 +56,7 @@ export const CooksSearch = ({ isAutoFocusable = false }: CooksSearchProps) => {
         <Input
           ref={inputRef}
           name='query'
+          autoComplete='off'
           placeholder='Search for a cook on reciper...'
           value={search ?? ''}
           onChange={handleSearchChange}
