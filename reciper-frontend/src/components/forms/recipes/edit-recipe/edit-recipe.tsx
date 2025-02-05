@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { useControllableState } from '@/hooks/use-controllable-state'
 import { useRefreshWithSearchParams } from '@/hooks/use-refresh-with-search-params'
@@ -26,6 +27,7 @@ import type * as getDifficultyColor from '@/lib/getDifficultyColor'
 import { isSome } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { graphql } from 'gql.tada'
+import { useRouter } from 'next/navigation'
 import type React from 'react'
 import { memo, useCallback, useEffect, useMemo } from 'react'
 import * as reactHookForm from 'react-hook-form'
@@ -159,8 +161,13 @@ const FormFieldWrapper = memo(
         control={control}
         name={name as keyof EditRecipeFormValues}
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>{label}</FormLabel>
+          <FormItem className='space-y-4'>
+            <FormLabel className='text-foreground/80 flex items-center gap-2 text-lg font-medium'>
+              <span className='bg-gradient-to-r from-rose-500/70 to-amber-500/70 bg-clip-text text-transparent'>
+                {label}
+              </span>
+              <div className='h-px flex-1 bg-gradient-to-r from-rose-500/10 to-amber-500/10'></div>
+            </FormLabel>
             <FormControl>{children(field)}</FormControl>
             <FormMessage />
           </FormItem>
@@ -174,6 +181,7 @@ FormFieldWrapper.displayName = 'FormFieldWrapper'
 export const EditRecipeForm = memo(
   ({ recipeId, onSuccess }: EditRecipeFormProps) => {
     const { toast } = useToast()
+    const router = useRouter()
 
     const [{ data }, reexecuteQuery] = useQuery({
       query: GetRecipeForEditQuery,
@@ -270,69 +278,71 @@ export const EditRecipeForm = memo(
 
     const onSubmit = useCallback(
       async (values: EditRecipeFormValues) => {
-        try {
-          const result = await updateRecipe({
-            input: {
-              recipeId,
-              updateDto: {
-                title: values.title,
-                description: values.description,
-                cookingTimeMinutes: Number(values.cookingTimeMinutes),
-                difficultyLevel: values.difficultyLevel,
-                instructions: values.instructions,
-                ingredients: values.ingredients.map((ing) => ({
-                  ingredientId: ing.ingredientId,
-                  amount: ing.amount
-                })),
-                tags: values.tags
-              }
+        const result = await updateRecipe({
+          input: {
+            recipeId,
+            updateDto: {
+              title: values.title,
+              description: values.description,
+              cookingTimeMinutes: values.cookingTimeMinutes,
+              difficultyLevel: values.difficultyLevel,
+              instructions: values.instructions,
+              ingredients: values.ingredients,
+              tags: values.tags
             }
-          })
-
-          if (result.error || result.data?.updateRecipe.errors) {
-            const errors = result.data?.updateRecipe.errors
-
-            form.setError('root', {
-              message: result.error?.message ?? 'An unexpected error occurred'
-            })
-
-            if (isSome(errors)) {
-              for (const error of errors) {
-                console.error(error)
-              }
-            }
-
-            return
           }
+        })
 
-          await handleImageUpload(recipeId, files ?? [])
-
-          toast({
-            title: 'Success',
-            description: 'Recipe has been updated'
-          })
-          setFiles([])
-          onSuccess?.()
-          refreshWithSearchParams()
-        } catch (error) {
-          console.error(error)
+        if (result.error || result.data?.updateRecipe?.errors?.length) {
           toast({
             title: 'Error',
-            description: 'An unexpected error occurred'
+            description:
+              result.error?.message ??
+              result.data?.updateRecipe?.errors?.[0]?.message ??
+              'Something went wrong',
+            variant: 'destructive'
           })
+          return
+        }
+
+        if (isSome(files) && files.length > 0) {
+          const uploadPromises = files.map((file, index) =>
+            addRecipePhoto({
+              input: {
+                recipeId,
+                file,
+                order: index
+              }
+            })
+          )
+
+          const photoResults = await Promise.all(uploadPromises)
+          const uploadErrors = photoResults.filter(
+            (result) =>
+              result.error || result.data?.addRecipePhoto?.errors?.length
+          )
+
+          if (uploadErrors.length > 0) {
+            toast({
+              title: 'Error uploading some photos',
+              description: 'Some photos failed to upload',
+              variant: 'destructive'
+            })
+          }
+        }
+
+        toast({
+          title: 'Success',
+          description: 'Recipe updated successfully'
+        })
+
+        if (onSuccess) {
+          onSuccess()
+        } else {
+          router.back()
         }
       },
-      [
-        updateRecipe,
-        recipeId,
-        handleImageUpload,
-        files,
-        toast,
-        setFiles,
-        onSuccess,
-        refreshWithSearchParams,
-        form
-      ]
+      [updateRecipe, recipeId, files, addRecipePhoto, toast, onSuccess, router]
     )
 
     const difficultyOptions = useMemo(
@@ -349,135 +359,216 @@ export const EditRecipeForm = memo(
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className='mx-auto max-w-2xl space-y-8'
+          className='bg-card mx-auto max-w-3xl space-y-10 rounded-xl p-8 shadow-sm'
         >
-          <FormFieldWrapper control={form.control} name='title' label='Title'>
-            {(field) => <Input {...field} />}
-          </FormFieldWrapper>
-
-          <FormFieldWrapper
-            control={form.control}
-            name='description'
-            label='Description'
-          >
-            {(field) => <Textarea {...field} />}
-          </FormFieldWrapper>
-
-          <div className='grid grid-cols-2 gap-4'>
-            <FormFieldWrapper
-              control={form.control}
-              name='cookingTimeMinutes'
-              label='Cooking Time (minutes)'
-            >
-              {(field) => (
-                <Input
-                  type='number'
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(Number.parseInt(e.target.value))
-                  }
-                />
-              )}
-            </FormFieldWrapper>
-
-            <FormFieldWrapper
-              control={form.control}
-              name='difficultyLevel'
-              label='Difficulty'
-            >
-              {(field) => (
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder='Select difficulty' />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>{difficultyOptions}</SelectContent>
-                </Select>
-              )}
-            </FormFieldWrapper>
+          <div>
+            <h2 className='bg-gradient-to-r from-rose-500/70 to-amber-500/70 bg-clip-text text-2xl font-semibold text-transparent'>
+              Edit Recipe
+            </h2>
+            <p className='text-muted-foreground mt-2'>
+              Update your recipe details below.
+            </p>
+            <Separator className='my-6' />
           </div>
 
-          <FormFieldWrapper
-            control={form.control}
-            name='ingredients'
-            label='Ingredients'
-          >
-            {(field) => (
-              <IngredientSelector
-                value={field.value}
-                onChange={field.onChange}
-                initialIngredients={initialIngredients}
-              />
-            )}
-          </FormFieldWrapper>
+          <div className='space-y-8'>
+            <div className='space-y-8'>
+              <FormFieldWrapper
+                control={form.control}
+                name='title'
+                label='Title'
+              >
+                {(field) => (
+                  <Input
+                    {...field}
+                    className='text-lg'
+                    placeholder='Enter recipe title'
+                  />
+                )}
+              </FormFieldWrapper>
 
-          <FormFieldWrapper control={form.control} name='tags' label='Tags'>
-            {(field) => (
-              <TagSelector
-                value={field.value}
-                onChange={field.onChange}
-                initialTags={initialTags}
-              />
-            )}
-          </FormFieldWrapper>
+              <FormFieldWrapper
+                control={form.control}
+                name='description'
+                label='Description'
+              >
+                {(field) => (
+                  <Textarea
+                    {...field}
+                    className='min-h-[100px] text-base'
+                    placeholder='Describe your recipe...'
+                  />
+                )}
+              </FormFieldWrapper>
+            </div>
 
-          <FormFieldWrapper
-            control={form.control}
-            name='instructions'
-            label='Instructions'
-          >
-            {(field) => <Textarea {...field} />}
-          </FormFieldWrapper>
+            <div>
+              <h3 className='text-foreground/80 flex items-center gap-2 text-lg font-medium'>
+                <span className='bg-gradient-to-r from-rose-500/70 to-amber-500/70 bg-clip-text text-transparent'>
+                  Cooking Details
+                </span>
+                <div className='h-px flex-1 bg-gradient-to-r from-rose-500/10 to-amber-500/10'></div>
+              </h3>
+              <div className='mt-6 grid grid-cols-1 gap-6 md:grid-cols-2'>
+                <FormFieldWrapper
+                  control={form.control}
+                  name='cookingTimeMinutes'
+                  label='Cooking Time'
+                >
+                  {(field) => (
+                    <Input
+                      type='number'
+                      {...field}
+                      className='text-base'
+                      placeholder='30'
+                      onChange={(e) =>
+                        field.onChange(Number.parseInt(e.target.value))
+                      }
+                    />
+                  )}
+                </FormFieldWrapper>
 
-          <div className='space-y-2'>
-            <FormLabel>Recipe Images</FormLabel>
+                <FormFieldWrapper
+                  control={form.control}
+                  name='difficultyLevel'
+                  label='Difficulty'
+                >
+                  {(field) => (
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className='text-base'>
+                          <SelectValue placeholder='Select difficulty' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>{difficultyOptions}</SelectContent>
+                    </Select>
+                  )}
+                </FormFieldWrapper>
+              </div>
+            </div>
 
-            <EditRecipeImages
-              data={data?.recipeById?.images ?? []}
-              recipeId={recipeId}
-              onImageDeleted={handleImageDeleted}
-            />
+            <div>
+              <h3 className='text-foreground/80 flex items-center gap-2 text-lg font-medium'>
+                <span className='bg-gradient-to-r from-rose-500/70 to-amber-500/70 bg-clip-text text-transparent'>
+                  Recipe Components
+                </span>
+                <div className='h-px flex-1 bg-gradient-to-r from-rose-500/10 to-amber-500/10'></div>
+              </h3>
+              <div className='mt-6 space-y-8'>
+                <FormFieldWrapper
+                  control={form.control}
+                  name='ingredients'
+                  label='Ingredients'
+                >
+                  {(field) => (
+                    <IngredientSelector
+                      value={field.value}
+                      onChange={field.onChange}
+                      initialIngredients={initialIngredients}
+                    />
+                  )}
+                </FormFieldWrapper>
 
-            <FileUploader
-              accept={{ 'image/*': [] }}
-              maxFileCount={4}
-              maxSize={1024 * 1024 * 5} // 5MB
-              value={files}
-              onValueChange={setFiles}
-              disabled={isUpdating || isUploading}
-              multiple
-            />
-            <p className='text-muted-foreground text-sm'>
-              Upload up to 4 images. Maximum file size: 5MB each
-            </p>
+                <FormFieldWrapper
+                  control={form.control}
+                  name='tags'
+                  label='Tags'
+                >
+                  {(field) => (
+                    <TagSelector
+                      value={field.value}
+                      onChange={field.onChange}
+                      initialTags={initialTags}
+                    />
+                  )}
+                </FormFieldWrapper>
+              </div>
+            </div>
+
+            <div>
+              <h3 className='text-foreground/80 flex items-center gap-2 text-lg font-medium'>
+                <span className='bg-gradient-to-r from-rose-500/70 to-amber-500/70 bg-clip-text text-transparent'>
+                  Instructions & Media
+                </span>
+                <div className='h-px flex-1 bg-gradient-to-r from-rose-500/10 to-amber-500/10'></div>
+              </h3>
+              <div className='mt-6 space-y-8'>
+                <FormFieldWrapper
+                  control={form.control}
+                  name='instructions'
+                  label='Instructions'
+                >
+                  {(field) => (
+                    <Textarea
+                      {...field}
+                      className='min-h-[200px] text-base'
+                      placeholder='Write step-by-step instructions...'
+                    />
+                  )}
+                </FormFieldWrapper>
+
+                <div className='space-y-4'>
+                  <FormLabel className='text-foreground/80 flex items-center gap-2 text-lg font-medium'>
+                    <span className='bg-gradient-to-r from-rose-500/70 to-amber-500/70 bg-clip-text text-transparent'>
+                      Recipe Images
+                    </span>
+                    <div className='h-px flex-1 bg-gradient-to-r from-rose-500/10 to-amber-500/10'></div>
+                  </FormLabel>
+
+                  <EditRecipeImages
+                    data={data?.recipeById?.images ?? []}
+                    recipeId={recipeId}
+                    onImageDeleted={handleImageDeleted}
+                    className='mb-6'
+                  />
+
+                  <FileUploader
+                    accept={{ 'image/*': [] }}
+                    maxFileCount={4}
+                    maxSize={1024 * 1024 * 5} // 5MB
+                    value={files}
+                    onValueChange={setFiles}
+                    disabled={isUpdating || isUploading}
+                    multiple
+                    className='hover:border-primary/50 rounded-lg border-2 border-dashed p-8 transition-colors'
+                  />
+                  <p className='text-muted-foreground text-sm'>
+                    Upload up to 4 images. Maximum file size: 5MB each
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {form.formState.errors.root && (
-            <div className='bg-destructive/10 text-destructive rounded-md p-3 text-sm'>
+            <div className='bg-destructive/10 text-destructive rounded-lg p-4 text-sm font-medium'>
               {form.formState.errors.root.message}
             </div>
           )}
 
-          <Button
-            type='submit'
-            className='w-full'
-            disabled={isUpdating || isUploading}
-          >
-            {isUpdating || isUploading ? (
-              <>
-                <span className='mr-2'>
-                  {isUploading ? 'Uploading images...' : 'Updating recipe...'}
-                </span>
-                <span className='h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent' />
-              </>
-            ) : (
-              'Update Recipe'
-            )}
-          </Button>
+          <div>
+            <Separator className='mb-6' />
+            <Button
+              type='submit'
+              className='w-full py-6 text-base font-medium'
+              size='lg'
+              disabled={isUpdating || isUploading}
+            >
+              {isUpdating || isUploading ? (
+                <>
+                  <span className='mr-3 text-base'>
+                    {isUploading ? 'Uploading images...' : 'Updating recipe...'}
+                  </span>
+                  <span className='h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent' />
+                </>
+              ) : (
+                'Update Recipe'
+              )}
+            </Button>
+          </div>
         </form>
       </Form>
     )

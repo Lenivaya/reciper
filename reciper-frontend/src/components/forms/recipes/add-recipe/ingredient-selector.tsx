@@ -189,7 +189,7 @@ export function IngredientSelector({
           <Badge
             key={item.ingredientId}
             variant='secondary'
-            className='group hover:bg-secondary/80 flex items-center gap-2 p-2 pr-1 transition-colors'
+            className='group hover:bg-secondary/80 flex items-center gap-2 p-2 pr-1 shadow-sm transition-all duration-200 hover:shadow-md'
           >
             <span className='font-medium'>
               {selectedIngredientsMap[item.ingredientId]?.name ??
@@ -207,7 +207,7 @@ export function IngredientSelector({
                     `${e.target.value} ${unit}`
                   )
                 }}
-                className='h-6 w-16 border-none bg-transparent p-0 text-center focus-visible:ring-1'
+                className='focus-visible:ring-primary/30 h-6 w-16 border-none bg-transparent p-0 text-center focus-visible:ring-1'
               />
               <Select
                 value={item.amount.split(' ')[1] || 'g'}
@@ -216,7 +216,7 @@ export function IngredientSelector({
                   handleAmountChange(item.ingredientId, `${amount} ${unit}`)
                 }}
               >
-                <SelectTrigger className='h-6 w-[70px] border-none bg-transparent px-1 focus:ring-1'>
+                <SelectTrigger className='focus:ring-primary/30 h-6 w-[70px] border-none bg-transparent px-1 focus:ring-1'>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -231,7 +231,7 @@ export function IngredientSelector({
             <Button
               variant='ghost'
               size='sm'
-              className='hover:bg-destructive/10 ml-1 h-6 w-6 p-0 opacity-50 group-hover:opacity-75 hover:opacity-100'
+              className='hover:bg-destructive/10 ml-1 h-6 w-6 p-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100'
               onClick={() => handleRemove(item.ingredientId)}
             >
               <X className='h-3 w-3' />
@@ -242,20 +242,20 @@ export function IngredientSelector({
 
       <div className='space-y-2'>
         {selectedIngredient ? (
-          <div className='flex items-center gap-2'>
-            <Badge variant='outline' className='h-9 px-3'>
+          <div className='bg-secondary/50 animate-in fade-in-0 zoom-in-95 flex items-center gap-2 rounded-lg p-3'>
+            <Badge variant='outline' className='bg-background/50 h-9 px-3'>
               {selectedIngredient.name}
             </Badge>
             <Input
               type='text'
               value={tempAmount}
               onChange={(e) => setTempAmount(e.target.value)}
-              className='w-24'
+              className='bg-background/50 w-24'
               placeholder='Amount'
               disabled={tempUnit === 'to taste'}
             />
             <Select value={tempUnit} onValueChange={setTempUnit}>
-              <SelectTrigger className='w-[120px]'>
+              <SelectTrigger className='bg-background/50 w-[120px]'>
                 <SelectValue placeholder='Unit' />
               </SelectTrigger>
               <SelectContent>
@@ -271,6 +271,7 @@ export function IngredientSelector({
               variant='secondary'
               onClick={handleAddIngredient}
               disabled={!tempAmount && tempUnit !== 'to taste'}
+              className='bg-background/50 hover:bg-background/80'
             >
               Add
             </Button>
@@ -278,20 +279,22 @@ export function IngredientSelector({
               type='button'
               variant='ghost'
               onClick={() => setSelectedIngredient(null)}
+              className='hover:bg-background/80'
             >
               Cancel
             </Button>
           </div>
         ) : (
           <div className='space-y-1.5'>
-            <p className='text-muted-foreground text-sm'>
-              Search for an ingredient to add
-            </p>
-            <Command className='rounded-md border' shouldFilter={false}>
+            <Command
+              className='rounded-lg border shadow-sm'
+              shouldFilter={false}
+            >
               <CommandInput
                 value={search}
                 onValueChange={handleSearchChange}
                 placeholder='Search ingredients...'
+                className='h-11'
               />
               <CommandList>
                 <CommandEmpty>
@@ -302,7 +305,7 @@ export function IngredientSelector({
                     <Button
                       variant='outline'
                       size='sm'
-                      className='mx-auto w-full'
+                      className='hover:bg-primary/5 hover:text-primary hover:border-primary/20 mx-auto w-full'
                       disabled={!search.trim() || isAddingIngredient}
                       onClick={handleCreateIngredient}
                     >
@@ -329,6 +332,7 @@ export function IngredientSelector({
                           ingredient.name as string
                         )
                       }
+                      className='cursor-pointer'
                     >
                       {ingredient.name}
                     </CommandItem>

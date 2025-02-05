@@ -1,4 +1,3 @@
-import { EditRecipeDialog } from '@/components/forms/recipes/edit-recipe/edit-recipe-dialog'
 import { ShowOnlyForUser } from '@/components/layout/show-only-for-user'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -11,7 +10,7 @@ import {
 } from '@/components/ui/card'
 import { format } from 'date-fns'
 import { graphql, readFragment, type FragmentOf } from 'gql.tada'
-import { CalendarDays, Clock, Star, User } from 'lucide-react'
+import { CalendarDays, Clock, Pencil, Star, User } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Suspense, useMemo, type FC } from 'react'
@@ -167,7 +166,16 @@ export const RecipeCard: FC<Props> = ({ data }) => {
           />
         </Suspense>
         <ShowOnlyForUser userIdToCheckAuth={recipe.user.id as string}>
-          <EditRecipeDialog recipeId={recipe.id as string} />
+          <Link href={`/recipes/${recipe.id}/edit`}>
+            <Button
+              variant='ghost'
+              size='icon'
+              className='absolute top-2 right-12 h-8 w-8 rounded-full bg-white/80 p-0 text-blue-600 opacity-90 shadow-xs backdrop-blur-xs hover:bg-blue-100 hover:text-blue-700'
+            >
+              <Pencil className='h-4 w-4' />
+              <span className='sr-only'>Edit recipe</span>
+            </Button>
+          </Link>
         </ShowOnlyForUser>
       </Card>
     </div>

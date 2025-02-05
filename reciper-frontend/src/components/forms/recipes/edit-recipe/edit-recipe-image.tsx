@@ -8,6 +8,7 @@ import {
   CarouselPrevious
 } from '@/components/ui/carousel'
 import { useToast } from '@/hooks/use-toast'
+import { cn } from '@/lib/utils'
 import { FragmentOf, graphql, readFragment } from 'gql.tada'
 import { Trash2 } from 'lucide-react'
 import Image from 'next/image'
@@ -91,18 +92,18 @@ export const EditRecipeImage: FC<EditRecipeImageProps> = ({
   }, [deleteRecipeImage, image.id, recipeId, onDelete, toast])
 
   return (
-    <div className='relative'>
+    <div className='group relative'>
       <Image
         alt={image.publicId}
         src={image.url}
-        width={300}
-        height={300}
-        className='rounded-lg'
+        width={800}
+        height={600}
+        className='aspect-[4/3] w-full rounded-lg object-cover transition-transform duration-300 group-hover:scale-[1.02]'
       />
       <Button
         variant='destructive'
         size='icon'
-        className='absolute top-2 right-2 opacity-90 hover:opacity-100'
+        className='absolute top-3 right-3 opacity-0 shadow-md transition-opacity duration-200 group-hover:opacity-100 hover:shadow-lg'
         onClick={handleDelete}
         disabled={fetching}
       >
@@ -116,43 +117,47 @@ interface EditRecipeImagesProps {
   data: RecipeImage[]
   recipeId: string
   onImageDeleted?: () => void
+  className?: string
 }
 
 export const EditRecipeImages: FC<EditRecipeImagesProps> = ({
   data,
   recipeId,
-  onImageDeleted
+  onImageDeleted,
+  className
 }) => {
   if (data.length === 0) {
     return (
-      <div className='flex h-[300px] items-center justify-center rounded-lg border-2 border-dashed'>
-        <p className='text-muted-foreground'>No images uploaded yet</p>
+      <div className='bg-muted/5 flex h-[400px] items-center justify-center rounded-lg border-2 border-dashed'>
+        <p className='text-muted-foreground text-base'>
+          No images uploaded yet
+        </p>
       </div>
     )
   }
 
   return (
-    <Carousel className='w-full'>
-      <CarouselContent>
+    <Carousel className={cn('w-full', className)}>
+      <CarouselContent className='-ml-2 md:-ml-4'>
         {data.map((data, index) => (
           // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-          <CarouselItem key={index}>
-            <div className='p-1'>
-              <Card>
-                <CardContent className='flex aspect-square items-center justify-center p-6'>
-                  <EditRecipeImage
-                    data={data}
-                    recipeId={recipeId}
-                    onDelete={onImageDeleted}
-                  />
-                </CardContent>
-              </Card>
-            </div>
+          <CarouselItem key={index} className='pl-2 md:pl-4'>
+            <Card className='border-none shadow-none'>
+              <CardContent className='p-0'>
+                <EditRecipeImage
+                  data={data}
+                  recipeId={recipeId}
+                  onDelete={onImageDeleted}
+                />
+              </CardContent>
+            </Card>
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
+      <div className='mt-10 flex items-center justify-center gap-2'>
+        <CarouselPrevious className='relative static' />
+        <CarouselNext className='relative static' />
+      </div>
     </Carousel>
   )
 }

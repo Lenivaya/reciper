@@ -51,9 +51,7 @@ export default async function RecipesPage({ searchParams }: RecipesPageProps) {
       <Suspense>
         <RecipesContent />
       </Suspense>
-      <Suspense>
-        <AddRecipeDialog />
-      </Suspense>
+      <AddRecipeDialog />
     </main>
   )
 }

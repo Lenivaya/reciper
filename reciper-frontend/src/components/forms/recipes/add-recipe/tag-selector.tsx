@@ -134,15 +134,16 @@ export function TagSelector({
     <div className='space-y-4'>
       <div className='flex flex-wrap gap-2'>
         {value.map((tagId, index) => (
-          <div key={tagId} className='flex items-center gap-1'>
+          <div key={tagId} className='group flex items-center gap-1'>
             <RecipeCardTag
               tag={selectedTagsMap[tagId]?.name ?? 'Unknown tag'}
               index={index}
+              className='shadow-sm transition-all duration-200 hover:shadow-md'
             />
             <Button
               variant='ghost'
               size='sm'
-              className='hover:bg-destructive/10 h-auto p-0'
+              className='hover:bg-destructive/10 h-auto p-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100'
               onClick={() => handleRemove(tagId)}
             >
               <X className='h-3 w-3' />
@@ -152,12 +153,12 @@ export function TagSelector({
       </div>
 
       <div className='space-y-1.5'>
-        <p className='text-muted-foreground text-sm'>Search for tags to add</p>
-        <Command className='rounded-md border' shouldFilter={false}>
+        <Command className='rounded-lg border shadow-sm' shouldFilter={false}>
           <CommandInput
             value={search}
             onValueChange={handleSearchChange}
             placeholder='Search tags...'
+            className='h-11'
           />
           <CommandList>
             <CommandEmpty>
@@ -168,7 +169,7 @@ export function TagSelector({
                 <Button
                   variant='outline'
                   size='sm'
-                  className='mx-auto w-full'
+                  className='hover:bg-primary/5 hover:text-primary hover:border-primary/20 mx-auto w-full'
                   disabled={!search.trim() || isAddingTag}
                   onClick={handleCreateTag}
                 >
@@ -190,7 +191,7 @@ export function TagSelector({
                   key={tag.id as string}
                   value={tag.id as string}
                   onSelect={handleSelect}
-                  className='flex items-center gap-2'
+                  className='cursor-pointer'
                 >
                   <RecipeCardTag tag={tag.name as string} index={index} />
                 </CommandItem>

@@ -22,7 +22,6 @@ const GetRecipeForPageQuery = graphql(
 
 export default async function RecipePage({ params }: RecipePageProps) {
   const parsedParams = await params
-
   const result = await getClient().query(GetRecipeForPageQuery, {
     id: parsedParams.id
   })
