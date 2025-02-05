@@ -1,7 +1,10 @@
 'use client'
 
+import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { DifficultyLevel } from '@/lib/getDifficultyColor'
+import { useQuery } from '@urql/next'
+import { graphql } from 'gql.tada'
 import { Search } from 'lucide-react'
 import { useQueryStates } from 'nuqs'
 import React, { useEffect, useRef, useState } from 'react'
@@ -26,7 +29,8 @@ export const RecipesSearch = ({
     {
       search: paramsSearch,
       tags: queryTags,
-      difficultyLevels: queryDifficultyLevels
+      difficultyLevels: queryDifficultyLevels,
+      authorId: queryAuthorId
     },
     setSearchParams
   ] = useQueryStates(recipeSearchParamsSchema, {
@@ -70,6 +74,14 @@ export const RecipesSearch = ({
       difficultyLevels: queryDifficultyLevels.filter(
         (dl) => dl !== difficultyLevel
       )
+    }))
+  }
+
+  const handleAuthorClick = () => {
+    setSearchParams((prev) => ({
+      ...prev,
+      page: '1',
+      authorId: ''
     }))
   }
 
@@ -124,7 +136,43 @@ export const RecipesSearch = ({
             ))}
           </>
         )}
+        {queryAuthorId && (
+          <RecipeSearchAuthorFilterBadge
+            authorId={queryAuthorId}
+            onClick={handleAuthorClick}
+          />
+        )}
       </div>
     </div>
+  )
+}
+
+const RecipeSearchAuthorFilterQuery = graphql(`
+  query RecipeSearchAuthorFilterQuery($authorId: UUID!) {
+    userById(userId: $authorId) {
+      id
+      username
+    }
+  }
+`)
+
+function RecipeSearchAuthorFilterBadge({
+  authorId,
+  onClick
+}: {
+  authorId: string
+  onClick?: () => void
+}) {
+  const [result] = useQuery({
+    query: RecipeSearchAuthorFilterQuery,
+    variables: {
+      authorId
+    }
+  })
+
+  return (
+    <Badge variant='tag' className='cursor-pointer' onClick={onClick}>
+      fromAuthor:{result.data?.userById?.username}
+    </Badge>
   )
 }

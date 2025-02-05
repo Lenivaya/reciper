@@ -117,6 +117,7 @@ public class QueryRecipesResolver
                 new RecipeSearchCriteriaDifficultyHandler(),
                 new RecipeSearchCriteriaIngredientsHandler(),
                 new RecipeSearchCriteriaRatingHandler(),
+                new RecipeSearchCriteriaAuthorHandler(),
             ]
         );
 

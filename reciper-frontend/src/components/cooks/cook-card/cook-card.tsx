@@ -12,6 +12,7 @@ import { FragmentOf, graphql, readFragment } from 'gql.tada'
 import { CalendarDays, Utensils } from 'lucide-react'
 import { FC } from 'react'
 import { ZoomableImage } from '../../ui/zoomable-image'
+import { CookCardRecipesButton } from './cook-card-recipes-button'
 import { CookCardSubscribers } from './cook-card-subscribers'
 
 export const CookCardFragment = graphql(`
@@ -87,10 +88,7 @@ export const CookCard: FC<Props> = ({ data }) => {
         </CardContent>
 
         <CardFooter className='relative'>
-          <Button className='group/btn hover:shadow-primary/10 w-full bg-linear-to-r from-rose-500 to-amber-500 text-white transition-all duration-300 hover:shadow-lg'>
-            View Recipes
-            <Utensils className='ml-2 h-4 w-4 transition-transform duration-300 group-hover/btn:rotate-12' />
-          </Button>
+          <CookCardRecipesButton cookId={cook.id as string} />
         </CardFooter>
       </Card>
     </div>

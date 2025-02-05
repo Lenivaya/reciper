@@ -1,6 +1,8 @@
 import { PaginationControls } from '@/components/ui/pagination-controls'
 import type { DifficultyLevel } from '@/lib/getDifficultyColor'
 import { getClient } from '@/lib/graphql/urql/client'
+import { mergeManyIfs } from '@/lib/objects'
+import { isEmptyOrWhitespace } from '@/lib/utils'
 import { graphql } from 'gql.tada'
 import type { Key } from 'react'
 import { RecipeCard, RecipeCardFragment } from '../recipe-card/recipe-card'
@@ -39,15 +41,19 @@ const RecipesListQuery = graphql(
 const DEFAULT_PAGE_SIZE = 12
 
 export async function RecipesSearchList() {
-  const { search, page, tags, difficultyLevels } = recipeSearchParamsCache.all()
+  const { search, page, tags, authorId, difficultyLevels } =
+    recipeSearchParamsCache.all()
   const currentPage = Math.max(1, Number.parseInt(page ?? '1'))
 
   const result = await getClient().query(RecipesListQuery, {
-    searchCriteria: {
-      matching: search,
-      tags,
-      difficultyLevels: difficultyLevels as DifficultyLevel[]
-    },
+    searchCriteria: mergeManyIfs(
+      {
+        matching: search,
+        tags,
+        difficultyLevels: difficultyLevels as DifficultyLevel[]
+      },
+      [[!isEmptyOrWhitespace(authorId), { authorId }]]
+    ),
     orderBy: {
       createdAt: 'DESC'
     },

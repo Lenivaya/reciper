@@ -346,7 +346,7 @@ type Query {
   ratingsCursor(recipeId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RatingFilterInput @cost(weight: "10") order: [RatingSortInput!] @cost(weight: "10")): RatingsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
   ratingById(ratingId: UUID!): Rating @cost(weight: "10")
   ratingByCompositeKey(recipeId: UUID! userId: UUID!): Rating @cost(weight: "10")
-  recipeRating(recipeId: UUID!): Rating @authorize @cost(weight: "10")
+  recipeRating(recipeId: UUID!): Rating @cost(weight: "10")
   subscriptionsOffset(skip: Int take: Int userId: UUID! searchCriteria: UserSubscriptionSearchCriteriaInput where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscriptionsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
   subscribersOffset(skip: Int take: Int userId: UUID! searchCriteria: UserSubscriptionSearchCriteriaInput where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscribersOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
   mySubscriptionsOffset(skip: Int take: Int searchCriteria: UserSubscriptionSearchCriteriaInput where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): MySubscriptionsOffsetCollectionSegment @authorize @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
@@ -1247,6 +1247,7 @@ input RecipeSearchCriteriaInput {
   difficultyLevels: [DifficultyLevel!]
   createdAfter: DateTime
   createdBefore: DateTime
+  authorId: UUID
 }
 
 input RecipeSortInput {

@@ -119,7 +119,10 @@ export const RecipeCard: FC<Props> = ({ data }) => {
           </p>
 
           <div className='flex flex-wrap gap-2'>
-            <RecipeCardDifficulty difficultyLevel={recipe.difficultyLevel} />
+            <RecipeCardDifficulty
+              difficultyLevel={recipe.difficultyLevel}
+              isAlreadySearchWithDifficultyCriteria
+            />
             <RecipeCardTags
               tags={recipe.recipeTags.map((tag) => tag.tag.name)}
               maxTags={10}

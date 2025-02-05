@@ -12,5 +12,6 @@ public record RecipeSearchCriteria(
     double? MaxRating, // Maximum average rating
     DifficultyLevel[]? DifficultyLevels, // Difficulty level
     DateTime? CreatedAfter, // Recipe created after date
-    DateTime? CreatedBefore // Recipe created before date
+    DateTime? CreatedBefore, // Recipe created before date
+    Guid? AuthorId // Author id
 );
