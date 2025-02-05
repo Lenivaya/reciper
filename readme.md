@@ -2,11 +2,31 @@
 
 Recipe sharing platform written using ASP.NET with GraphQL API + Next.js frontend.
 
+<!--toc:start-->
+
+- [Reciper](#reciper)
+  - [Video demonstration](#video-demonstration)
+  - [Features](#features)
+  - [Tech Stack](#tech-stack)
+    - [Frontend](#frontend)
+    - [Backend](#backend)
+  - [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Development Setup](#development-setup)
+  - [Contributing](#contributing)
+  - [License](#license)
+  <!--toc:end-->
+
+## Video demonstration
+
+<https://github.com/user-attachments/assets/0e857693-faad-4475-bfc3-cb8859616e3b>
+
+<https://github.com/user-attachments/assets/67e5939b-8f54-4dd5-8f37-04627f9ef5ae>
+
 ## Features
 
 - Recipes
   - Create and share your favorite recipes
-  - Rich text editor for recipe descriptions
   - Step-by-step cooking instructions
   - Ingredient lists with measurements
   - Recipe categories and difficulty levels
@@ -34,6 +54,7 @@ Recipe sharing platform written using ASP.NET with GraphQL API + Next.js fronten
 ## Tech Stack
 
 ### Frontend
+
 - Next.js 15
 - React 19
 - TypeScript
@@ -44,6 +65,7 @@ Recipe sharing platform written using ASP.NET with GraphQL API + Next.js fronten
 - React Hook Form for forms
 
 ### Backend
+
 - ASP.NET Core
 - Hot Chocolate GraphQL server
 - Entity Framework Core
@@ -56,6 +78,7 @@ Recipe sharing platform written using ASP.NET with GraphQL API + Next.js fronten
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+ and pnpm
 - .NET 8 SDK
 - Docker and Docker Compose
@@ -64,25 +87,28 @@ Recipe sharing platform written using ASP.NET with GraphQL API + Next.js fronten
 ### Development Setup
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/reciper.git
 cd reciper
 ```
 
 2. Start the database and required services:
+
 ```bash
 docker-compose -f dev.docker-compose.yml up -d
 ```
 
-
 3. Set up the frontend:
 
 Configure environment variables:
+
 ```bash
 cp reciper-frontend/.env.example reciper-frontend/.env
 ```
 
 Install dependencies and run the development server:
+
 ```bash
 cd reciper-frontend
 pnpm install
@@ -90,6 +116,7 @@ pnpm dev
 ```
 
 or using justfile:
+
 ```bash
 just frontend-grpahql-develop
 ```
@@ -97,6 +124,7 @@ just frontend-grpahql-develop
 4. Set up the backend:
 
 Configure connection string through dotnet user-secrets:
+
 ```bash
 dotnet user-secrets set ConnectionStrings:DefaultConnection "YourConnectionString"
 dotnet user-secrets set ConnectionStrings:Cloudinary "YourCloudinaryConnectionString"
@@ -109,13 +137,15 @@ dotnet run --project Reciper.GraphQL
 ```
 
 or using justfile:
+
 ```bash
 just backend-graphql-develop
 ```
 
 The application will be available at:
-- Frontend: http://localhost:3000
-- GraphQL API: http://localhost:5158/graphql
+
+- Frontend: <http://localhost:3000>
+- GraphQL API: <http://localhost:5158/graphql>
 
 ## Contributing
 
@@ -124,5 +154,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-
