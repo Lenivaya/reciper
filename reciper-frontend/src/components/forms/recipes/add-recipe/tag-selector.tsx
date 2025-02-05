@@ -1,5 +1,6 @@
 'use client'
 
+import { RecipeCardTag } from '@/components/recipes/recipe-card/recipe-card-tag'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -132,18 +133,21 @@ export function TagSelector({
   return (
     <div className='space-y-4'>
       <div className='flex flex-wrap gap-2'>
-        {value.map((tagId) => (
-          <Badge key={tagId} variant='secondary'>
-            {selectedTagsMap[tagId]?.name ?? 'Unknown tag'}
+        {value.map((tagId, index) => (
+          <div key={tagId} className='flex items-center gap-1'>
+            <RecipeCardTag
+              tag={selectedTagsMap[tagId]?.name ?? 'Unknown tag'}
+              index={index}
+            />
             <Button
               variant='ghost'
               size='sm'
-              className='hover:bg-destructive/10 ml-1 h-auto p-0'
+              className='hover:bg-destructive/10 h-auto p-0'
               onClick={() => handleRemove(tagId)}
             >
               <X className='h-3 w-3' />
             </Button>
-          </Badge>
+          </div>
         ))}
       </div>
 
@@ -181,13 +185,14 @@ export function TagSelector({
               </div>
             </CommandEmpty>
             <CommandGroup>
-              {data?.tagsCursor?.nodes?.map((tag) => (
+              {data?.tagsCursor?.nodes?.map((tag, index) => (
                 <CommandItem
                   key={tag.id as string}
                   value={tag.id as string}
                   onSelect={handleSelect}
+                  className='flex items-center gap-2'
                 >
-                  {tag.name}
+                  <RecipeCardTag tag={tag.name as string} index={index} />
                 </CommandItem>
               ))}
             </CommandGroup>
