@@ -16,7 +16,9 @@ import {
   CarouselPrevious
 } from '@/components/ui/carousel'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
 import { FragmentOf, graphql, readFragment } from 'gql.tada'
+import { ChefHat, Timer } from 'lucide-react'
 import Image from 'next/image'
 import { Key } from 'react'
 import { RecipeCard } from '../recipe-card/recipe-card'
@@ -28,6 +30,7 @@ export const RecipePageFragment = graphql(`
     id
     title
     description
+    instructions
     difficultyLevel
     images {
       id
@@ -64,7 +67,7 @@ export function RecipePageContent({
     <div className='container mx-auto px-4 py-20'>
       {/* Recipe Details Section */}
       <div className='grid gap-6 md:grid-cols-[2fr_1fr]'>
-        {/* Left column - Images and Description */}
+        {/* Left column - Images, Description, Instructions */}
         <div className='space-y-6'>
           {/* Image Carousel */}
           <Card>
@@ -107,7 +110,27 @@ export function RecipePageContent({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className='text-muted-foreground'>{recipe.description}</p>
+              <p className='text-muted-foreground whitespace-pre-line'>
+                {recipe.description}
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Instructions */}
+          <Card>
+            <CardHeader>
+              <CardTitle className='flex items-center gap-2 text-2xl'>
+                <ChefHat className='h-6 w-6' />
+                Instructions
+              </CardTitle>
+              <CardDescription>
+                Follow these steps to prepare your dish
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className='text-muted-foreground whitespace-pre-line'>
+                {recipe.instructions}
+              </p>
             </CardContent>
           </Card>
 
@@ -134,7 +157,7 @@ export function RecipePageContent({
                       key={item.ingredient.id as Key}
                       className='flex items-center justify-between'
                     >
-                      <span>{item.ingredient.name}</span>
+                      <span className='capitalize'>{item.ingredient.name}</span>
                       <span className='text-muted-foreground'>
                         {item.amount}
                       </span>

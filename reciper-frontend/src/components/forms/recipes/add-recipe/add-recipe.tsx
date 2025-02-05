@@ -333,7 +333,7 @@ export function AddRecipeForm({ onSuccess }: AddRecipeFormProps) {
             <FormItem>
               <FormLabel>Instructions</FormLabel>
               <FormControl>
-                <Textarea {...field} />
+                <Textarea {...field} className='min-h-[120px]' />
               </FormControl>
               <FormMessage />
             </FormItem>
