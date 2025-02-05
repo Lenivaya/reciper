@@ -41,13 +41,19 @@ public class ReciperContext : DbContext
             .HasOne(rl => rl.User)
             .WithMany(u => u.LikedRecipes)
             .HasForeignKey(rl => rl.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder
             .Entity<RecipeLike>()
             .HasOne(rl => rl.Recipe)
             .WithMany(r => r.Likes)
             .HasForeignKey(rl => rl.RecipeId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder
+            .Entity<User>()
+            .HasMany(u => u.LikedRecipes)
+            .WithOne(rl => rl.User)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Configure UserSubscription relationships
         modelBuilder

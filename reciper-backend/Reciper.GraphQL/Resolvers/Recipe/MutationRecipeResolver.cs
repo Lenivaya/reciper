@@ -60,7 +60,15 @@ public class MutationRecipesResolver
         if (!await IsAuthor(recipeId, authenticatedUser, unitOfWork))
             throw new ReciperException("Not authorized to delete this recipe");
 
-        return await GraphQlMutationResolverService.DeleteEntity(unitOfWork, recipeId);
+        await unitOfWork.BeginTransaction();
+        await unitOfWork
+            .RecipeLikesRepository.StartQuery()
+            .Where(rl => rl.RecipeId == recipeId)
+            .ExecuteDeleteAsync();
+
+        var result = await GraphQlMutationResolverService.DeleteEntity(unitOfWork, recipeId);
+        await unitOfWork.Commit();
+        return result;
     }
 
     [Error(typeof(ReciperException))]

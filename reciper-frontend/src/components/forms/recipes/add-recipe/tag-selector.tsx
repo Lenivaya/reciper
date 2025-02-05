@@ -105,8 +105,9 @@ export function TagSelector({
         }
       }
       setSearch('')
+      debouncedSetSearch('')
     },
-    [value, onChange, data?.tagsCursor?.nodes]
+    [value, onChange, data?.tagsCursor?.nodes, debouncedSetSearch]
   )
 
   const handleRemove = useCallback(
