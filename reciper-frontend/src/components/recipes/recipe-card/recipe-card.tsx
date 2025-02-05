@@ -14,7 +14,7 @@ import { graphql, readFragment, type FragmentOf } from 'gql.tada'
 import { CalendarDays, Clock, Star, User } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useMemo, type FC } from 'react'
+import { Suspense, useMemo, type FC } from 'react'
 import { RecipeCardTags } from './recip-card-tags'
 import { RecipeCardDeleteButton } from './recipe-card-delete-button'
 import { RecipeCardDifficulty } from './recipe-card-difficulty'
@@ -159,11 +159,13 @@ export const RecipeCard: FC<Props> = ({ data }) => {
           </Link>
         </CardFooter>
 
-        <RecipeCardDeleteButton
-          recipeId={recipe.id as string}
-          recipeName={recipe.title}
-          recipeAuthorId={recipe.user.id as string}
-        />
+        <Suspense>
+          <RecipeCardDeleteButton
+            recipeId={recipe.id as string}
+            recipeName={recipe.title}
+            recipeAuthorId={recipe.user.id as string}
+          />
+        </Suspense>
         <ShowOnlyForUser userIdToCheckAuth={recipe.user.id as string}>
           <EditRecipeDialog recipeId={recipe.id as string} />
         </ShowOnlyForUser>

@@ -116,17 +116,5 @@ function DashboardRecipesContent() {
 }
 
 export function DashboardRecipes() {
-  return (
-    <Suspense
-      fallback={
-        <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <RecipeCardSkeleton key={i} />
-          ))}
-        </div>
-      }
-    >
-      <DashboardRecipesContent />
-    </Suspense>
-  )
+  return <DashboardRecipesContent />
 }

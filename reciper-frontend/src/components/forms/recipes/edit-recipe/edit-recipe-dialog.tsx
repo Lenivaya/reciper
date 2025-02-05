@@ -9,7 +9,7 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog'
 import { Pencil } from 'lucide-react'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { EditRecipeForm } from './edit-recipe'
 
 interface EditRecipeDialogProps {
@@ -35,12 +35,14 @@ export function EditRecipeDialog({ recipeId }: EditRecipeDialogProps) {
         <DialogHeader>
           <DialogTitle className='text-2xl'>Edit Recipe</DialogTitle>
         </DialogHeader>
-        <EditRecipeForm
-          recipeId={recipeId}
-          onSuccess={() => {
-            setIsOpen(false)
-          }}
-        />
+        <Suspense>
+          <EditRecipeForm
+            recipeId={recipeId}
+            onSuccess={() => {
+              setIsOpen(false)
+            }}
+          />
+        </Suspense>
       </DialogContent>
     </Dialog>
   )

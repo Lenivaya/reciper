@@ -10,7 +10,7 @@ import { recipeSearchParamsSchema } from '@/components/recipes/recipes-search/re
 import { PaginationControls } from '@/components/ui/pagination-controls'
 import { graphql } from 'gql.tada'
 import { useQueryStates } from 'nuqs'
-import { Key, Suspense } from 'react'
+import { Key, Suspense, useMemo } from 'react'
 import { useQuery } from 'urql'
 
 const DashboardSavedRecipesQuery = graphql(
@@ -50,6 +50,12 @@ function SavedRecipesContent() {
     useQueryStates(recipeSearchParamsSchema)
   const currentPage = Math.max(1, parseInt(page ?? '1'))
 
+  const context = useMemo(
+    () => ({
+      additionalTypenames: ['RecipeLike']
+    }),
+    []
+  )
   const [result] = useQuery({
     query: DashboardSavedRecipesQuery,
     variables: {
@@ -62,7 +68,8 @@ function SavedRecipesContent() {
       orderBy: { createdAt: 'DESC' },
       skip: (currentPage - 1) * DEFAULT_PAGE_SIZE,
       take: DEFAULT_PAGE_SIZE
-    }
+    },
+    context
   })
 
   const totalCount = result.data?.mySavedRecipesOffset?.totalCount ?? 0
@@ -78,7 +85,7 @@ function SavedRecipesContent() {
   return (
     <div className=''>
       <div className='flex flex-col space-y-12'>
-        <RecipesSearch isClient />
+        <RecipesSearch isClient isAutoFocusable />
         <div className='h-full space-y-12'>
           <Suspense
             fallback={
@@ -126,17 +133,7 @@ export default function SavedRecipesPage() {
           Your collection of saved recipes from other cooks
         </p>
       </div>
-      <Suspense
-        fallback={
-          <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-            {Array.from({ length: 12 }).map((_, i) => (
-              <RecipeCardSkeleton key={i} />
-            ))}
-          </div>
-        }
-      >
-        <SavedRecipesContent />
-      </Suspense>
+      <SavedRecipesContent />
     </div>
   )
 }
