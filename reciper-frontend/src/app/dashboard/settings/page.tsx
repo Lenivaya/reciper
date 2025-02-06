@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { graphql } from 'gql.tada'
+import { Suspense } from 'react'
 import { useQuery } from 'urql'
 
 const GetUserQuery = graphql(
@@ -26,22 +27,29 @@ const GetUserQuery = graphql(
   [UpdateUserFragment]
 )
 
-export default function SettingsPage() {
+function SettingsContent() {
   const [result] = useQuery({ query: GetUserQuery })
-  const { data, fetching, error } = result
 
-  if (fetching) {
+  if (result.fetching) {
     return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className='flex h-[50vh] items-center justify-center'>
+        <div className='border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent' />
       </div>
     )
   }
 
-  if (error) {
+  if (result.error) {
     return (
-      <div className="flex h-[50vh] items-center justify-center">
-        <p className="text-destructive">Failed to load settings</p>
+      <div className='flex h-[50vh] items-center justify-center'>
+        <p className='text-destructive'>Failed to load settings</p>
+      </div>
+    )
+  }
+
+  if (!result.data?.me) {
+    return (
+      <div className='flex h-[50vh] items-center justify-center'>
+        <p className='text-destructive'>User data not found</p>
       </div>
     )
   }
@@ -50,7 +58,7 @@ export default function SettingsPage() {
     <div className='space-y-6'>
       <div>
         <h2 className='text-2xl font-semibold tracking-tight'>Settings</h2>
-        <p className='text-sm text-muted-foreground'>
+        <p className='text-muted-foreground text-sm'>
           Manage your account settings and preferences
         </p>
       </div>
@@ -69,11 +77,25 @@ export default function SettingsPage() {
               <CardDescription>Update your profile information</CardDescription>
             </CardHeader>
             <CardContent>
-              <SettingsForm data={data?.me} />
+              <SettingsForm data={result.data.me} />
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
     </div>
+  )
+}
+
+export default function SettingsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className='flex h-[50vh] items-center justify-center'>
+          <div className='border-primary h-8 w-8 animate-spin rounded-full border-4 border-t-transparent' />
+        </div>
+      }
+    >
+      <SettingsContent />
+    </Suspense>
   )
 }

@@ -1,18 +1,44 @@
 import { Button } from '@/components/ui/button'
-import { LucideIcon } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
+
+const FEATURE_CARDS = [
+  {
+    href: '/recipes',
+    emoji: '🥘',
+    title: 'Explore Recipes',
+    description: 'Browse through thousands of curated recipes from expert chefs'
+  },
+  {
+    href: '/cooks',
+    emoji: '👨',
+    title: 'Connect with Cooks',
+    description: 'Learn from and interact with passionate cooks worldwide'
+  },
+  {
+    emoji: '📝',
+    title: 'Share Your Recipes',
+    description: 'Create and share your own culinary masterpieces'
+  }
+] as const
+
+const STATS = [
+  { value: '1000+', label: 'Recipes' },
+  { value: '500+', label: 'Active Cooks' },
+  { value: '50k+', label: 'Monthly Users' }
+] as const
 
 export default async function Home() {
   return (
     <div className='flex min-h-[calc(100vh-4rem)] flex-col items-center justify-center space-y-8 px-4'>
       {/* Hero Section */}
       <div className='space-y-4 text-center'>
-        <h1 className='bg-gradient-to-r from-rose-500 via-amber-500 to-rose-500 bg-clip-text text-4xl font-black tracking-tight text-transparent sm:text-5xl md:text-6xl'>
+        <h1 className='bg-linear-to-r from-rose-500 via-amber-500 to-rose-500 bg-clip-text text-4xl font-black tracking-tight text-transparent sm:text-5xl md:text-6xl'>
           Your Culinary Journey
           <br />
           Starts Here
         </h1>
-        <p className='mx-auto max-w-2xl text-muted-foreground'>
+        <p className='text-muted-foreground mx-auto max-w-2xl'>
           Discover, create, and share amazing recipes with passionate cooks from
           around the world. Join our community of food lovers today.
         </p>
@@ -20,38 +46,17 @@ export default async function Home() {
 
       {/* Feature Cards */}
       <div className='grid max-w-6xl grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3'>
-        <div className='group relative overflow-hidden rounded-xl border bg-background/50 p-6 shadow-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl'>
-          <div className='absolute inset-0 bg-gradient-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-          <div className='relative space-y-2'>
-            <span className='text-2xl'>🥘</span>
-            <h3 className='font-semibold'>Explore Recipes</h3>
-            <p className='text-sm text-muted-foreground'>
-              Browse through thousands of curated recipes from expert chefs
-            </p>
+        {FEATURE_CARDS.map((card) => (
+          <div key={card.title}>
+            {'href' in card ? (
+              <Link href={card.href}>
+                <FeatureCard {...card} />
+              </Link>
+            ) : (
+              <FeatureCard {...card} />
+            )}
           </div>
-        </div>
-
-        <div className='group relative overflow-hidden rounded-xl border bg-background/50 p-6 shadow-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl'>
-          <div className='absolute inset-0 bg-gradient-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-          <div className='relative space-y-2'>
-            <span className='text-2xl'>👨‍🍳</span>
-            <h3 className='font-semibold'>Connect with Cooks</h3>
-            <p className='text-sm text-muted-foreground'>
-              Learn from and interact with passionate cooks worldwide
-            </p>
-          </div>
-        </div>
-
-        <div className='group relative overflow-hidden rounded-xl border bg-background/50 p-6 shadow-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl'>
-          <div className='absolute inset-0 bg-gradient-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
-          <div className='relative space-y-2'>
-            <span className='text-2xl'>📝</span>
-            <h3 className='font-semibold'>Share Your Recipes</h3>
-            <p className='text-sm text-muted-foreground'>
-              Create and share your own culinary masterpieces
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
 
       {/* CTA Button */}
@@ -66,24 +71,37 @@ export default async function Home() {
               🍳
             </span>
           </span>
-          <div className='absolute inset-0 bg-gradient-to-r from-rose-500 via-amber-500 to-rose-500 opacity-90' />
+          <div className='absolute inset-0 bg-linear-to-r from-rose-500 via-amber-500 to-rose-500 opacity-90' />
         </Button>
       </div>
 
       {/* Stats Section */}
       <div className='flex flex-wrap justify-center gap-8 pt-8'>
-        <div className='text-center'>
-          <p className='text-3xl font-bold'>1000+</p>
-          <p className='text-sm text-muted-foreground'>Recipes</p>
-        </div>
-        <div className='text-center'>
-          <p className='text-3xl font-bold'>500+</p>
-          <p className='text-sm text-muted-foreground'>Active Cooks</p>
-        </div>
-        <div className='text-center'>
-          <p className='text-3xl font-bold'>50k+</p>
-          <p className='text-sm text-muted-foreground'>Monthly Users</p>
-        </div>
+        {STATS.map(({ value, label }) => (
+          <div key={label} className='text-center'>
+            <p className='text-3xl font-bold'>{value}</p>
+            <p className='text-muted-foreground text-sm'>{label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+interface FeatureCardProps {
+  emoji: string
+  title: string
+  description: string
+}
+
+function FeatureCard({ emoji, title, description }: FeatureCardProps) {
+  return (
+    <div className='group bg-background/50 hover:border-primary/50 relative h-[200px] overflow-hidden rounded-xl border p-6 shadow-md transition-all duration-300 hover:shadow-xl'>
+      <div className='absolute inset-0 bg-linear-to-r from-rose-500/10 via-amber-500/10 to-rose-500/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+      <div className='relative flex h-full flex-col'>
+        <span className='text-2xl'>{emoji}</span>
+        <h3 className='font-semibold'>{title}</h3>
+        <p className='text-muted-foreground mt-2 text-sm'>{description}</p>
       </div>
     </div>
   )
@@ -104,8 +122,8 @@ function DashboardCard({
 }: DashboardCardProps) {
   return (
     <Link href={href} className='group'>
-      <div className='h-full rounded-lg border border-border/50 p-6 shadow-sm transition-all hover:border-primary/50 hover:bg-muted/10 hover:shadow-md'>
-        <Icon className='mb-4 h-12 w-12 text-primary transition-transform group-hover:scale-110' />
+      <div className='border-border/50 hover:border-primary/50 hover:bg-muted/10 h-full rounded-lg border p-6 shadow-xs transition-all hover:shadow-md'>
+        <Icon className='text-primary mb-4 h-12 w-12 transition-transform group-hover:scale-110' />
         <h2 className='mb-2 text-2xl font-semibold'>{title}</h2>
         <p className='text-muted-foreground'>{description}</p>
       </div>

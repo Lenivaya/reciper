@@ -414,7 +414,7 @@ namespace Reciper.DAL.Migrations
                     b.HasOne("Reciper.DAL.Models.Recipe", "Recipe")
                         .WithMany("Comments")
                         .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Reciper.DAL.Models.User", "User")
@@ -433,7 +433,7 @@ namespace Reciper.DAL.Migrations
                     b.HasOne("Reciper.DAL.Models.Recipe", "Recipe")
                         .WithMany("Ratings")
                         .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Reciper.DAL.Models.User", "User")
@@ -480,7 +480,7 @@ namespace Reciper.DAL.Migrations
                     b.HasOne("Reciper.DAL.Models.Recipe", "Recipe")
                         .WithMany("RecipeIngredients")
                         .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Ingredient");
@@ -499,7 +499,7 @@ namespace Reciper.DAL.Migrations
                     b.HasOne("Reciper.DAL.Models.User", "User")
                         .WithMany("LikedRecipes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Recipe");

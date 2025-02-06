@@ -7,7 +7,7 @@ export default function CookbooksPage() {
       <div className='flex items-center justify-between'>
         <div>
           <h2 className='text-2xl font-semibold tracking-tight'>Cookbooks</h2>
-          <p className='text-sm text-muted-foreground'>
+          <p className='text-muted-foreground text-sm'>
             Organize your recipes into collections
           </p>
         </div>
@@ -23,7 +23,7 @@ export default function CookbooksPage() {
             className='group relative overflow-hidden rounded-lg border p-6'
           >
             <h3 className='text-lg font-semibold'>Cookbook {i + 1}</h3>
-            <p className='text-sm text-muted-foreground'>12 recipes</p>
+            <p className='text-muted-foreground text-sm'>12 recipes</p>
           </div>
         ))}
       </div>

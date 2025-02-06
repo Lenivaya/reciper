@@ -13,19 +13,17 @@ namespace Reciper.DAL.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_UserImages_Recipes_RecipeId",
-                table: "UserImages");
+                table: "UserImages"
+            );
 
             migrationBuilder.DropForeignKey(
                 name: "FK_UserImages_Users_UserId",
-                table: "UserImages");
+                table: "UserImages"
+            );
 
-            migrationBuilder.DropIndex(
-                name: "IX_UserImages_RecipeId",
-                table: "UserImages");
+            migrationBuilder.DropIndex(name: "IX_UserImages_RecipeId", table: "UserImages");
 
-            migrationBuilder.DropColumn(
-                name: "RecipeId",
-                table: "UserImages");
+            migrationBuilder.DropColumn(name: "RecipeId", table: "UserImages");
 
             migrationBuilder.AlterColumn<Guid>(
                 name: "UserId",
@@ -35,7 +33,8 @@ namespace Reciper.DAL.Migrations
                 defaultValue: new Guid("00000000-0000-0000-0000-000000000000"),
                 oldClrType: typeof(Guid),
                 oldType: "uniqueidentifier",
-                oldNullable: true);
+                oldNullable: true
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserImages_Users_UserId",
@@ -43,7 +42,8 @@ namespace Reciper.DAL.Migrations
                 column: "UserId",
                 principalTable: "Users",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
         }
 
         /// <inheritdoc />
@@ -51,7 +51,8 @@ namespace Reciper.DAL.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_UserImages_Users_UserId",
-                table: "UserImages");
+                table: "UserImages"
+            );
 
             migrationBuilder.AlterColumn<Guid>(
                 name: "UserId",
@@ -59,19 +60,22 @@ namespace Reciper.DAL.Migrations
                 type: "uniqueidentifier",
                 nullable: true,
                 oldClrType: typeof(Guid),
-                oldType: "uniqueidentifier");
+                oldType: "uniqueidentifier"
+            );
 
             migrationBuilder.AddColumn<Guid>(
                 name: "RecipeId",
                 table: "UserImages",
                 type: "uniqueidentifier",
                 nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+                defaultValue: new Guid("00000000-0000-0000-0000-000000000000")
+            );
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserImages_RecipeId",
                 table: "UserImages",
-                column: "RecipeId");
+                column: "RecipeId"
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserImages_Recipes_RecipeId",
@@ -79,14 +83,16 @@ namespace Reciper.DAL.Migrations
                 column: "RecipeId",
                 principalTable: "Recipes",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Cascade
+            );
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserImages_Users_UserId",
                 table: "UserImages",
                 column: "UserId",
                 principalTable: "Users",
-                principalColumn: "Id");
+                principalColumn: "Id"
+            );
         }
     }
 }

@@ -3,9 +3,7 @@ using Reciper.DAL.Models;
 
 namespace Reciper.GraphQL.Resolvers.Recipe;
 
-public class RecipeType
-{
-}
+public class RecipeType { }
 
 [ExtendObjectType(typeof(DAL.Models.Recipe))]
 public class RecipeQueryExtensions
@@ -21,8 +19,7 @@ public class RecipeQueryExtensions
         [Parent] DAL.Models.Recipe recipe
     )
     {
-        var ragingsWithRecipeId = context.Ratings
-            .Where(rating => rating.RecipeId == recipe.Id);
+        var ragingsWithRecipeId = context.Ratings.Where(rating => rating.RecipeId == recipe.Id);
 
         return await ragingsWithRecipeId.AnyAsync()
             ? await ragingsWithRecipeId.AverageAsync(rating => rating.Value)
@@ -35,10 +32,7 @@ public class RecipeQueryExtensions
     /// <param name="context"></param>
     /// <param name="recipe"></param>
     /// <returns></returns>
-    public async Task<int> GetLikesCount(
-        ReciperContext context,
-        [Parent] DAL.Models.Recipe recipe
-    )
+    public async Task<int> GetLikesCount(ReciperContext context, [Parent] DAL.Models.Recipe recipe)
     {
         return await context.RecipeLikes.CountAsync(like => like.RecipeId == recipe.Id);
     }

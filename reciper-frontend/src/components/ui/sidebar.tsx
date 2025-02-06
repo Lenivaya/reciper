@@ -8,11 +8,11 @@ import * as React from 'react'
 import { useMediaQuery } from 'usehooks-ts'
 
 const sidebarVariants = cva(
-  'relative flex-col bg-card transition-all duration-300 ease-in-out data-[expanded=false]:w-16 data-[expanded=true]:w-64',
+  'bg-card relative flex-col transition-all duration-300 ease-in-out data-[expanded=false]:w-16 data-[expanded=true]:w-64',
   {
     variants: {
       variant: {
-        default: 'fixed left-0 top-28 flex h-[calc(100vh-7rem)] border-r',
+        default: 'fixed top-28 left-0 flex h-[calc(100vh-7rem)] border-r',
         modal: 'hidden'
       }
     },

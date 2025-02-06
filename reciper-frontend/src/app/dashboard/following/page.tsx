@@ -7,7 +7,7 @@ export default function FollowingPage() {
     <div className='space-y-6'>
       <div>
         <h2 className='text-2xl font-semibold tracking-tight'>My Network</h2>
-        <p className='text-sm text-muted-foreground'>
+        <p className='text-muted-foreground text-sm'>
           Manage your cooking network connections
         </p>
       </div>

@@ -11,7 +11,7 @@ export function DashboardHeader() {
         </Avatar>
         <div className='flex flex-col gap-1'>
           <h1 className='text-2xl font-bold'>Welcome back!</h1>
-          <p className='text-sm text-muted-foreground'>
+          <p className='text-muted-foreground text-sm'>
             Manage your recipes and cooking activities
           </p>
         </div>

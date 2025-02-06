@@ -15,36 +15,27 @@ public class UserType : ObjectTypeExtension<User>
 [ExtendObjectType(typeof(User))]
 public class UserQueryExtensions
 {
-    public async Task<int> GetRecipesCount(
-        ReciperContext context,
-        [Parent] User user
-    )
+    public async Task<int> GetRecipesCount(ReciperContext context, [Parent] User user)
     {
         return await context.Recipes.CountAsync(recipe => recipe.UserId == user.Id);
     }
 
-    public async Task<int> GetSubscribersCount(
-        ReciperContext context,
-        [Parent] User user
-    )
+    public async Task<int> GetSubscribersCount(ReciperContext context, [Parent] User user)
     {
-        return await context.UserSubscriptions.CountAsync(subscription => subscription.SubscribeeId == user.Id);
+        return await context.UserSubscriptions.CountAsync(subscription =>
+            subscription.SubscribeeId == user.Id
+        );
     }
 
-    public async Task<int> GetLikesCount(
-        ReciperContext context,
-        [Parent] User user
-    )
+    public async Task<int> GetLikesCount(ReciperContext context, [Parent] User user)
     {
         return await context.RecipeLikes.CountAsync(like => like.UserId == user.Id);
     }
 
-    public async Task<int> GetTotalRecipesLikes(
-        ReciperContext context,
-        [Parent] User user
-    )
+    public async Task<int> GetTotalRecipesLikes(ReciperContext context, [Parent] User user)
     {
-        return await context.RecipeLikes.Include(rl => rl.Recipe)
+        return await context
+            .RecipeLikes.Include(rl => rl.Recipe)
             .CountAsync(like => like.Recipe.UserId == user.Id);
     }
 
@@ -58,6 +49,7 @@ public class UserQueryExtensions
             return false;
 
         return await context.UserSubscriptions.AnyAsync(sub =>
-            sub.SubscriberId == authenticatedUser.UserId && sub.SubscribeeId == user.Id);
+            sub.SubscriberId == authenticatedUser.UserId && sub.SubscribeeId == user.Id
+        );
     }
 }

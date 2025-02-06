@@ -18,12 +18,9 @@ public class RecipeSearchCriteriaDifficultyHandler
 
         var patterns = searchCriteria.DifficultyLevels.Select(dl => dl.ToString().ToLower());
 
-        query = query
-            .Where(r =>
-                patterns.Any(pattern =>
-                    r.DifficultyLevel.ToString().ToLower().Contains(pattern)
-                )
-            );
+        query = query.Where(r =>
+            patterns.Any(pattern => r.DifficultyLevel.ToString().ToLower().Contains(pattern))
+        );
 
         return Next?.HandleQuery(context, searchCriteria, query) ?? query;
     }

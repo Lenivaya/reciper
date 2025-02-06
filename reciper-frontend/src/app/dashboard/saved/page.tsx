@@ -4,12 +4,13 @@ import {
   RecipeCard,
   RecipeCardFragment
 } from '@/components/recipes/recipe-card/recipe-card'
+import { RecipeCardSkeleton } from '@/components/recipes/recipe-card/recipe-card-skeleton'
 import { RecipesSearch } from '@/components/recipes/recipes-search/recipes-search'
 import { recipeSearchParamsSchema } from '@/components/recipes/recipes-search/recipes-search-params'
 import { PaginationControls } from '@/components/ui/pagination-controls'
 import { graphql } from 'gql.tada'
 import { useQueryStates } from 'nuqs'
-import { Key } from 'react'
+import { Key, Suspense, useMemo } from 'react'
 import { useQuery } from 'urql'
 
 const DashboardSavedRecipesQuery = graphql(
@@ -44,10 +45,23 @@ const DashboardSavedRecipesQuery = graphql(
 
 const DEFAULT_PAGE_SIZE = 12
 
-export default function SavedRecipesPage() {
-  const [{ search, page, tags, difficultyLevels }, setSearchParams] =
-    useQueryStates(recipeSearchParamsSchema)
-  const currentPage = Math.max(1, parseInt(page ?? '1'))
+function SavedRecipesGrid({
+  search,
+  currentPage,
+  tags,
+  difficultyLevels
+}: {
+  search: string | null
+  currentPage: number
+  tags: string[] | null
+  difficultyLevels: string[] | null
+}) {
+  const context = useMemo(
+    () => ({
+      additionalTypenames: ['RecipeLike']
+    }),
+    []
+  )
 
   const [result] = useQuery({
     query: DashboardSavedRecipesQuery,
@@ -61,7 +75,8 @@ export default function SavedRecipesPage() {
       orderBy: { createdAt: 'DESC' },
       skip: (currentPage - 1) * DEFAULT_PAGE_SIZE,
       take: DEFAULT_PAGE_SIZE
-    }
+    },
+    context
   })
 
   const totalCount = result.data?.mySavedRecipesOffset?.totalCount ?? 0
@@ -75,41 +90,77 @@ export default function SavedRecipesPage() {
   }
 
   return (
+    <div className='h-full space-y-12'>
+      <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+        {result.error && <div>Error: {result.error.message}</div>}
+        {result.data?.mySavedRecipesOffset?.items?.map((item) => (
+          <RecipeCard key={item?.id as Key} data={item} />
+        ))}
+      </div>
+
+      {totalCount > 0 && (
+        <div className='mt-8'>
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            hasNextPage={pageInfo?.hasNextPage ?? false}
+            hasPreviousPage={pageInfo?.hasPreviousPage ?? false}
+            params={search ? { search } : {}}
+            showFirstLast
+            maxVisiblePages={7}
+            className='justify-center'
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
+function SavedRecipesContent() {
+  const [{ search, page, tags, difficultyLevels }] = useQueryStates(
+    recipeSearchParamsSchema
+  )
+  const currentPage = Math.max(1, parseInt(page ?? '1'))
+
+  return (
+    <div className=''>
+      <div className='flex flex-col space-y-12'>
+        <RecipesSearch isClient isAutoFocusable />
+        <Suspense
+          fallback={
+            <div className='h-full space-y-12'>
+              <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <RecipeCardSkeleton key={i} />
+                ))}
+              </div>
+            </div>
+          }
+        >
+          <SavedRecipesGrid
+            search={search}
+            currentPage={currentPage}
+            tags={tags}
+            difficultyLevels={difficultyLevels}
+          />
+        </Suspense>
+      </div>
+    </div>
+  )
+}
+
+export default function SavedRecipesPage() {
+  return (
     <div className=''>
       <div>
         <h2 className='text-2xl font-semibold tracking-tight'>Saved Recipes</h2>
-        <p className='text-sm text-muted-foreground'>
+        <p className='text-muted-foreground text-sm'>
           Your collection of saved recipes from other cooks
         </p>
       </div>
-      <div className=''>
-        <div className='flex flex-col space-y-12'>
-          <RecipesSearch isClient />
-          <div className='h-full space-y-12'>
-            <div className='flew-row container mx-auto flex flex-wrap justify-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-              {result.error && <div>Error: {result.error.message}</div>}
-              {result.data?.mySavedRecipesOffset?.items?.map((item) => (
-                <RecipeCard key={item?.id as Key} data={item} />
-              ))}
-            </div>
-
-            {totalCount > 0 && (
-              <div className='mt-8'>
-                <PaginationControls
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  hasNextPage={pageInfo?.hasNextPage ?? false}
-                  hasPreviousPage={pageInfo?.hasPreviousPage ?? false}
-                  params={search ? { search } : {}}
-                  showFirstLast
-                  maxVisiblePages={7}
-                  className='justify-center'
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
+      <Suspense>
+        <SavedRecipesContent />
+      </Suspense>
     </div>
   )
 }

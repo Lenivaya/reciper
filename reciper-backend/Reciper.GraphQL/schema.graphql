@@ -116,6 +116,11 @@ type DeleteRecipeByIdPayload {
   errors: [DeleteRecipeByIdError!]
 }
 
+type DeleteRecipePhotoPayload {
+  recipeImage: RecipeImage
+  errors: [DeleteRecipePhotoError!]
+}
+
 type DeleteSubscriptionByIdPayload {
   userSubscription: UserSubscription
   errors: [DeleteSubscriptionByIdError!]
@@ -180,9 +185,10 @@ type Mutation @authorize @authorize @authorize @authorize @authorize @authorize 
   deleteRecipeById(input: DeleteRecipeByIdInput!): DeleteRecipeByIdPayload! @cost(weight: "10")
   updateRecipe(input: UpdateRecipeInput!): UpdateRecipePayload! @cost(weight: "10")
   addRecipePhoto(input: AddRecipePhotoInput!): AddRecipePhotoPayload! @cost(weight: "10")
-  addTag(input: AddTagInput!): AddTagPayload! @cost(weight: "10")
-  deleteTagById(input: DeleteTagByIdInput!): DeleteTagByIdPayload! @cost(weight: "10")
-  updateTag(input: UpdateTagInput!): UpdateTagPayload! @cost(weight: "10")
+  deleteRecipePhoto(input: DeleteRecipePhotoInput!): DeleteRecipePhotoPayload! @cost(weight: "10")
+  addTag(input: AddTagInput!): AddTagPayload! @authorize @cost(weight: "10")
+  deleteTagById(input: DeleteTagByIdInput!): DeleteTagByIdPayload! @authorize @cost(weight: "10")
+  updateTag(input: UpdateTagInput!): UpdateTagPayload! @authorize @cost(weight: "10")
   addIngredient(input: AddIngredientInput!): AddIngredientPayload! @cost(weight: "10")
   deleteIngredientById(input: DeleteIngredientByIdInput!): DeleteIngredientByIdPayload! @cost(weight: "10")
   updateIngredient(input: UpdateIngredientInput!): UpdateIngredientPayload! @cost(weight: "10")
@@ -194,6 +200,7 @@ type Mutation @authorize @authorize @authorize @authorize @authorize @authorize 
   addComment(input: AddCommentInput!): AddCommentPayload! @cost(weight: "10")
   deleteCommentById(input: DeleteCommentByIdInput!): DeleteCommentByIdPayload! @cost(weight: "10")
   updateComment(input: UpdateCommentInput!): UpdateCommentPayload! @cost(weight: "10")
+  upsertRecipeRating(input: UpsertRecipeRatingInput!): UpsertRecipeRatingPayload! @cost(weight: "10")
   addRating(input: AddRatingInput!): AddRatingPayload! @cost(weight: "10")
   updateRatingById(input: UpdateRatingByIdInput!): UpdateRatingByIdPayload! @cost(weight: "10")
   updateRatingForRecipe(input: UpdateRatingForRecipeInput!): UpdateRatingForRecipePayload! @cost(weight: "10")
@@ -339,6 +346,7 @@ type Query {
   ratingsCursor(recipeId: UUID! "Returns the first _n_ elements from the list." first: Int "Returns the elements in the list that come after the specified cursor." after: String "Returns the last _n_ elements from the list." last: Int "Returns the elements in the list that come before the specified cursor." before: String where: RatingFilterInput @cost(weight: "10") order: [RatingSortInput!] @cost(weight: "10")): RatingsCursorConnection @listSize(assumedSize: 50, slicingArguments: [ "first", "last" ], slicingArgumentDefaultValue: 10, sizedFields: [ "edges", "nodes" ], requireOneSlicingArgument: false) @cost(weight: "10")
   ratingById(ratingId: UUID!): Rating @cost(weight: "10")
   ratingByCompositeKey(recipeId: UUID! userId: UUID!): Rating @cost(weight: "10")
+  recipeRating(recipeId: UUID!): Rating @cost(weight: "10")
   subscriptionsOffset(skip: Int take: Int userId: UUID! searchCriteria: UserSubscriptionSearchCriteriaInput where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscriptionsOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
   subscribersOffset(skip: Int take: Int userId: UUID! searchCriteria: UserSubscriptionSearchCriteriaInput where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): SubscribersOffsetCollectionSegment @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
   mySubscriptionsOffset(skip: Int take: Int searchCriteria: UserSubscriptionSearchCriteriaInput where: UserSubscriptionFilterInput @cost(weight: "10") order: [UserSubscriptionSortInput!] @cost(weight: "10")): MySubscriptionsOffsetCollectionSegment @authorize @listSize(assumedSize: 50, slicingArguments: [ "take" ], slicingArgumentDefaultValue: 10, sizedFields: [ "items" ], requireOneSlicingArgument: false) @cost(weight: "10")
@@ -678,6 +686,11 @@ type UpdateUserProfilePhotoPayload {
   errors: [UpdateUserProfilePhotoError!]
 }
 
+type UpsertRecipeRatingPayload {
+  rating: Rating
+  errors: [UpsertRecipeRatingError!]
+}
+
 type User {
   id: UUID!
   username: String!
@@ -819,6 +832,8 @@ union DeleteRatingForRecipeError = ReciperError
 
 union DeleteRecipeByIdError = ReciperError
 
+union DeleteRecipePhotoError = ReciperError
+
 union DeleteSubscriptionByIdError = ReciperError
 
 union DeleteTagByIdError = ReciperError
@@ -850,6 +865,8 @@ union UpdateTagError = ReciperError
 union UpdateUserError = ReciperError
 
 union UpdateUserProfilePhotoError = ReciperError
+
+union UpsertRecipeRatingError = ReciperError
 
 input AddCommentInput {
   createDto: CommentCreateDTOInput!
@@ -952,6 +969,11 @@ input DeleteRatingForRecipeInput {
 
 input DeleteRecipeByIdInput {
   recipeId: UUID!
+}
+
+input DeleteRecipePhotoInput {
+  recipeId: UUID!
+  photoId: UUID!
 }
 
 input DeleteSubscriptionByIdInput {
@@ -1210,7 +1232,7 @@ input RecipePatchDTOInput {
   cookingTimeMinutes: Int
   difficultyLevel: DifficultyLevel
   tags: [UUID!]
-  ingredients: [UUID!]
+  ingredients: [RecipeCreateIngredientDTOInput!]
   images: [UUID!]
 }
 
@@ -1225,6 +1247,7 @@ input RecipeSearchCriteriaInput {
   difficultyLevels: [DifficultyLevel!]
   createdAfter: DateTime
   createdBefore: DateTime
+  authorId: UUID
 }
 
 input RecipeSortInput {
@@ -1357,6 +1380,10 @@ input UpdateUserInput {
 
 input UpdateUserProfilePhotoInput {
   file: Upload!
+}
+
+input UpsertRecipeRatingInput {
+  createDto: RatingCreateDTOInput!
 }
 
 input UserCreateDTOInput {

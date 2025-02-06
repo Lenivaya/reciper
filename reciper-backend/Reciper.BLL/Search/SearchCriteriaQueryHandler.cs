@@ -15,21 +15,29 @@ public abstract class SearchCriteriaQueryHandler<TContext, TSearchCriteria, TQue
     where TQueryResult : class
 {
     /// <inheritdoc />
-    public virtual ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult>? Next { get; set; }
+    public virtual ISearchCriteriaQueryHandler<
+        TContext,
+        TSearchCriteria,
+        TQueryResult
+    >? Next { get; set; }
 
     /// <inheritdoc />
-    public virtual ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult> SetNextHandler(
-        ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult> next
-    )
+    public virtual ISearchCriteriaQueryHandler<
+        TContext,
+        TSearchCriteria,
+        TQueryResult
+    > SetNextHandler(ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult> next)
     {
         Next = next;
         return this;
     }
 
     /// <inheritdoc />
-    public virtual ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult> AddNextHandler(
-        ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult> next
-    )
+    public virtual ISearchCriteriaQueryHandler<
+        TContext,
+        TSearchCriteria,
+        TQueryResult
+    > AddNextHandler(ISearchCriteriaQueryHandler<TContext, TSearchCriteria, TQueryResult> next)
     {
         Next = next;
         return Next;

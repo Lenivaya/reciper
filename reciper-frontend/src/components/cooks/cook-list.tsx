@@ -2,6 +2,7 @@
 
 import { useQuery } from '@urql/next'
 import { graphql } from 'gql.tada'
+import { Key } from 'react'
 import { CookCard, CookCardFragment } from './cook-card/cook-card'
 
 const CooksListQuery = graphql(
@@ -31,7 +32,7 @@ export const CookList = () => {
         {result.fetching && <div>Loading...</div>}
         {result.error && <div>Error: {result.error.message}</div>}
         {result.data?.usersCursor?.edges?.map((edge) => (
-          <CookCard key={edge?.node?.id} data={edge?.node} />
+          <CookCard key={edge?.node?.id as Key} data={edge?.node} />
         ))}
       </div>
     </div>

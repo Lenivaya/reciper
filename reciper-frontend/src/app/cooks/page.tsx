@@ -13,12 +13,12 @@ export default async function CooksPage({ searchParams }: CooksPageProps) {
   await cookSearchParamsCache.parse(searchParams)
 
   return (
-    <main className='container relative mx-auto flex bg-gradient-to-b from-background via-background to-background/80 px-6 pt-20 dark:from-background dark:via-background/95 dark:to-background/75'>
+    <main className='from-background via-background to-background/80 dark:from-background dark:via-background/95 dark:to-background/75 relative container mx-auto flex bg-linear-to-b px-6 pt-20'>
       <div className='flex w-full flex-col items-center p-10'>
         <div className='flex w-full max-w-[1400px] flex-col items-center justify-center gap-4'>
-          <h1 className='flex items-center gap-2 bg-gradient-to-r from-primary/60 to-primary bg-clip-text text-4xl font-bold text-transparent'>
+          <h1 className='from-primary/60 to-primary flex items-center gap-2 bg-linear-to-r bg-clip-text text-4xl font-bold text-transparent'>
             <span className=''>
-              <ChefHat className='mr-1 h-10 w-10 dark:text-primary' />
+              <ChefHat className='dark:text-primary mr-1 h-10 w-10' />
             </span>
             Cooks
           </h1>
@@ -36,7 +36,7 @@ export default async function CooksPage({ searchParams }: CooksPageProps) {
                 {Array.from({ length: 4 }).map((_, i) => (
                   <div
                     key={i}
-                    className='h-[200px] w-[400px] animate-pulse rounded-lg bg-muted/20'
+                    className='bg-muted/20 h-[200px] w-[400px] animate-pulse rounded-lg'
                   />
                 ))}
               </div>

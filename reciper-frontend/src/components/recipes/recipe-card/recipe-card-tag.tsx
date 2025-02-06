@@ -7,15 +7,21 @@ interface RecipeCardTagProps {
   tag: string
   onClick?: (tag: string) => void
   index: number
+  className?: string
 }
 
-export function RecipeCardTag({ tag, onClick, index }: RecipeCardTagProps) {
+export function RecipeCardTag({
+  tag,
+  onClick,
+  index,
+  className
+}: RecipeCardTagProps) {
   const colors = getTagColorV2(index)
   return (
     <Badge
       onClick={() => onClick?.(tag)}
       variant='tag'
-      className={cn('cursor-pointer', colors)}
+      className={cn('cursor-pointer', colors, className)}
     >
       <Tag className='mr-1 h-3 w-3' />
       <span className='capitalize'>{tag}</span>

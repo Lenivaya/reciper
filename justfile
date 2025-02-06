@@ -11,7 +11,15 @@ backend-graphql-schema:
   dotnet run --project reciper-backend/Reciper.GraphQL -- schema export --output schema.graphql
   cp reciper-backend/Reciper.GraphQL/schema.graphql reciper-frontend/schema.graphql
 
-sync-schema: backend-graphql-schema 
+format-frontend:
+  cd reciper-frontend && pnpm code:biome:format && pnpm code:format
+
+frontend-grpahql-develop:
+  cd reciper-frontend && pnpm dev
+
+format: format-backend format-frontend
+
+sync-schema: backend-graphql-schema
 
 
 

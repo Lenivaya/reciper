@@ -5,14 +5,10 @@ namespace Reciper.DAL.Models;
 
 public class ReciperContext : DbContext
 {
-    public ReciperContext()
-    {
-    }
+    public ReciperContext() { }
 
     public ReciperContext(DbContextOptions<ReciperContext> options)
-        : base(options)
-    {
-    }
+        : base(options) { }
 
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<Recipe> Recipes { get; set; } = null!;
@@ -45,13 +41,19 @@ public class ReciperContext : DbContext
             .HasOne(rl => rl.User)
             .WithMany(u => u.LikedRecipes)
             .HasForeignKey(rl => rl.UserId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder
             .Entity<RecipeLike>()
             .HasOne(rl => rl.Recipe)
             .WithMany(r => r.Likes)
             .HasForeignKey(rl => rl.RecipeId)
-            .OnDelete(DeleteBehavior.NoAction);
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder
+            .Entity<User>()
+            .HasMany(u => u.LikedRecipes)
+            .WithOne(rl => rl.User)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Configure UserSubscription relationships
         modelBuilder
@@ -115,13 +117,8 @@ public class ReciperContext : DbContext
             .ValueGeneratedOnAddOrUpdate()
             .Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Save);
 
-
         // Configure timestamps for images
-        modelBuilder
-            .Entity<RecipeImage>()
-            .Property(recipeImage => recipeImage.CreatedAt);
-        modelBuilder
-            .Entity<UserImage>()
-            .Property(userImage => userImage.CreatedAt);
+        modelBuilder.Entity<RecipeImage>().Property(recipeImage => recipeImage.CreatedAt);
+        modelBuilder.Entity<UserImage>().Property(userImage => userImage.CreatedAt);
     }
 }

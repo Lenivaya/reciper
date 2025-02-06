@@ -35,9 +35,9 @@ public class RecipeLike
     public virtual User User { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets the recipe that was liked. Navigation property with no action on delete.
+    /// Gets or sets the recipe that was liked. Navigation property with cascade delete.
     /// </summary>
     [ForeignKey(nameof(RecipeId))]
-    [DeleteBehavior(DeleteBehavior.NoAction)]
+    [DeleteBehavior(DeleteBehavior.Cascade)]
     public virtual Recipe Recipe { get; set; } = null!;
 }

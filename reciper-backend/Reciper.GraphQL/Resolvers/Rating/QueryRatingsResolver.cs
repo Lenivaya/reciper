@@ -1,5 +1,7 @@
+using HotChocolate.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Reciper.DAL.Models;
+using Reciper.GraphQL.Interceptors;
 using Reciper.GraphQL.Schema;
 
 namespace Reciper.GraphQL.Resolvers.Rating;
@@ -43,6 +45,24 @@ public class QueryRatingsResolver
         return context
             .Ratings.AsNoTracking()
             .Where(rating => rating.RecipeId == recipeId && rating.UserId == userId);
+    }
+
+    [UseProjection]
+    public async Task<DAL.Models.Rating?> GetRecipeRating(
+        ReciperContext context,
+        [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser,
+        Guid recipeId
+    )
+    {
+        if (authenticatedUser == null)
+            return null;
+
+        return await context
+            .Ratings.AsNoTracking()
+            .Where(rating =>
+                rating.RecipeId == recipeId && rating.UserId == authenticatedUser.UserId
+            )
+            .FirstOrDefaultAsync();
     }
 
     private IQueryable<DAL.Models.Rating> QueryHandler(ReciperContext context, Guid recipeId)

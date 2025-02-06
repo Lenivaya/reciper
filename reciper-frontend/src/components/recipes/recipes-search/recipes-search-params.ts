@@ -9,7 +9,8 @@ export const recipeSearchParamsSchema = {
   search: parseAsString.withDefault(''),
   page: parseAsString.withDefault('1'),
   tags: parseAsArrayOf(parseAsString).withDefault([]),
-  difficultyLevels: parseAsArrayOf(parseAsString).withDefault([])
+  difficultyLevels: parseAsArrayOf(parseAsString).withDefault([]),
+  authorId: parseAsString.withDefault('')
 }
 
 export const recipeSearchParamsCache = createSearchParamsCache(

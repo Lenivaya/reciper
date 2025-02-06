@@ -35,7 +35,6 @@ public class QueryRecipesResolver
         return QueryHandler(context, searchCriteria);
     }
 
-
     [UseOffsetPaging(MaxPageSize = 50, IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering]
@@ -48,7 +47,8 @@ public class QueryRecipesResolver
     {
         return authenticatedUser == null
             ? new List<DAL.Models.Recipe>().AsQueryable()
-            : QueryHandler(context, searchCriteria).Where(r => r.UserId == authenticatedUser.UserId);
+            : QueryHandler(context, searchCriteria)
+                .Where(r => r.UserId == authenticatedUser.UserId);
     }
 
     [UsePaging(MaxPageSize = 50, IncludeTotalCount = true)]
@@ -63,9 +63,9 @@ public class QueryRecipesResolver
     {
         return authenticatedUser == null
             ? new List<DAL.Models.Recipe>().AsQueryable()
-            : QueryHandler(context, searchCriteria).Where(r => r.UserId == authenticatedUser.UserId);
+            : QueryHandler(context, searchCriteria)
+                .Where(r => r.UserId == authenticatedUser.UserId);
     }
-
 
     /// <summary>
     /// Returns recipes liked by user
@@ -117,6 +117,7 @@ public class QueryRecipesResolver
                 new RecipeSearchCriteriaDifficultyHandler(),
                 new RecipeSearchCriteriaIngredientsHandler(),
                 new RecipeSearchCriteriaRatingHandler(),
+                new RecipeSearchCriteriaAuthorHandler(),
             ]
         );
 

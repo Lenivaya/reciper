@@ -21,8 +21,7 @@ public class QueryUserSubscriptionsResolver
         UserSubscriptionSearchCriteria? searchCriteria
     )
     {
-        return QueryHandler(context, searchCriteria)
-            .Where(sub => sub.SubscriberId == userId);
+        return QueryHandler(context, searchCriteria).Where(sub => sub.SubscriberId == userId);
     }
 
     [UseOffsetPaging(MaxPageSize = 50, IncludeTotalCount = true)]
@@ -35,8 +34,7 @@ public class QueryUserSubscriptionsResolver
         UserSubscriptionSearchCriteria? searchCriteria
     )
     {
-        return QueryHandler(context, searchCriteria)
-            .Where(sub => sub.SubscribeeId == userId);
+        return QueryHandler(context, searchCriteria).Where(sub => sub.SubscribeeId == userId);
     }
 
     [Authorize]
@@ -83,8 +81,7 @@ public class QueryUserSubscriptionsResolver
         UserSubscriptionSearchCriteria? searchCriteria
     )
     {
-        return QueryHandler(context, searchCriteria)
-            .Where(sub => sub.SubscriberId == userId);
+        return QueryHandler(context, searchCriteria).Where(sub => sub.SubscriberId == userId);
     }
 
     [UsePaging(MaxPageSize = 50, IncludeTotalCount = true)]
@@ -97,8 +94,7 @@ public class QueryUserSubscriptionsResolver
         UserSubscriptionSearchCriteria? searchCriteria
     )
     {
-        return QueryHandler(context, searchCriteria)
-            .Where(sub => sub.SubscribeeId == userId);
+        return QueryHandler(context, searchCriteria).Where(sub => sub.SubscribeeId == userId);
     }
 
     [Authorize]
@@ -143,8 +139,7 @@ public class QueryUserSubscriptionsResolver
         UserSubscriptionSearchCriteria? searchCriteria
     )
     {
-        return QueryHandler(context, searchCriteria)
-            .Where(sub => sub.Id == subscriptionId);
+        return QueryHandler(context, searchCriteria).Where(sub => sub.Id == subscriptionId);
     }
 
     [UseFirstOrDefault]
@@ -174,8 +169,10 @@ public class QueryUserSubscriptionsResolver
             return new List<DAL.Models.UserSubscription>().AsQueryable();
 
         return QueryHandler(context, searchCriteria)
-            .Where(userSubscription => userSubscription.SubscriberId == authenticatedUser.UserId &&
-                                       userSubscription.SubscribeeId == otherUserId);
+            .Where(userSubscription =>
+                userSubscription.SubscriberId == authenticatedUser.UserId
+                && userSubscription.SubscribeeId == otherUserId
+            );
     }
 
     private IQueryable<DAL.Models.UserSubscription> QueryHandler(
@@ -187,11 +184,7 @@ public class QueryUserSubscriptionsResolver
             ReciperContext,
             UserSubscriptionSearchCriteria,
             DAL.Models.UserSubscription
-        >().BuildChain(
-            [
-                new UserSubscriptionSearchCriteriaOverallMatchingHandler(),
-            ]
-        );
+        >().BuildChain([new UserSubscriptionSearchCriteriaOverallMatchingHandler()]);
 
         return queryHandlerChain.HandleQuery(context, searchCriteria).AsNoTracking();
     }

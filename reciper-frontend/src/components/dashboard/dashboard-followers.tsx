@@ -1,7 +1,7 @@
 'use client'
 
-import { graphql } from 'gql.tada'
-import { useMemo } from 'react'
+import { graphql, readFragment } from 'gql.tada'
+import { Key, useMemo } from 'react'
 import { useQuery } from 'urql'
 import { Follower, FollowerFragment } from '../subscriptions/follower'
 
@@ -25,13 +25,14 @@ export function DashboardFollowers() {
   )
   const [result] = useQuery({ query: DashboardFollowersQuery, context })
 
-  const followers = result.data?.mySubscribersOffset.items
+  const followers = result.data?.mySubscribersOffset?.items
 
   return (
     <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-      {followers?.map((follower) => (
-        <Follower key={follower.id} data={follower} />
-      ))}
+      {followers?.map((follower) => {
+        const followerData = readFragment(FollowerFragment, follower)
+        return <Follower key={followerData.id as Key} data={follower} />
+      })}
     </div>
   )
 }

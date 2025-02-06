@@ -36,7 +36,7 @@ export function DashboardNav() {
   )
 
   return (
-    <header className='sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b bg-background/95 px-4 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+    <header className='bg-background/95 supports-backdrop-filter:bg-background/60 sticky top-0 z-10 flex h-14 shrink-0 items-center gap-2 border-b px-4 backdrop-blur-sm'>
       <SidebarTrigger className='-ml-2 h-9 w-9'>
         <Menu className='h-4 w-4' />
       </SidebarTrigger>

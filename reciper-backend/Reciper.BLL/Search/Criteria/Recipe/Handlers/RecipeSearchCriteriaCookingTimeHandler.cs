@@ -13,7 +13,6 @@ public class RecipeSearchCriteriaCookingTimeHandler
     {
         query ??= context.Recipes.AsQueryable();
 
-
         if (searchCriteria is null)
             return Next?.HandleQuery(context, searchCriteria, query) ?? query;
 

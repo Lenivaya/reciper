@@ -34,7 +34,6 @@ builder.Services.ConfigureHttpJsonOptions(options =>
     options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles
 );
 
-
 builder
     .Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -51,14 +50,17 @@ builder
                 Encoding.UTF8.GetBytes(
                     builder.Configuration.GetValue<string>("JwtSettings:Key") ?? string.Empty
                 )
-            )
+            ),
         };
     });
 
 builder.Services.AddAuthorization();
 
 builder
-    .Services.AddHttpLogging(options => { options.LoggingFields = HttpLoggingFields.Request; })
+    .Services.AddHttpLogging(options =>
+    {
+        options.LoggingFields = HttpLoggingFields.Request;
+    })
     .AddCors();
 
 builder
@@ -71,24 +73,18 @@ builder
 
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis") ?? "localhost:6379";
 
-builder.Services.AddTransient<IPasswordService, PasswordService>()
+builder
+    .Services.AddTransient<IPasswordService, PasswordService>()
     .AddTransient<ITokenService>(_ => new TokenService(
         builder.Configuration.GetValue<string>("JwtSettings:Key")!,
         builder.Configuration.GetValue<string>("JwtSettings:Issuer")!,
         builder.Configuration.GetValue<string>("JwtSettings:Audience")!
-    ))
-    ;
+    ));
 
 builder.Services.AddTransient<ICloudinary>(prov =>
 {
     var connectionString = builder.Configuration.GetConnectionString("Cloudinary");
-    var cloudinary = new Cloudinary(connectionString)
-    {
-        Api =
-        {
-            Secure = true
-        }
-    };
+    var cloudinary = new Cloudinary(connectionString) { Api = { Secure = true } };
     return cloudinary;
 });
 
@@ -114,6 +110,7 @@ builder
     .AddTypeExtension<QueryRatingsResolver>()
     .AddTypeExtension<QueryUserSubscriptionsResolver>()
     .AddTypeExtension<QueryRecipeLikesResolver>()
+    .AddTypeExtension<QueryRatingsResolver>()
     .AddMutationType<Mutation>()
     .AddTypeExtension<MutationRecipesResolver>()
     .AddTypeExtension<MutationTagsResolver>()
@@ -123,6 +120,7 @@ builder
     .AddTypeExtension<MutationRatingsResolver>()
     .AddTypeExtension<MutationUserSubscriptionsResolver>()
     .AddTypeExtension<MutationRecipeLikesResolver>()
+    .AddTypeExtension<MutationRatingsResolver>()
     .AddSubscriptionType<Subscription>()
     .AddTypeExtension<SubscriptionRecipesResolver>()
     .AddTypeExtension<UserType>()
@@ -143,14 +141,13 @@ var app = builder.Build();
 
 app.UseRouting().UseWebSockets();
 
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseForwardedHeaders(
     new ForwardedHeadersOptions
     {
-        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+        ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
     }
 );
 
@@ -163,7 +160,6 @@ if (app.Environment.IsDevelopment())
 app.UseCors(corsPolicyBuilder =>
     corsPolicyBuilder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
 );
-
 
 if (!app.Environment.IsDevelopment())
 {

@@ -1,5 +1,3 @@
 namespace Reciper.BLL.Contracts;
 
-public interface IPhotoService
-{
-}
+public interface IPhotoService { }

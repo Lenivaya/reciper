@@ -23,9 +23,7 @@ public class RecipeSearchCriteriaTagsHandler
             .Include(r => r.RecipeTags)
             .Where(r =>
                 patterns.All(pattern =>
-                    r.RecipeTags.Any(t =>
-                        EF.Functions.Like(t.Tag.Name.ToLower(), pattern)
-                    )
+                    r.RecipeTags.Any(t => EF.Functions.Like(t.Tag.Name.ToLower(), pattern))
                 )
             );
 

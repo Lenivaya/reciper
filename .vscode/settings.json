@@ -1,3 +1,7 @@
 {
-  "cSpell.enabled": false
+  "cSpell.enabled": false,
+  "typescript.tsdk": "reciper-frontend/node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "search.useIgnoreFiles": false,
+  "explorer.excludeGitIgnore": false
 }

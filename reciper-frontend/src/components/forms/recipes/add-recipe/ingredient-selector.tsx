@@ -18,9 +18,9 @@ import {
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
-import { useQuery } from '@urql/next'
+import { useMutation, useQuery } from '@urql/next'
 import { graphql } from 'gql.tada'
-import { X } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useDebouncedCallback } from 'use-debounce'
 
@@ -38,6 +38,17 @@ const IngredientsQuery = graphql(`
   }
 `)
 
+const AddIngredientMutation = graphql(`
+  mutation AddIngredient($name: String!) {
+    addIngredient(input: { createDto: { name: $name } }) {
+      ingredient {
+        id
+        name
+      }
+    }
+  }
+`)
+
 interface Ingredient {
   ingredientId: string
   amount: string
@@ -46,6 +57,7 @@ interface Ingredient {
 interface IngredientSelectorProps {
   value: Ingredient[]
   onChange: (value: Ingredient[]) => void
+  initialIngredients?: { id: string; name: string }[]
 }
 
 const commonUnits = [
@@ -67,7 +79,8 @@ interface IngredientDetails {
 
 export function IngredientSelector({
   value,
-  onChange
+  onChange,
+  initialIngredients = []
 }: IngredientSelectorProps) {
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
@@ -77,21 +90,34 @@ export function IngredientSelector({
     id: string
     name: string
   } | null>(null)
-  const [selectedIngredientsMap, setSelectedIngredientsMap] = useState<Record<string, IngredientDetails>>({})
+  const [selectedIngredientsMap, setSelectedIngredientsMap] = useState<
+    Record<string, IngredientDetails>
+  >(() => {
+    return initialIngredients.reduce(
+      (acc, ingredient) => {
+        acc[ingredient.id] = { id: ingredient.id, name: ingredient.name }
+        return acc
+      },
+      {} as Record<string, IngredientDetails>
+    )
+  })
+
   const [{ data }] = useQuery({
     query: IngredientsQuery,
+    requestPolicy: 'cache-and-network',
     variables: {
       search: debouncedSearch,
-      alreadySelected: value.map(item => item.ingredientId)
+      alreadySelected: value.map((item) => item.ingredientId)
     }
   })
 
-  const debouncedSetSearch = useDebouncedCallback(
-    (value: string) => {
-      setDebouncedSearch(value)
-    },
-    150
+  const [{ fetching: isAddingIngredient }, addIngredient] = useMutation(
+    AddIngredientMutation
   )
+
+  const debouncedSetSearch = useDebouncedCallback((value: string) => {
+    setDebouncedSearch(value)
+  }, 150)
 
   const handleSearchChange = (value: string) => {
     setSearch(value)
@@ -101,7 +127,7 @@ export function IngredientSelector({
   const handleSelect = useCallback(
     (ingredientId: string, ingredientName: string) => {
       if (!value.some((item) => item.ingredientId === ingredientId)) {
-        setSelectedIngredientsMap(prev => ({
+        setSelectedIngredientsMap((prev) => ({
           ...prev,
           [ingredientId]: { id: ingredientId, name: ingredientName }
         }))
@@ -143,6 +169,19 @@ export function IngredientSelector({
     [value, onChange]
   )
 
+  const handleCreateIngredient = useCallback(async () => {
+    if (!search.trim()) return
+
+    const result = await addIngredient({
+      name: search.trim()
+    })
+
+    if (result.data?.addIngredient?.ingredient) {
+      const newIngredient = result.data.addIngredient.ingredient
+      handleSelect(newIngredient.id as string, newIngredient.name as string)
+    }
+  }, [search, addIngredient, handleSelect])
+
   return (
     <div className='space-y-4'>
       <div className='flex flex-wrap gap-2'>
@@ -150,17 +189,49 @@ export function IngredientSelector({
           <Badge
             key={item.ingredientId}
             variant='secondary'
-            className='flex items-center gap-2 p-2'
+            className='group hover:bg-secondary/80 flex items-center gap-2 p-2 pr-1 shadow-sm transition-all duration-200 hover:shadow-md'
           >
             <span className='font-medium'>
-              {selectedIngredientsMap[item.ingredientId]?.name ?? 'Unknown ingredient'}
+              {selectedIngredientsMap[item.ingredientId]?.name ??
+                'Unknown ingredient'}
             </span>
             <span className='text-muted-foreground'>•</span>
-            <span>{item.amount}</span>
+            <div className='flex items-center gap-1'>
+              <Input
+                type='text'
+                value={item.amount.split(' ')[0]}
+                onChange={(e) => {
+                  const unit = item.amount.split(' ')[1] || 'g'
+                  handleAmountChange(
+                    item.ingredientId,
+                    `${e.target.value} ${unit}`
+                  )
+                }}
+                className='focus-visible:ring-primary/30 h-6 w-16 border-none bg-transparent p-0 text-center focus-visible:ring-1'
+              />
+              <Select
+                value={item.amount.split(' ')[1] || 'g'}
+                onValueChange={(unit) => {
+                  const amount = item.amount.split(' ')[0]
+                  handleAmountChange(item.ingredientId, `${amount} ${unit}`)
+                }}
+              >
+                <SelectTrigger className='focus:ring-primary/30 h-6 w-[70px] border-none bg-transparent px-1 focus:ring-1'>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {commonUnits.map((unit) => (
+                    <SelectItem key={unit} value={unit}>
+                      {unit}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             <Button
               variant='ghost'
               size='sm'
-              className='ml-1 h-auto p-0 hover:bg-destructive/10'
+              className='hover:bg-destructive/10 ml-1 h-6 w-6 p-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100'
               onClick={() => handleRemove(item.ingredientId)}
             >
               <X className='h-3 w-3' />
@@ -171,20 +242,20 @@ export function IngredientSelector({
 
       <div className='space-y-2'>
         {selectedIngredient ? (
-          <div className='flex items-center gap-2'>
-            <Badge variant='outline' className='h-9 px-3'>
+          <div className='bg-secondary/50 animate-in fade-in-0 zoom-in-95 flex items-center gap-2 rounded-lg p-3'>
+            <Badge variant='outline' className='bg-background/50 h-9 px-3'>
               {selectedIngredient.name}
             </Badge>
             <Input
               type='text'
               value={tempAmount}
               onChange={(e) => setTempAmount(e.target.value)}
-              className='w-24'
+              className='bg-background/50 w-24'
               placeholder='Amount'
               disabled={tempUnit === 'to taste'}
             />
             <Select value={tempUnit} onValueChange={setTempUnit}>
-              <SelectTrigger className='w-[120px]'>
+              <SelectTrigger className='bg-background/50 w-[120px]'>
                 <SelectValue placeholder='Unit' />
               </SelectTrigger>
               <SelectContent>
@@ -200,6 +271,7 @@ export function IngredientSelector({
               variant='secondary'
               onClick={handleAddIngredient}
               disabled={!tempAmount && tempUnit !== 'to taste'}
+              className='bg-background/50 hover:bg-background/80'
             >
               Add
             </Button>
@@ -207,23 +279,48 @@ export function IngredientSelector({
               type='button'
               variant='ghost'
               onClick={() => setSelectedIngredient(null)}
+              className='hover:bg-background/80'
             >
               Cancel
             </Button>
           </div>
         ) : (
           <div className='space-y-1.5'>
-            <p className='text-sm text-muted-foreground'>
-              Search for an ingredient to add
-            </p>
-            <Command className='rounded-md border' shouldFilter={false}>
+            <Command
+              className='rounded-lg border shadow-sm'
+              shouldFilter={false}
+            >
               <CommandInput
                 value={search}
                 onValueChange={handleSearchChange}
                 placeholder='Search ingredients...'
+                className='h-11'
               />
               <CommandList>
-                <CommandEmpty>No ingredients found.</CommandEmpty>
+                <CommandEmpty>
+                  <div className='flex flex-col gap-2 p-4 text-center'>
+                    <p className='text-muted-foreground text-sm'>
+                      No matching ingredients found for &quot;{search}&quot;
+                    </p>
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      className='hover:bg-primary/5 hover:text-primary hover:border-primary/20 mx-auto w-full'
+                      disabled={!search.trim() || isAddingIngredient}
+                      onClick={handleCreateIngredient}
+                    >
+                      <Plus className='mr-2 h-4 w-4' />
+                      {isAddingIngredient ? (
+                        <>
+                          <span className='mr-2'>Creating ingredient...</span>
+                          <span className='h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent' />
+                        </>
+                      ) : (
+                        `Create "${search}" ingredient`
+                      )}
+                    </Button>
+                  </div>
+                </CommandEmpty>
                 <CommandGroup>
                   {data?.ingredientsCursor?.nodes?.map((ingredient) => (
                     <CommandItem
@@ -235,6 +332,7 @@ export function IngredientSelector({
                           ingredient.name as string
                         )
                       }
+                      className='cursor-pointer'
                     >
                       {ingredient.name}
                     </CommandItem>

@@ -10,7 +10,7 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <main className='min-h-[calc(100vh-4rem)] bg-background'>
+    <main className='bg-background min-h-[calc(100vh-4rem)]'>
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset className='flex-1'>

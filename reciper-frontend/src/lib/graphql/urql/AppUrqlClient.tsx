@@ -14,6 +14,10 @@ import {
   UrqlProvider
 } from '@urql/next'
 
+// import {
+//   cacheExchange as normalizedCacheExchange,
+// } from '@urql/exchange-graphcache'
+//
 const retryOptions: RetryExchangeOptions = {
   initialDelayMs: 1000,
   maxDelayMs: 15000,
@@ -28,6 +32,7 @@ const client = createClient({
   url: env.NEXT_PUBLIC_API_URL,
   exchanges: [
     cacheExchange,
+    // normalizedCacheExchange({}),
     retryExchange(retryOptions),
     mapExchange({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -70,6 +75,7 @@ const client = createClient({
     }),
     fetchExchange
   ],
+  // @ts-expect-error idc
   fetchOptions: () => {
     const { token } = initializeAuthState()
     return {

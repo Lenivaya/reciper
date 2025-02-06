@@ -16,26 +16,24 @@ namespace Reciper.DAL.Migrations
                 table: "RecipeImages",
                 type: "datetime2",
                 nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified));
+                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
+            );
 
             migrationBuilder.AddColumn<string>(
                 name: "PublicId",
                 table: "RecipeImages",
                 type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: ""
+            );
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "CreatedAt",
-                table: "RecipeImages");
+            migrationBuilder.DropColumn(name: "CreatedAt", table: "RecipeImages");
 
-            migrationBuilder.DropColumn(
-                name: "PublicId",
-                table: "RecipeImages");
+            migrationBuilder.DropColumn(name: "PublicId", table: "RecipeImages");
         }
     }
 }

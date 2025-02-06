@@ -106,7 +106,7 @@ export const Follower: FC<IFollowerProps> = ({ data }) => {
         </Avatar>
         <div className='flex-1'>
           <h3 className='font-medium'>{follower.subscriber.username}</h3>
-          <p className='text-sm text-muted-foreground'>
+          <p className='text-muted-foreground text-sm'>
             {follower.subscriber.recipesCount} recipes
           </p>
         </div>

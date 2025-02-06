@@ -4,10 +4,11 @@ import {
   RecipeCard,
   RecipeCardFragment
 } from '@/components/recipes/recipe-card/recipe-card'
+import { RecipeCardSkeleton } from '@/components/recipes/recipe-card/recipe-card-skeleton'
 import { PaginationControls } from '@/components/ui/pagination-controls'
 import { graphql } from 'gql.tada'
 import { useQueryStates } from 'nuqs'
-import { Key } from 'react'
+import { Key, Suspense } from 'react'
 import { useQuery } from 'urql'
 import { RecipesSearch } from '../recipes/recipes-search/recipes-search'
 import { recipeSearchParamsSchema } from '../recipes/recipes-search/recipes-search-params'
@@ -44,11 +45,17 @@ const DashboardRecipesQuery = graphql(
 
 const DEFAULT_PAGE_SIZE = 12
 
-export function DashboardRecipes() {
-  const [{ search, page, tags, difficultyLevels }, setSearchParams] =
-    useQueryStates(recipeSearchParamsSchema)
-  const currentPage = Math.max(1, parseInt(page ?? '1'))
-
+function RecipesList({
+  search,
+  currentPage,
+  tags,
+  difficultyLevels
+}: {
+  search: string | null
+  currentPage: number
+  tags: string[] | null
+  difficultyLevels: string[] | null
+}) {
   const [result] = useQuery({
     query: DashboardRecipesQuery,
     variables: {
@@ -75,31 +82,65 @@ export function DashboardRecipes() {
   }
 
   return (
+    <div className='h-full space-y-12'>
+      <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+        {result.error && <div>Error: {result.error.message}</div>}
+        {result.data?.myRecipesOffset?.items?.map((item) => (
+          <RecipeCard key={item?.id as Key} data={item} />
+        ))}
+      </div>
+
+      {totalCount > 0 && (
+        <div className='mt-8'>
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            hasNextPage={pageInfo?.hasNextPage ?? false}
+            hasPreviousPage={pageInfo?.hasPreviousPage ?? false}
+            params={search ? { search } : {}}
+            showFirstLast
+            maxVisiblePages={7}
+            className='justify-center'
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
+function DashboardRecipesContent() {
+  const [{ search, page, tags, difficultyLevels }] = useQueryStates(
+    recipeSearchParamsSchema
+  )
+  const currentPage = Math.max(1, parseInt(page ?? '1'))
+
+  return (
     <div className='flex flex-col space-y-12'>
       <RecipesSearch isClient />
-      <div className='h-full space-y-12'>
-        <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-          {result.error && <div>Error: {result.error.message}</div>}
-          {result.data?.myRecipesOffset?.items?.map((item) => (
-            <RecipeCard key={item?.id as Key} data={item} />
-          ))}
-        </div>
-
-        {totalCount > 0 && (
-          <div className='mt-8'>
-            <PaginationControls
-              currentPage={currentPage}
-              totalPages={totalPages}
-              hasNextPage={pageInfo?.hasNextPage ?? false}
-              hasPreviousPage={pageInfo?.hasPreviousPage ?? false}
-              params={search ? { search } : {}}
-              showFirstLast
-              maxVisiblePages={7}
-              className='justify-center'
-            />
+      <Suspense
+        fallback={
+          <div className='container mx-auto grid grid-cols-1 place-items-center gap-6 px-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+            {Array.from({ length: 12 }).map((_, i) => (
+              <RecipeCardSkeleton key={i} />
+            ))}
           </div>
-        )}
-      </div>
+        }
+      >
+        <RecipesList
+          search={search}
+          currentPage={currentPage}
+          tags={tags}
+          difficultyLevels={difficultyLevels}
+        />
+      </Suspense>
     </div>
+  )
+}
+
+export function DashboardRecipes() {
+  return (
+    <Suspense>
+      <DashboardRecipesContent />
+    </Suspense>
   )
 }

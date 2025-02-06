@@ -225,7 +225,7 @@ export function SettingsForm({ data }: SettingsFormProps) {
             onValueChange={setFiles}
             disabled={fetching || isUploading}
           />
-          <p className='text-sm text-muted-foreground'>
+          <p className='text-muted-foreground text-sm'>
             Upload a profile picture or provide a URL. Maximum file size: 2MB
           </p>
         </div>
@@ -273,7 +273,7 @@ export function SettingsForm({ data }: SettingsFormProps) {
         />
 
         {form.formState.errors.root && (
-          <div className='rounded-md bg-destructive/10 p-3 text-sm text-destructive'>
+          <div className='bg-destructive/10 text-destructive rounded-md p-3 text-sm'>
             {form.formState.errors.root.message}
           </div>
         )}

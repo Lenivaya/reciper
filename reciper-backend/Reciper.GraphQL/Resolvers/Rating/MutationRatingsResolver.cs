@@ -23,6 +23,64 @@ public class MutationRatingsResolver
         RatingPatchDTO
     > GraphQlMutationResolverService { get; } = new(unitOfWork => unitOfWork.RatingsRepository);
 
+    /// <summary>
+    /// Upserts rating for the authenricated user and givne recipe
+    /// </summary>
+    /// <param name="unitOfWork"></param>
+    /// <param name="authenticatedUser"></param>
+    /// <param name="recipeId"></param>
+    /// <returns></returns>
+    /// <exception cref="ReciperException"></exception>
+    [Error(typeof(ReciperException))]
+    [UseProjection]
+    public async Task<DAL.Models.Rating?> UpsertRecipeRating(
+        ReciperUnitOfWork unitOfWork,
+        [Service] IMapper mapper,
+        [GlobalState("CurrentUser")] AppActor<Guid>? authenticatedUser,
+        RatingCreateDTO createDto
+    )
+    {
+        try
+        {
+            if (authenticatedUser == null)
+                throw new ReciperException("User not authenticated");
+
+            var existingRating = await unitOfWork
+                .RatingsRepository.StartQuery()
+                .Where(rating =>
+                    rating.UserId == authenticatedUser.UserId
+                    && rating.RecipeId == createDto.RecipeId
+                )
+                .FirstOrDefaultAsync();
+
+            if (existingRating != null)
+            {
+                existingRating.Value = createDto.Value;
+                unitOfWork.RatingsRepository.Update(existingRating);
+                await unitOfWork.SaveChanges();
+                return existingRating;
+            }
+            else
+            {
+                var rating = mapper.Map<DAL.Models.Rating>(createDto);
+                rating.UserId = authenticatedUser.UserId;
+                rating.RecipeId = createDto.RecipeId;
+                var success = await unitOfWork.RatingsRepository.Insert(rating);
+                if (!success)
+                    throw new ReciperException("Failed to insert rating");
+
+                await unitOfWork.SaveChanges();
+                return rating;
+            }
+
+            throw new ReciperException("Failed to upsert rating");
+        }
+        catch (DbUpdateException e)
+        {
+            throw new ReciperException("Failed to upsert rating");
+        }
+    }
+
     [Error(typeof(ReciperException))]
     [UseFirstOrDefault]
     [UseProjection]

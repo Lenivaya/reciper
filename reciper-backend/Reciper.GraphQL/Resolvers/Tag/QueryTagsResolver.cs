@@ -16,7 +16,8 @@ public class QueryTagsResolver
     [UseSorting]
     public IQueryable<DAL.Models.Tag> GetTagsOffset(
         ReciperContext context,
-        TagSearchCriteria? searchCriteria)
+        TagSearchCriteria? searchCriteria
+    )
     {
         return QueryHandler(context, searchCriteria);
     }
@@ -27,7 +28,8 @@ public class QueryTagsResolver
     [UseSorting]
     public IQueryable<DAL.Models.Tag> GetTagsCursor(
         ReciperContext context,
-        TagSearchCriteria? searchCriteria)
+        TagSearchCriteria? searchCriteria
+    )
     {
         return QueryHandler(context, searchCriteria);
     }
@@ -41,17 +43,14 @@ public class QueryTagsResolver
 
     private IQueryable<DAL.Models.Tag> QueryHandler(
         ReciperContext context,
-        TagSearchCriteria? searchCriteria)
+        TagSearchCriteria? searchCriteria
+    )
     {
         var queryHandlerChain = new SearchCriteriaHandlerChainBuilder<
             ReciperContext,
             TagSearchCriteria,
             DAL.Models.Tag
-        >().BuildChain(
-            [
-                new TagSearchCriteriaOverallMatchingHandler()
-            ]
-        );
+        >().BuildChain([new TagSearchCriteriaOverallMatchingHandler()]);
 
         return queryHandlerChain.HandleQuery(context, searchCriteria).AsNoTracking();
     }
